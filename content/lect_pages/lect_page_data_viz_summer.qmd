@@ -1,0 +1,48 @@
+---
+title: "Lecture"
+published-title: "Date"
+date: "2025-07-01"
+self-contained: true
+engine: knitr
+---
+
+::: callout-tip
+## Objective
+
+Help you develop essential skills for effective data visualization.
+:::
+  
+## Slides
+
+```{r render_slides_pdf}
+#| eval: false
+#| echo: false
+
+renderthis::to_pdf(
+  from = "docs/content/slides/slides_data_viz_summer.html", 
+  to = "content/slides/slides_data_viz_summer.pdf"
+)
+
+renderthis::to_pdf(
+  from = "docs/content/slides/slides_data_viz_summer.html", 
+  to = "docs/content/slides/slides_data_viz_summer.pdf"
+)
+```
+
+
+`r fontawesome::fa("file-powerpoint")` [Open slides in html](../slides/slides_data_viz_summer.html)
+
+`r fontawesome::fa("file-pdf")` [Open slides in PDF](../slides/slides_data_viz_summer.pdf)
+
+```{r out.width='100%'}
+#| echo: false
+
+knitr::include_url("../slides/slides_06_env_econ_activism.html")
+```
+
+
+## Detailed outline and resources
+
+
+
+

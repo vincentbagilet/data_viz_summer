@@ -1,0 +1,19 @@
+{
+  "hash": "ca4f82e6835a96e1a289f8f6f6ae5f46",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Data Visualization for Economics Research\"\nsubtitle: \"<br> Lyon Summer School in Empirical Research Methods - ENS de Lyon\"\nauthor: \"Vincent Bagilet\"\ndate: \"2025-07-01\"\n# bibliography: ../env_econ.bib\nformat:\n  revealjs:\n    theme: [default, vb_qmd.scss]\n    slide-number: true\n    title-slide-attributes:\n        data-background-color: \"#392F29\"\n        slide-number: false\n    embed-resources: true\n---\n\n::: {.cell}\n\n:::\n\n\n\n# Examen {.inverse}\n\n## Questions de \"cours\"\n\n::: {.centered}\n\n- Tendances dans une littérature précise\n- Exemples :\n  \n  - Méthodes classiques pour étudier X ?\n  - Biais/écueils à éviter pour étudier l'impact de X sur Y ?\n\n:::\n\n## Question de réflexion\n\n::: {.centered}\n\n- Vous aurez une description d'un cas particulier, avec un contexte particulier\n- Quelle stratégie d'identification mettriez vous en place pour étudier cette question ? \n- Quelles hypothèses d'identification ? \n- Limites ? \n- etc\n\n:::\n\n# Introduction {.inverse}\n\n## Périmètre de ce cours\n\n::: {.centered}\n\n- Une thématique étudiée par de nombreuses disciplines (sociologie, sciences politiques, économie)\n- On se concentre sur la littérature en économie\n- Approche en économie (d'après @cantoni_protests_2024) :\n\n  - **Cadre théorique** aux comportements rationnels des individus\n  - **Évaluation empirique** et causale des comportements\n  \n- **Activisme**: attitude politique qui favorise l'action directe et la propagande active^[Définition donnée par Le Robert.]\n\n:::\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-after-body": [
+        "\n<script>\n  // htmlwidgets need to know to resize themselves when slides are shown/hidden.\n  // Fire the \"slideenter\" event (handled by htmlwidgets.js) when the current\n  // slide changes (different for each slide format).\n  (function () {\n    // dispatch for htmlwidgets\n    function fireSlideEnter() {\n      const event = window.document.createEvent(\"Event\");\n      event.initEvent(\"slideenter\", true, true);\n      window.document.dispatchEvent(event);\n    }\n\n    function fireSlideChanged(previousSlide, currentSlide) {\n      fireSlideEnter();\n\n      // dispatch for shiny\n      if (window.jQuery) {\n        if (previousSlide) {\n          window.jQuery(previousSlide).trigger(\"hidden\");\n        }\n        if (currentSlide) {\n          window.jQuery(currentSlide).trigger(\"shown\");\n        }\n      }\n    }\n\n    // hookup for slidy\n    if (window.w3c_slidy) {\n      window.w3c_slidy.add_observer(function (slide_num) {\n        // slide_num starts at position 1\n        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);\n      });\n    }\n\n  })();\n</script>\n\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

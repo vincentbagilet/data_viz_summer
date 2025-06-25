@@ -1,0 +1,92 @@
+---
+title: "Data Visualization for Economics Research"
+subtitle: "<br> Lyon Summer School in Empirical Research Methods - ENS de Lyon"
+author: "Vincent Bagilet"
+date: "2025-07-01"
+# bibliography: ../env_econ.bib
+format:
+  revealjs:
+    theme: [default, vb_qmd.scss]
+    slide-number: true
+    title-slide-attributes:
+        data-background-color: "#392F29"
+        slide-number: false
+    embed-resources: true
+---
+
+```{r packages}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(mediocrethemes)
+library(knitr)
+
+set_mediocre_all("coty", background = FALSE)
+
+opts_chunk$set(dev.args = list(bg="transparent"))  
+```
+
+# Examen {.inverse}
+
+## Questions de "cours"
+
+::: {.centered}
+
+- Tendances dans une littérature précise
+- Exemples :
+  
+  - Méthodes classiques pour étudier X ?
+  - Biais/écueils à éviter pour étudier l'impact de X sur Y ?
+
+:::
+
+## Question de réflexion
+
+::: {.centered}
+
+- Vous aurez une description d'un cas particulier, avec un contexte particulier
+- Quelle stratégie d'identification mettriez vous en place pour étudier cette question ? 
+- Quelles hypothèses d'identification ? 
+- Limites ? 
+- etc
+
+:::
+
+# Introduction {.inverse}
+
+## Périmètre de ce cours
+
+::: {.centered}
+
+- Une thématique étudiée par de nombreuses disciplines (sociologie, sciences politiques, économie)
+- On se concentre sur la littérature en économie
+- Approche en économie (d'après @cantoni_protests_2024) :
+
+  - **Cadre théorique** aux comportements rationnels des individus
+  - **Évaluation empirique** et causale des comportements
+  
+- **Activisme**: attitude politique qui favorise l'action directe et la propagande active^[Définition donnée par Le Robert.]
+
+:::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
