@@ -1,0 +1,17 @@
+{
+  "hash": "9a0500124438940ff21a4c956b014346",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Exercise - Calibration\"\nsubtitle: \"Replication of a paper on impacts of high temperature on agricultural yields.\"\npublished-title: \"Date\"\ndate: \"2024-10-09\"\nself-contained: true\nengine: knitr\nhtml-math-method: mathml\n---\n\n::: {.cell}\n\n:::\n\n\n::: {.callout-important title=\"Instructions\"}\n**Due date**: Friday October 11th, 7pm \n\n**Submission link (no email this time)**: [https://forms.gle/eTr4ZdbZtiHYZ7ko7](https://forms.gle/eTr4ZdbZtiHYZ7ko7)\n\n**Exercise**: Follow the steps in the [document describing the simulation](../sim/sim_2_high_temp.qmd).\n\n**Submission type**: please submit your `.html` document (not a `.qmd` document), generated with Quarto, implementing the analysis required and answering the questions listed in the [document describing the simulation](../sim/sim_2_high_temp.qmd).\n:::\n\n::: callout-warning\nMake sure to include the following lines as an option to your document (at the very top of your .qmd document, between the two series of `---`. Don't forget to remove the pre-existing `format: html` line, if there is one). It will produce [a self-contained html](https://quarto.org/docs/output-formats/html-basics.html#self-contained), *ie*, a nicely rendered html that stands alone:\n\n```\nformat:\n  html:\n    embed-resources: true\n```\n:::\n\nThe goal of this exercise is to replicate a result from a paper, [Burke and Emerick (2016)](https://www.aeaweb.org/articles?id=10.1257/pol.20130025), and explore the distribution of the variables in the associated dataset. We will then be able to use this to implement a simulation based. This paper aims to evaluate the potential impact of climate change on agricultural outcomes.\n\nYou will not need to read the paper for this exercise but at least glance through the introduction to understand what is at stake here.\n\n\n\n\n\n\n\n",
+    "supporting": [
+      "ex_2_calibration_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,63 @@
+/*-- scss:defaults --*/
+
+// Include theme-specific fonts
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic);
+@import url(https://fonts.googleapis.com/css?family=Josefin+Sans:400,700,400italic,700italic);
+
+$presentation-title-slide-text-align: right;
+
+// fonts
+$font-family-sans-serif: Lato, sans-serif !default;
+$presentation-heading-font: "Josefin Sans", sans-serif !default;
+$presentation-h1-font-size: 2em !default;
+$presentation-h2-font-size: 1.9em !default;
+$presentation-font-size-root: 1.8em !default;
+// Override theme settings
+$color-default:     #005042 !default;
+$body-bg:           #FEFEF1 !default;
+$body-color:        #262626 !default;
+$link-color:        $color-default !default;
+$emph-color:        $color-default !default;
+$selection-bg:      $color-default !default;
+
+$presentation-title-slide-text-align: right;
+$presentation-title-slide-text-color: $body-bg !default;
+$presentation-heading-color: $color-default !default;
+
+strong {
+  font-weight: bold;
+  color:  $emph-color;
+}
+
+/*-- scss:rules --*/
+
+.inverse {
+  color: $body-bg;
+
+  h1, h2, h3 {
+    color: $body-bg;
+  }
+
+  .slide-background-content {
+    background-color: $color-default;
+  }
+}
+
+.reveal .slide-number {
+    color: $color-default;
+    font-family: $font-family-sans-serif
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+  height: 90%;
+}
+
+.callout {
+  font-size: 1em !important;
+}
+
+.callout-title {
+  font-size: 0.9em !important;
+}

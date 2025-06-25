@@ -1,0 +1,63 @@
+project:
+  type: website
+  preview:
+    port: 4200
+  render:
+  - '*.qmd'
+  - '!misc/'
+  resources:
+  - slides_1_pitfalls.html
+  - slides_2_sim_contd.html
+  - slides_3_exaggeration.html
+  - slides_4_causal_exagg.html
+  - slides_5_design.html
+  output-dir: docs
+execute:
+  freeze: auto
+website:
+  title: Topics in Econometrics
+  favicon: images/favicon.ico
+  site-url: https://vincentbagilet.github.io/metrics_m2_2024/
+  repo-url: https://github.com/vincentbagilet/metrics_m2_2024
+  navbar:
+    left:
+    - href: content/syllabus.qmd
+      text: Syllabus
+    - text: Lectures
+      menu:
+      - text: 1 - Pitfalls
+        href: content/lect/lect_1_pitfalls.qmd
+      - text: 2 - Simulations
+        href: content/lect/lect_2_sim_contd.qmd
+      - text: 3 - Low Power and Exaggeration
+        href: content/lect/lect_3_exaggeration.qmd
+      - text: 4 - Causal Exaggeration
+        href: content/lect/lect_4_causal_exagg.qmd
+      - text: 5 - Design
+        href: content/lect/lect_5_design.qmd
+    - text: Simulations
+      menu:
+      - text: 'Simple simulation: Grades'
+        href: content/sim/sim_1_school_lessons.qmd
+      - text: 'Replication and Calibration'
+        href: content/sim/sim_2_high_temp.qmd
+    - text: Exercises
+      menu:
+      - text: 'Treatment heterogeneity'
+        href: content/ex/ex_1_heterogeneity.qmd
+      - text: 'Replication and Calibration'
+        href: content/ex/ex_2_calibration.qmd
+      - text: 'Complex Simulation'
+        href: content/ex/ex_3_complex_sim.qmd
+    - href: content/resources.qmd
+      text: Resources
+  page-footer:
+    right: |
+      Made with R and [Quarto](https://quarto.org/)<br>
+      [Source code on GitHub](https://github.com/vincentbagilet/metrics_m2_2024)
+format:
+  html:
+    toc: true
+    theme: vb.scss
+    css: include/webex.css
+    include-after-body: include/webex.js

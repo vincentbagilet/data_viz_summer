@@ -1,0 +1,15 @@
+{
+  "hash": "130f546a01b04223372dfe4d1d3796a1",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Exercise - Simulating treatment effect heterogeneity\"\nsubtitle: \"The impact of extra lessons on students' grades, a statistical power analysis.\"\npublished-title: \"Date\"\ndate: \"2024-09-25\"\nself-contained: true\nengine: knitr\nhtml-math-method: mathml\n---\n\n::: {.cell}\n\n:::\n\n\nSo far, the power analysis we implemented for our economics of education experiment assumed that we accurately represented the true DGP. However, it is very likely that the actual DGP would be different from the one we modeled. For instance, effects are very likely heterogenous across individuals. \n\n::: callout-note\nWe are often interested in estimating a version of an ATE (Average Treatment Effect). The wording itself (\"average\") implies that effects are heterogenous across individuals.\n:::\n\nIn this exercise, you will implement the same power analysis as the one we implemented before but with some sort of heterogeneity in treatment effects.\n\n::: {.callout-caution icon=false}\n\n## Question 1\n\nList other reasons than heterogeneity in treatment effect for the DGP to be different from the one we simulated so far.\n:::\n\nAlthough there are other reasons for the DGP to be different, we will \nIn order to add heterogeneity to the analysis, we need to modify <input class='webex-solveme nospaces' size='13' data-answer='[\"generate_data\"]'/>. \n\n::: {.callout-caution icon=false}\n\n## Question 2\n\nModify what is needed and run the same simulation as before. Explain your choices in maximum 3 lines.\n:::\n\n\n::: {.callout-caution icon=false}\n\n## Question 3\n\nIf the treatment effect is heterogeneous and the true DGP similar to what you simulated, which sample size would you choose?\nReturn one graph (explaining why you chose this one) and your answer.\n:::\n\n\n\n\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

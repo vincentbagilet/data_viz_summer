@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Replication</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Replication_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Replication_files/libs/quarto-html/quarto.js"></script>
+<script src="Replication_files/libs/quarto-html/popper.min.js"></script>
+<script src="Replication_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Replication_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Replication_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Replication_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Replication_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Replication_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Replication_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="Replication_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="Replication_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Replication</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="replication-and-real-data-simulation" class="level2">
+<h2 class="anchored" data-anchor-id="replication-and-real-data-simulation">Replication and real data simulation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to create lags</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lagvar <span class="ot">&lt;-</span> <span class="cf">function</span>(varname, lags, dataset) {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="fu">deparse</span>(<span class="fu">substitute</span>(varname))) <span class="co"># get variable name</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>lags) { <span class="co"># loop over lags</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    dataset[[<span class="fu">paste0</span>(x, <span class="st">"_L"</span>, i)]] <span class="ot">&lt;-</span> <span class="fu">lag</span>(dataset[[x]], i) <span class="co"># create lagged variable</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dataset) <span class="co"># return dataset with new variables</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># to create leads</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>leadvar <span class="ot">&lt;-</span> <span class="cf">function</span>(varname, leads, dataset) {</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="fu">deparse</span>(<span class="fu">substitute</span>(varname)))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>leads) {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    dataset[[<span class="fu">paste0</span>(x, <span class="st">"_F"</span>, i)]] <span class="ot">&lt;-</span> <span class="fu">lead</span>(dataset[[x]], i)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dataset)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># to merge disaster data onto a base panel</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>countrylist <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ARG"</span>, <span class="st">"AUS"</span>, <span class="st">"AUT"</span>, <span class="st">"BEL"</span>, <span class="st">"BRA"</span>, <span class="st">"CAN"</span>, <span class="st">"CHL"</span>, <span class="st">"TWN"</span>, <span class="st">"COL"</span>, <span class="st">"CZE"</span>, <span class="st">"DNK"</span>, <span class="st">"FIN"</span>, <span class="st">"FRA"</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"DEU"</span>, <span class="st">"GRC"</span>, <span class="st">"HKG"</span>, <span class="st">"HUN"</span>, <span class="st">"ISL"</span>, <span class="st">"IDN"</span>, <span class="st">"IRL"</span>, <span class="st">"ISR"</span>, <span class="st">"ITA"</span>, <span class="st">"JPN"</span>, <span class="st">"KOR"</span>, <span class="st">"LUX"</span>, <span class="st">"MYS"</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MEX"</span>, <span class="st">"NLD"</span>, <span class="st">"NZL"</span>, <span class="st">"NOR"</span>, <span class="st">"PER"</span>, <span class="st">"PHL"</span>, <span class="st">"PRT"</span>, <span class="st">"RUS"</span>, <span class="st">"IND"</span>, <span class="st">"SGP"</span>, <span class="st">"ZAF"</span>, <span class="st">"ESP"</span>, <span class="st">"SWE"</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">"CHE"</span>, <span class="st">"THA"</span>, <span class="st">"TUR"</span>, <span class="st">"EGY"</span>, <span class="st">"GBR"</span>, <span class="st">"USA"</span>, <span class="st">"VEN"</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>) <span class="co"># list of countries</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>year <span class="ot">&lt;-</span> <span class="dv">1900</span><span class="sc">:</span><span class="dv">2020</span> <span class="co"># list of years</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>basepanel <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">ISO =</span> countrylist, <span class="at">Yr =</span> year) <span class="co"># create base panel as data frame</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>basepanel<span class="sc">$</span>year_var <span class="ot">&lt;-</span> basepanel<span class="sc">$</span>Yr <span class="co"># for merging</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>basepanel<span class="sc">$</span>Yr <span class="ot">&lt;-</span> <span class="fu">ymd</span>(basepanel<span class="sc">$</span>Yr, <span class="at">truncated =</span> <span class="dv">2</span>L) <span class="co"># encode year as date for merging</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">#  country metadata and merge with base panel</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>countrymeta <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/country_group.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="co"># read in country metadata</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>({</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  countrymeta<span class="sc">$</span>ISO <span class="ot">&lt;-</span> <span class="fu">countrycode</span>(countrymeta<span class="sc">$</span>country, <span class="at">origin =</span> <span class="st">"country.name"</span>, <span class="at">destination =</span> <span class="st">"iso3c"</span>) <span class="co"># get ISO codes</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>countrymeta <span class="ot">&lt;-</span> <span class="fu">subset</span>(countrymeta, <span class="at">select =</span> <span class="fu">c</span>(income_group, region, ISO)) <span class="co"># keep only relevant columns</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>basepanel <span class="ot">&lt;-</span> <span class="fu">merge</span>(basepanel, countrymeta, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ISO"</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>) <span class="co"># merge base panel with country metadata</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="do">## JST data</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>JST <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">"data/JSTdatasetR6.dta"</span>) <span class="co"># read in data</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>JST<span class="sc">$</span>jst <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># for subsetting later</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>JST<span class="sc">$</span>ISO <span class="ot">&lt;-</span> JST<span class="sc">$</span>iso <span class="co"># for merging</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>JST<span class="sc">$</span>Yr <span class="ot">&lt;-</span> <span class="fu">ymd</span>(JST<span class="sc">$</span>year, <span class="at">truncated =</span> <span class="dv">2</span>L) <span class="co">#  year as date for merging</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>keep <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">13</span>, <span class="dv">14</span>, <span class="dv">17</span>, <span class="dv">20</span>, <span class="dv">21</span>, <span class="dv">22</span>, <span class="dv">23</span>, <span class="dv">24</span>, <span class="dv">25</span>, <span class="dv">26</span>, <span class="dv">31</span>, <span class="dv">34</span>, <span class="dv">46</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">56</span>, <span class="dv">58</span>, <span class="dv">59</span>, <span class="dv">60</span>, <span class="dv">61</span>, <span class="dv">62</span>) <span class="co"># keep only relevant columns</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>JST <span class="ot">&lt;-</span> <span class="fu">subset</span>(JST, <span class="at">select =</span> keep) <span class="co"># subset columns</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>JST <span class="ot">&lt;-</span> JST[<span class="fu">order</span>(JST<span class="sc">$</span>ISO, JST<span class="sc">$</span>year), ] <span class="co"># order by ISO and year</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co"># additional variables in JST</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>JST<span class="sc">$</span>rloans <span class="ot">&lt;-</span> <span class="fu">log</span>(JST<span class="sc">$</span>tloans <span class="sc">/</span> JST<span class="sc">$</span>cpi) <span class="co"># log of real loans</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>JST<span class="sc">$</span>creditD <span class="ot">&lt;-</span> <span class="fu">ave</span>(JST<span class="sc">$</span>rloans, JST<span class="sc">$</span>ISO, <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">diff</span>(x))) <span class="co"># create first difference of real loans</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co"># 5-year moving average of creditD using past observations</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>JST <span class="ot">&lt;-</span> JST <span class="sc">%&gt;%</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ISO) <span class="sc">%&gt;%</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">creditMA5 =</span> zoo<span class="sc">::</span><span class="fu">rollmeanr</span>(creditD, <span class="at">k =</span> <span class="dv">5</span>, <span class="at">fill =</span> <span class="cn">NA</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="co"># log of real revenue</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>JST<span class="sc">$</span>rlrevenue <span class="ot">&lt;-</span> <span class="fu">log</span>(JST<span class="sc">$</span>revenue <span class="sc">/</span> JST<span class="sc">$</span>cpi) <span class="co"># create log of real revenue</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>JST<span class="sc">$</span>rlrevenueD <span class="ot">&lt;-</span> <span class="fu">ave</span>(JST<span class="sc">$</span>rlrevenue, JST<span class="sc">$</span>ISO, <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">diff</span>(x))) <span class="co"># create first difference of real revenue</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>JST <span class="ot">&lt;-</span> JST <span class="sc">%&gt;%</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ISO) <span class="sc">%&gt;%</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">revenueMA5 =</span> zoo<span class="sc">::</span><span class="fu">rollmeanr</span>(rlrevenueD, <span class="at">k =</span> <span class="dv">5</span>, <span class="at">fill =</span> <span class="cn">NA</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="co"># the crisis data: BVX</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>BVX <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">"data/BVX_annual_regdata.dta"</span>) <span class="co"># Crisis data in the folder</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>BVX<span class="sc">$</span>ISO <span class="ot">&lt;-</span> BVX<span class="sc">$</span>ISO3 <span class="co"># renaming ISO code for merging</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>BVX<span class="sc">$</span>Yr <span class="ot">&lt;-</span> <span class="fu">ymd</span>(BVX<span class="sc">$</span>year, <span class="at">truncated =</span> <span class="dv">2</span>L) <span class="co"># encoding year as a date</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>drop <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"country"</span>, <span class="st">"ISO3"</span>,<span class="st">"ccode"</span>,<span class="st">"decade"</span>)</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>BVX <span class="ot">&lt;-</span> BVX[, <span class="sc">!</span>(<span class="fu">names</span>(BVX) <span class="sc">%in%</span> drop)]</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>BVX<span class="sc">$</span>bvx <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># for subsetting later</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="do">## GDP data from World Bank API</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>gdp_data <span class="ot">&lt;-</span> <span class="fu">wb</span>(<span class="at">indicator =</span> <span class="st">"NY.GDP.MKTP.CD"</span>, <span class="at">country =</span> <span class="fu">unique</span>(BVX<span class="sc">$</span>ISO), <span class="at">startdate =</span> <span class="dv">1960</span>, <span class="at">enddate =</span> <span class="dv">2020</span>) <span class="co"># get GDP data from World Bank API</span></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>gdp_data <span class="ot">&lt;-</span> <span class="fu">subset</span>(gdp_data, <span class="at">select =</span> <span class="fu">c</span>(<span class="st">"iso3c"</span>, <span class="st">"date"</span>, <span class="st">"value"</span>)) <span class="co"># keep only relevant columns</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(gdp_data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ISO"</span>, <span class="st">"Yr"</span>, <span class="st">"GDP_nominal"</span>)</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>gdp_data<span class="sc">$</span>GDP_nominal_000US <span class="ot">&lt;-</span> gdp_data<span class="sc">$</span>GDP_nominal <span class="sc">/</span> <span class="dv">1000</span> <span class="co"># create GDP in 000 US$</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>gdp_data <span class="ot">&lt;-</span> <span class="fu">subset</span>(gdp_data, <span class="at">select =</span> <span class="fu">c</span>(<span class="st">"ISO"</span>, <span class="st">"Yr"</span>, <span class="st">"GDP_nominal_000US"</span>))</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>gdp_data<span class="sc">$</span>Yr <span class="ot">&lt;-</span> <span class="fu">ymd</span>(gdp_data<span class="sc">$</span>Yr, <span class="at">truncated =</span> <span class="dv">2</span>L) <span class="co"># encoding year as a date</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="do">## Disaster Data</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>EmDat <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/EmDatPublic202211.xlsx"</span>) </span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>keep <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, <span class="dv">29</span>, <span class="dv">30</span>, <span class="dv">31</span>, <span class="dv">35</span>, <span class="dv">37</span>, <span class="dv">39</span>, <span class="dv">44</span>, <span class="dv">45</span>, <span class="dv">46</span>)</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>EmDat <span class="ot">&lt;-</span> <span class="fu">subset</span>(EmDat, <span class="at">select =</span> keep)</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(EmDat)[<span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="st">"DisasterType"</span></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(EmDat)[<span class="dv">9</span>] <span class="ot">&lt;-</span> <span class="st">"StartYear"</span></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(EmDat)[<span class="dv">10</span>] <span class="ot">&lt;-</span> <span class="st">"StartMonth"</span></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(EmDat)[<span class="dv">11</span>] <span class="ot">&lt;-</span> <span class="st">"StartDay"</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(EmDat)[<span class="dv">12</span>] <span class="ot">&lt;-</span> <span class="st">"TotalDeath"</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(EmDat)[<span class="dv">13</span>] <span class="ot">&lt;-</span> <span class="st">"NoAffected"</span></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(EmDat)[<span class="dv">14</span>] <span class="ot">&lt;-</span> <span class="st">"TotalAffected"</span></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(EmDat)[<span class="dv">15</span>] <span class="ot">&lt;-</span> <span class="st">"TotalDamages_000US"</span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(EmDat)[<span class="dv">16</span>] <span class="ot">&lt;-</span> <span class="st">"TotalDamagesAdj_000US"</span></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>EmDat<span class="sc">$</span>DateYM <span class="ot">&lt;-</span> <span class="fu">paste</span>(EmDat<span class="sc">$</span>StartYear, EmDat<span class="sc">$</span>StartMonth, <span class="at">sep =</span> <span class="st">"-"</span>) <span class="co"># creating date variable</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>({</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>  EmDat<span class="sc">$</span>DateYM <span class="ot">&lt;-</span> <span class="fu">ym</span>(EmDat<span class="sc">$</span>DateYM) <span class="co"># encoding date</span></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>EmDat<span class="sc">$</span>year_month <span class="ot">&lt;-</span> <span class="fu">format</span>(EmDat<span class="sc">$</span>DateYM, <span class="st">"%Y-%m"</span>) <span class="co"># creating year_month variable</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>EmDat<span class="sc">$</span>Yr <span class="ot">&lt;-</span> <span class="fu">ymd</span>(EmDat<span class="sc">$</span>Year, <span class="at">truncated =</span> <span class="dv">2</span>L)</span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>EmDat<span class="sc">$</span>mWeight <span class="ot">&lt;-</span> (<span class="dv">12</span> <span class="sc">-</span> EmDat<span class="sc">$</span>StartMonth) <span class="sc">/</span> <span class="dv">12</span> </span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="co"># creating weighted variables</span></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (m <span class="cf">in</span> <span class="fu">c</span>(<span class="st">"TotalDeath"</span>, <span class="st">"TotalDamages_000US"</span>, <span class="st">"TotalDamagesAdj_000US"</span>)) {</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>  EmDat[, <span class="fu">paste</span>(<span class="st">"weighted"</span>, m, <span class="at">sep =</span> <span class="st">"_"</span>)] <span class="ot">&lt;-</span> EmDat[, <span class="fu">paste</span>(m)] <span class="sc">*</span> EmDat<span class="sc">$</span>mWeight</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>EmDat <span class="ot">&lt;-</span> EmDat <span class="sc">%&gt;%</span></span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ISO) <span class="sc">%&gt;%</span></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">median_damage =</span> <span class="fu">median</span>(TotalDamagesAdj_000US[<span class="sc">!</span><span class="fu">is.na</span>(TotalDamagesAdj_000US)])) <span class="sc">%&gt;%</span></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>disisasterlists <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>  <span class="at">MyData_plus =</span> <span class="fu">c</span>(<span class="st">"Drought"</span>, <span class="st">"Earthquake"</span>, <span class="st">"Epidemic"</span>, <span class="st">"Extreme temperature"</span>, <span class="st">"Flood"</span>, <span class="st">"Storm"</span>, <span class="st">"Volcanic activity"</span>, <span class="st">"Wildfire"</span>),</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>  <span class="at">MyData =</span> <span class="fu">c</span>(<span class="st">"Earthquake"</span>, <span class="st">"Storm"</span>, <span class="st">"Volcanic activity"</span>, <span class="st">"Wildfire"</span>)</span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a><span class="co"># looping through the list of disaster types to summarize the data</span></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(disisasterlists)) {</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>  list_name <span class="ot">&lt;-</span> <span class="fu">names</span>(disisasterlists)[i]</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>  df_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(list_name)</span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>  d_types <span class="ot">&lt;-</span> disisasterlists[[i]]</span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>  <span class="co"># function to sum if not all NA</span></span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>  sum_if_not_all_na <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">all</span>(<span class="fu">is.na</span>(x))) { <span class="co"># if all is NA</span></span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>      <span class="cn">NA</span> <span class="co"># return NA</span></span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="co"># else return the sum and set the NAs to 0</span></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>  <span class="co"># creating a function to calculate strong metric</span></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>  calculate_strong_metric <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>    filtervar,</span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>    threshold,</span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>    var, <span class="co"># the variable that is actually being summed</span></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>    value <span class="co"># the value to return if the filter variable is less than the median (this is set to 0 in the loop below)</span></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>  ) {</span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>      filtervar <span class="sc">&gt;</span> threshold, <span class="co"># if the filter variable is greater than the country specific median</span></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>      var, <span class="co"># return the variable</span></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>      value <span class="co"># else return the value (0)</span></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>  <span class="co"># summarizing</span></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>  DisasterDF <span class="ot">&lt;-</span> <span class="fu">subset</span>(EmDat, <span class="st">`</span><span class="at">DisasterType</span><span class="st">`</span> <span class="sc">%in%</span> d_types) <span class="sc">%&gt;%</span></span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(Yr, ISO) <span class="sc">%&gt;%</span></span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>      <span class="at">adj_DAM_000US =</span> <span class="fu">sum_if_not_all_na</span>(TotalDamagesAdj_000US),</span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>      <span class="at">DAM_000US =</span> <span class="fu">sum_if_not_all_na</span>(TotalDamages_000US),</span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>      <span class="at">DEATH =</span> <span class="fu">sum_if_not_all_na</span>(TotalDeath),</span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>      <span class="at">w_adj_DAM_000US =</span> <span class="fu">sum_if_not_all_na</span>(weighted_TotalDamagesAdj_000US),</span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>      <span class="at">w_DAM_000US =</span> <span class="fu">sum_if_not_all_na</span>(weighted_TotalDamages_000US),</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>      <span class="at">w_DEATH =</span> <span class="fu">sum_if_not_all_na</span>(weighted_TotalDeath),</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>      <span class="at">w_strong_DAM_000US =</span> <span class="fu">sum_if_not_all_na</span>(<span class="fu">calculate_strong_metric</span>(<span class="at">filtervar =</span> TotalDamagesAdj_000US, <span class="at">threshold =</span> median_damage, <span class="at">var =</span> weighted_TotalDamages_000US, <span class="at">value =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>      <span class="at">adj_strong_DAM_000US =</span> <span class="fu">sum_if_not_all_na</span>(<span class="fu">calculate_strong_metric</span>(<span class="at">filtervar =</span> TotalDamagesAdj_000US, <span class="at">threshold =</span> median_damage, <span class="at">var =</span> TotalDamagesAdj_000US, <span class="at">value =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>      <span class="at">strong_DAM_000US =</span> <span class="fu">sum_if_not_all_na</span>(<span class="fu">calculate_strong_metric</span>(<span class="at">filtervar =</span> TotalDamagesAdj_000US, <span class="at">threshold =</span> median_damage, <span class="at">var =</span> TotalDamages_000US, <span class="at">value =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>      <span class="at">strong_DEATH =</span> <span class="fu">sum_if_not_all_na</span>(<span class="fu">calculate_strong_metric</span>(<span class="at">filtervar =</span> TotalDamagesAdj_000US, <span class="at">threshold =</span> median_damage, <span class="at">var =</span> TotalDeath, <span class="at">value =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>      <span class="at">w_adj_strong_DAM_000US =</span> <span class="fu">sum_if_not_all_na</span>(<span class="fu">calculate_strong_metric</span>(<span class="at">filtervar =</span> TotalDamagesAdj_000US, <span class="at">threshold =</span> median_damage, <span class="at">var =</span> weighted_TotalDamages_000US, <span class="at">value =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>      <span class="at">w_strong_DEATH =</span> <span class="fu">sum_if_not_all_na</span>(<span class="fu">calculate_strong_metric</span>(<span class="at">filtervar =</span> TotalDamagesAdj_000US, <span class="at">threshold =</span> median_damage, <span class="at">var =</span> weighted_TotalDeath, <span class="at">value =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>      <span class="at">NoOfStrongDisaster =</span> <span class="fu">sum_if_not_all_na</span>(<span class="fu">calculate_strong_metric</span>(<span class="at">filtervar =</span> TotalDamagesAdj_000US, <span class="at">threshold =</span> median_damage, <span class="at">var =</span> <span class="dv">1</span>, <span class="at">value =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>      <span class="at">w_NoOfStrongDisaster =</span> <span class="fu">sum_if_not_all_na</span>(<span class="fu">calculate_strong_metric</span>(<span class="at">filtervar =</span> TotalDamagesAdj_000US, <span class="at">threshold =</span> median_damage, <span class="at">var =</span> mWeight, <span class="at">value =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>      <span class="at">W_NoOfDis =</span> <span class="fu">sum_if_not_all_na</span>(mWeight),</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>      <span class="at">NoOfDis =</span> <span class="fu">n</span>(),</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Merging datasets together</span></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>  MyData <span class="ot">&lt;-</span> <span class="fu">merge</span>(basepanel, DisasterDF, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ISO"</span>, <span class="st">"Yr"</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>) <span class="co"># merging basepanel with disaster data</span></span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>  <span class="co">#MyData &lt;- merge(MyData, addstrong, by=c("ISO","Yr"), all.x = TRUE) #adding strong disaster variables</span></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>  MyData <span class="ot">&lt;-</span> <span class="fu">merge</span>(MyData, JST, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ISO"</span>, <span class="st">"Yr"</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>) <span class="co"># adding JST data</span></span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>  MyData <span class="ot">&lt;-</span> <span class="fu">merge</span>(MyData, BVX, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ISO"</span>, <span class="st">"Yr"</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>) <span class="co"># adding BVX data</span></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>  MyData <span class="ot">&lt;-</span> <span class="fu">merge</span>(MyData, gdp_data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ISO"</span>, <span class="st">"Yr"</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>) <span class="co"># adding GDP data</span></span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Making indicators:</span></span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>  MyData<span class="sc">$</span>DisDummy <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(MyData<span class="sc">$</span>NoOfDis <span class="sc">&gt;=</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="co"># everything over 1 is coded as 1</span></span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>  MyData<span class="sc">$</span>StrongDisDummy <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(MyData<span class="sc">$</span>NoOfStrongDisaster <span class="sc">&gt;=</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="co"># everything over 1 is coded as 1</span></span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (varname <span class="cf">in</span> <span class="fu">c</span>(</span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>    <span class="st">"DisDummy"</span>,</span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>    <span class="st">"StrongDisDummy"</span>,</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>    <span class="st">"w_NoOfStrongDisaster"</span>, <span class="st">"NoOfStrongDisaster"</span>,</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>    <span class="st">"W_NoOfDis"</span>, <span class="st">"NoOfDis"</span>,</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>    <span class="st">"w_adj_DAM_000US"</span>, <span class="st">"w_DAM_000US"</span>, <span class="st">"w_DEATH"</span>, <span class="st">"w_adj_strong_DAM_000US"</span>,</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>    <span class="st">"w_strong_DAM_000US"</span>, <span class="st">"w_strong_DEATH"</span>, <span class="st">"adj_DAM_000US"</span>, <span class="st">"DAM_000US"</span>, <span class="st">"DEATH"</span>, <span class="st">"adj_strong_DAM_000US"</span>,</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>    <span class="st">"strong_DAM_000US"</span>, <span class="st">"strong_DEATH"</span></span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>  )) {</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>    MyData[, <span class="fu">paste</span>(varname)][<span class="fu">is.na</span>(MyData[, <span class="fu">paste</span>(varname)])] <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># coding NA as 0 damage (since EmDat is a list of observations)</span></span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>  MyData<span class="sc">$</span>w_strong_DAM_000US <span class="ot">&lt;-</span> <span class="fu">replace</span>(MyData<span class="sc">$</span>w_strong_DAM_000US, MyData<span class="sc">$</span>w_strong_DAM_000US <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="cn">NA</span>)</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>  MyData <span class="ot">&lt;-</span> <span class="fu">pdata.frame</span>(MyData, <span class="at">index =</span> <span class="fu">c</span>(<span class="st">"ISO"</span>, <span class="st">"Yr"</span>), <span class="at">drop.index =</span> <span class="cn">FALSE</span>, <span class="at">row.names =</span> <span class="cn">TRUE</span>) <span class="co"># make panel data</span></span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>    MyData<span class="sc">$</span>rGDP <span class="ot">&lt;-</span> MyData<span class="sc">$</span>rgdpmad <span class="sc">*</span> MyData<span class="sc">$</span>pop <span class="co"># note that population is in thousands</span></span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>  <span class="co"># adjusting damage data for inflation base 1990, dividing by RealGdp 1990</span></span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>  MyData <span class="ot">&lt;-</span> <span class="fu">lagvar</span>(rGDP, <span class="dv">1</span>, MyData) <span class="co"># lagging real GDP by 1 year</span></span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>  <span class="co"># standardizing damage data by GDP using lagged GDP to avoid simultaneity bias and to account for the fact that disasters may affect GDP</span></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>  MyData<span class="sc">$</span>stnDAM_strong <span class="ot">&lt;-</span> ((MyData<span class="sc">$</span>w_strong_DAM_000US <span class="sc">/</span> (<span class="dv">100</span> <span class="sc">/</span> MyData<span class="sc">$</span>cpi)) <span class="sc">/</span> MyData<span class="sc">$</span>rGDP_L1) <span class="sc">*</span> <span class="dv">1000</span> <span class="co"># dividng cpi 100 because the index was set to 1990 = 100 # then multiplying by 1000 so that the margin is in 0.1 %of GDP</span></span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>  MyData<span class="sc">$</span>stnDAM <span class="ot">&lt;-</span> ((MyData<span class="sc">$</span>w_DAM_000US <span class="sc">/</span> (<span class="dv">100</span> <span class="sc">/</span> MyData<span class="sc">$</span>cpi)) <span class="sc">/</span> MyData<span class="sc">$</span>rGDP) <span class="sc">*</span> <span class="dv">1000</span> <span class="co"># for all damages (not just those above the median)</span></span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>  MyData<span class="sc">$</span>stnDAM_strong_uw <span class="ot">&lt;-</span> ((MyData<span class="sc">$</span>strong_DAM_000US <span class="sc">/</span> (<span class="dv">100</span> <span class="sc">/</span> MyData<span class="sc">$</span>cpi)) <span class="sc">/</span> MyData<span class="sc">$</span>rGDP) <span class="sc">*</span> <span class="dv">1000</span> <span class="co"># for unweighted damages</span></span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">assign</span>(df_name, MyData)</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="replication-of-the-table" class="level2">
+<h2 class="anchored" data-anchor-id="replication-of-the-table">Replication of the table</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MyData <span class="ot">&lt;-</span> <span class="fu">lagvar</span>(stnDAM_strong, <span class="dv">4</span>, MyData)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>T1M1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(crisisJST <span class="sc">~</span> stnDAM_strong <span class="sc">+</span> stnDAM_strong_L1 <span class="sc">+</span> stnDAM_strong_L2 <span class="sc">+</span> stnDAM_strong_L3, <span class="at">family =</span> <span class="fu">binomial</span>(), <span class="at">data =</span> MyData)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>T1M2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(crisisJST <span class="sc">~</span> stnDAM_strong <span class="sc">+</span> stnDAM_strong_L1 <span class="sc">+</span> stnDAM_strong_L2 <span class="sc">+</span> stnDAM_strong_L3 <span class="sc">+</span> <span class="fu">factor</span>(ISO), <span class="at">family =</span> <span class="fu">binomial</span>(), <span class="at">data =</span> MyData)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>T1M3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(crisisJST <span class="sc">~</span> stnDAM_strong <span class="sc">+</span>stnDAM_strong_L1 <span class="sc">+</span> stnDAM_strong_L2 <span class="sc">+</span> stnDAM_strong_L3 </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> <span class="fu">factor</span>(ISO), <span class="at">family =</span> <span class="fu">binomial</span>(), <span class="fu">filter</span>(MyData, year <span class="sc">&gt;=</span> <span class="dv">1950</span>)) <span class="co">#restricted sample (1950-2020)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>T1M4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(crisisJST <span class="sc">~</span> stnDAM_strong <span class="sc">+</span> stnDAM_strong_L1 <span class="sc">+</span> stnDAM_strong_L2 <span class="sc">+</span> stnDAM_strong_L3, <span class="at">data =</span> MyData)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>T1M5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(crisisJST <span class="sc">~</span> stnDAM_strong <span class="sc">+</span> stnDAM_strong_L1 <span class="sc">+</span> stnDAM_strong_L2 <span class="sc">+</span> stnDAM_strong_L3 <span class="sc">+</span> <span class="fu">factor</span>(ISO) <span class="sc">+</span> <span class="fu">factor</span>(Yr), <span class="at">data =</span> MyData)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>T1M6 <span class="ot">&lt;-</span> <span class="fu">glm</span>(crisisJST <span class="sc">~</span> stnDAM_strong <span class="sc">+</span> stnDAM_strong_L1 <span class="sc">+</span> stnDAM_strong_L2 <span class="sc">+</span> stnDAM_strong_L3 </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> <span class="fu">factor</span>(ISO), <span class="at">family =</span> <span class="fu">binomial</span>(), <span class="at">data =</span> <span class="fu">filter</span>(MyData, year <span class="sc">&gt;=</span> <span class="dv">2000</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2020</span>)) <span class="co">#restricted sample (2000-2020)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>cluster_se_T1M1 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T1M1, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>cluster_se_T1M2 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T1M2, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>cluster_se_T1M3 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T1M3, <span class="fu">filter</span>(MyData, year <span class="sc">&gt;=</span> <span class="dv">1950</span>)<span class="sc">$</span>ISO))) <span class="co">#clustered at the country level</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>cluster_se_T1M4 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T1M4, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>cluster_se_T1M5 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T1M5, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>cluster_se_T1M6 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T1M6, <span class="fu">filter</span>(MyData, year <span class="sc">&gt;=</span> <span class="dv">2000</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2020</span>)<span class="sc">$</span>ISO))) <span class="co">#clustered at the country level</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine model results and clustered standard errors into a table</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"T1M1"</span>, <span class="st">"T1M2"</span>, <span class="st">"T1M3"</span>, <span class="st">"T1M4"</span>, <span class="st">"T1M5"</span>, <span class="st">"T1M6"</span>),</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coef</span>(T1M1)[<span class="st">"stnDAM_strong"</span>], <span class="fu">coef</span>(T1M2)[<span class="st">"stnDAM_strong"</span>], <span class="fu">coef</span>(T1M3)[<span class="st">"stnDAM_strong"</span>],</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coef</span>(T1M4)[<span class="st">"stnDAM_strong"</span>], <span class="fu">coef</span>(T1M5)[<span class="st">"stnDAM_strong"</span>], <span class="fu">coef</span>(T1M6)[<span class="st">"stnDAM_strong"</span>]</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Std. Error"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    cluster_se_T1M1[<span class="st">"stnDAM_strong"</span>], cluster_se_T1M2[<span class="st">"stnDAM_strong"</span>], cluster_se_T1M3[<span class="st">"stnDAM_strong"</span>],</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    cluster_se_T1M4[<span class="st">"stnDAM_strong"</span>], cluster_se_T1M5[<span class="st">"stnDAM_strong"</span>], cluster_se_T1M6[<span class="st">"stnDAM_strong"</span>]</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="st">"P-Value"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(T1M1)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong"</span>, <span class="st">"Pr(&gt;|z|)"</span>], <span class="fu">summary</span>(T1M2)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong"</span>, <span class="st">"Pr(&gt;|z|)"</span>],</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(T1M3)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong"</span>, <span class="st">"Pr(&gt;|z|)"</span>], <span class="fu">summary</span>(T1M4)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong"</span>, <span class="st">"Pr(&gt;|t|)"</span>],</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(T1M5)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong"</span>, <span class="st">"Pr(&gt;|t|)"</span>], <span class="fu">summary</span>(T1M6)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong"</span>, <span class="st">"Pr(&gt;|z|)"</span>]</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>results <span class="sc">%&gt;%</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="st">"html"</span>, <span class="at">caption =</span> <span class="st">"Regression Results with Clustered Standard Errors"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_header_above</span>(<span class="fu">c</span>(<span class="st">" "</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">"Regression Coefficients"</span> <span class="ot">=</span> <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<caption>Regression Results with Clustered Standard Errors</caption>
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Regression Coefficients
+</div></th>
+</tr>
+<tr class="odd">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Model</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estimate</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Std..Error</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">P.Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">T1M1</td>
+<td style="text-align: right;">-0.1709707</td>
+<td style="text-align: right;">0.1852216</td>
+<td style="text-align: right;">0.5010352</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T1M2</td>
+<td style="text-align: right;">-0.1477779</td>
+<td style="text-align: right;">0.1760968</td>
+<td style="text-align: right;">0.5503585</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T1M3</td>
+<td style="text-align: right;">-0.1108859</td>
+<td style="text-align: right;">0.2024725</td>
+<td style="text-align: right;">0.6603341</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T1M4</td>
+<td style="text-align: right;">-0.0013822</td>
+<td style="text-align: right;">0.0008637</td>
+<td style="text-align: right;">0.4912571</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T1M5</td>
+<td style="text-align: right;">-0.0002077</td>
+<td style="text-align: right;">0.0004398</td>
+<td style="text-align: right;">0.9132071</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T1M6</td>
+<td style="text-align: right;">-0.5582080</td>
+<td style="text-align: right;">0.8277474</td>
+<td style="text-align: right;">0.3554933</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>MyData<span class="sc">$</span>rloans<span class="ot">&lt;-</span><span class="fu">log</span>(MyData<span class="sc">$</span>tloans<span class="sc">/</span>MyData<span class="sc">$</span>cpi)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">6</span>) {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  MyData[,<span class="fu">paste</span>(<span class="st">'creditL'</span>,i<span class="dv">-1</span>,<span class="at">sep=</span><span class="st">""</span>)]<span class="ot">&lt;-</span> <span class="fu">lag</span>(MyData[,<span class="fu">paste</span>(<span class="st">'rloans'</span>)], i<span class="dv">-1</span>)<span class="sc">-</span><span class="fu">lag</span>(MyData[,<span class="fu">paste</span>(<span class="st">'rloans'</span>)], i)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>MyData <span class="ot">&lt;-</span> <span class="fu">lagvar</span>(creditMA5, <span class="dv">1</span>, MyData) </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>MyData<span class="sc">$</span>stnDAM_strong_MA5 <span class="ot">&lt;-</span> (MyData<span class="sc">$</span>stnDAM_strong_L1 <span class="sc">+</span> MyData<span class="sc">$</span>stnDAM_strong_L2 <span class="sc">+</span> MyData<span class="sc">$</span>stnDAM_strong_L3)<span class="sc">/</span><span class="dv">3</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>T2M1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(crisisJST <span class="sc">~</span> stnDAM_strong <span class="sc">+</span>stnDAM_strong_L1 <span class="sc">+</span> stnDAM_strong_L2 <span class="sc">+</span> stnDAM_strong_L3</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> creditL1 <span class="sc">+</span> creditL2 <span class="sc">+</span> creditL3 <span class="sc">+</span> creditL4 </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> <span class="fu">factor</span>(ISO), <span class="at">family =</span> <span class="fu">binomial</span>(), MyData)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>T2M2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(crisisJST <span class="sc">~</span> stnDAM_strong <span class="sc">+</span>stnDAM_strong_L1 <span class="sc">+</span> stnDAM_strong_L2 <span class="sc">+</span> stnDAM_strong_L3 </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> creditL1 <span class="sc">+</span> creditL2 <span class="sc">+</span> creditL3 <span class="sc">+</span> creditL4 </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> stnDAM_strong_L2<span class="sc">*</span>creditL2</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> <span class="fu">factor</span>(ISO), <span class="at">family =</span> <span class="fu">binomial</span>(), MyData)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>T2M3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(crisisJST <span class="sc">~</span> stnDAM_strong_MA5 <span class="sc">+</span> creditMA5_L1</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> <span class="fu">factor</span>(ISO), <span class="at">family =</span> <span class="fu">binomial</span>(), MyData)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>T2M4 <span class="ot">&lt;-</span> <span class="fu">glm</span>(crisisJST <span class="sc">~</span> stnDAM_strong_MA5 <span class="sc">+</span> creditMA5_L1 </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> stnDAM_strong_MA5<span class="sc">*</span>creditMA5_L1</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> <span class="fu">factor</span>(ISO), <span class="at">family =</span> <span class="fu">binomial</span>(), MyData)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>T2M5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(crisisJST <span class="sc">~</span> stnDAM_strong_MA5 <span class="sc">+</span> creditMA5_L1 </span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>           <span class="sc">+</span> <span class="fu">factor</span>(ISO)<span class="sc">+</span> <span class="fu">factor</span>(year), MyData)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>T2M6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(crisisJST <span class="sc">~</span> stnDAM_strong_MA5 <span class="sc">+</span> creditMA5_L1 </span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> stnDAM_strong_MA5<span class="sc">*</span>creditMA5_L1 </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>            <span class="sc">+</span> <span class="fu">factor</span>(ISO)<span class="sc">+</span> <span class="fu">factor</span>(year), MyData)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>cluster_se_T2M1 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T2M1, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>cluster_se_T2M2 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T2M2, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>cluster_se_T2M3 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T2M3, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>cluster_se_T2M4 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T2M4, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>cluster_se_T2M5 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T2M5, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>cluster_se_T2M6 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">cluster.vcov</span>(T2M6, MyData<span class="sc">$</span>ISO)))</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>results_T2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"T2M1"</span>, <span class="st">"T2M2"</span>, <span class="st">"T2M3"</span>, <span class="st">"T2M4"</span>, <span class="st">"T2M5"</span>, <span class="st">"T2M6"</span>),</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coef</span>(T2M1)[<span class="st">"stnDAM_strong"</span>], <span class="fu">coef</span>(T2M2)[<span class="st">"stnDAM_strong"</span>], <span class="fu">coef</span>(T2M3)[<span class="st">"stnDAM_strong_MA5"</span>],</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coef</span>(T2M4)[<span class="st">"stnDAM_strong_MA5"</span>], <span class="fu">coef</span>(T2M5)[<span class="st">"stnDAM_strong_MA5"</span>], <span class="fu">coef</span>(T2M6)[<span class="st">"stnDAM_strong_MA5"</span>]</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Std. Error"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    cluster_se_T2M1[<span class="st">"stnDAM_strong"</span>], cluster_se_T2M2[<span class="st">"stnDAM_strong"</span>], cluster_se_T2M3[<span class="st">"stnDAM_strong_MA5"</span>],</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    cluster_se_T2M4[<span class="st">"stnDAM_strong_MA5"</span>], cluster_se_T2M5[<span class="st">"stnDAM_strong_MA5"</span>], cluster_se_T2M6[<span class="st">"stnDAM_strong_MA5"</span>]</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  <span class="st">"P-Value"</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(T2M1)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong"</span>, <span class="st">"Pr(&gt;|z|)"</span>], <span class="fu">summary</span>(T2M2)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong"</span>, <span class="st">"Pr(&gt;|z|)"</span>],</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(T2M3)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong_MA5"</span>, <span class="st">"Pr(&gt;|z|)"</span>], <span class="fu">summary</span>(T2M4)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong_MA5"</span>, <span class="st">"Pr(&gt;|z|)"</span>],</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(T2M5)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong_MA5"</span>, <span class="st">"Pr(&gt;|t|)"</span>], <span class="fu">summary</span>(T2M6)<span class="sc">$</span>coefficients[<span class="st">"stnDAM_strong_MA5"</span>, <span class="st">"Pr(&gt;|t|)"</span>]</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>results_T2 <span class="sc">%&gt;%</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="st">"html"</span>, <span class="at">caption =</span> <span class="st">"Regression Results with Clustered Standard Errors (T2 Models)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_header_above</span>(<span class="fu">c</span>(<span class="st">" "</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">"Regression Coefficients"</span> <span class="ot">=</span> <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<caption>Regression Results with Clustered Standard Errors (T2 Models)</caption>
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Regression Coefficients
+</div></th>
+</tr>
+<tr class="odd">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Model</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estimate</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Std..Error</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">P.Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">T2M1</td>
+<td style="text-align: right;">-0.1250357</td>
+<td style="text-align: right;">0.1546468</td>
+<td style="text-align: right;">0.5941821</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T2M2</td>
+<td style="text-align: right;">-0.1244598</td>
+<td style="text-align: right;">0.1542206</td>
+<td style="text-align: right;">0.5953603</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T2M3</td>
+<td style="text-align: right;">0.1843922</td>
+<td style="text-align: right;">0.0574272</td>
+<td style="text-align: right;">0.0033130</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T2M4</td>
+<td style="text-align: right;">-0.0803425</td>
+<td style="text-align: right;">0.0891336</td>
+<td style="text-align: right;">0.6526509</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T2M5</td>
+<td style="text-align: right;">0.0081567</td>
+<td style="text-align: right;">0.0011336</td>
+<td style="text-align: right;">0.0149522</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T2M6</td>
+<td style="text-align: right;">0.0025936</td>
+<td style="text-align: right;">0.0017564</td>
+<td style="text-align: right;">0.5279537</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

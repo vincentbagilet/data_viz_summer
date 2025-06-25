@@ -1,0 +1,23 @@
+---
+title: "Example of a Simple Simulation"
+published-title: "Date"
+date: "2024-09-11"
+self-contained: true
+engine: knitr
+---
+
+
+::: callout-tip
+
+The goal here is to implement a very simple simulation to explore the capabilities of simulations.
+
+:::
+
+Imagine you want to measure the impact of receiving extra lessons on students' outcome. You can implement a simple experiment in a set of classes and schools. 
+
+You want to design the experiment such that you will be able to actually detect an effect if there is one. You want to be able to reject the null of no effect when it is actually false. 
+
+
+
+a setting where you want to study the impact of 
+---

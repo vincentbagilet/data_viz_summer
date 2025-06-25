@@ -1,0 +1,15 @@
+{
+  "hash": "9fdfef48689bc64528e37edd5bedcfbd",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Topics in Econometrics\"\nsubtitle: \"MSc Advanced Economics 2024-2025 - ENS Lyon\"\n---\n\n\nThis website gathers all the materials and information for the course Topics in Econometrics (ECO5106) of the MSc Advanced Economics (2024-2025) at the ENS Lyon.\n\n\n::: {.cell layout-align=\"center\"}\n::: {.cell-output-display}\n![](images/spiral.jpg){fig-align='center' width=80%}\n:::\n:::\n\n\n::: callout-caution\nThis course will make an extensive use of R and RStudio. Please install it before class. You can find instructions for installation [here](https://r4ds.hadley.nz/intro#prerequisites).\n\nYou are also expected to have a previous knowledge of R and of the Tidyverse. If you do not, the book [**R for Data Science**](https://r4ds.hadley.nz/) is definitely the **best** resource to learn R and the [tidyverse](https://www.tidyverse.org/). Read it cover to cover, running all the code in the book yourself; by the time you finish the book, you will know R!\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

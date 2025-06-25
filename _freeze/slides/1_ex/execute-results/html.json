@@ -1,0 +1,15 @@
+{
+  "hash": "cf8b6e6d8c64d4cd7c6ae230cc527c33",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Simulation Basics\"\nsubtitle: \"Why and how to do simple simulations for regression analysis?\"\npublished-title: \"Date\"\ndate: \"2024-09-18\"\nself-contained: true\nengine: knitr\n---\n\n\n::: callout-tip\n## Objective\n\nAfter this session, you should be able to implement a basic simulation for regression analysis in R and use it to test some of the hypotheses you made in you own analysis.\n:::\n\n## Materials\n\n## Session Outline\n\n1.  Course logistics\n2.  Why do accurate estimates matters?\n3.  Why are simulations useful?\n4.  The overall approach to simulations\n5.  Implementation in R\n\n## Exercise\n\n*This section will describe the exercise that we will do in class and provide links to the data sets and tools used.*\n\nSince the TDs have not yet started, we will use Google Collabs to run today's code online. In the future, you will use R Studio.\n\n## Additional Resources\n\n\n::: {.cell}\n\n```{.r .cell-code}\nN <- 15\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

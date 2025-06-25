@@ -1,0 +1,18 @@
+---
+title: "Topics in Econometrics"
+subtitle: "MSc Advanced Economics - ENS Lyon"
+---
+
+This website gathers all the materials and information for the course Topics in Econometrics (ECO5106) of the MSc Advanced Economics at the ENS Lyon.
+
+![](images/balcony.jpg "Simulations = repetition, reptetion. Photo by Nick Fewings on Unsplash.com"){fig-align="center" width=70%}
+
+This course (5 first lectures) discusses ways to avoid some pitfalls commonly encountered in applied econometrics. In particular, it delves into approaches to put **design**, **modeling** and **identification assumptions** to a test. As such, **simulations** constitute the cornerstone of this class as they allow easily identifying some design or modeling failures.
+
+This course is heavily **hands-on** and **R based**. It aims to provide you with tools to test by yourself the hypotheses you make in your own analyses. This exploration also allows reviewing most canonical identification strategies and their identification assumptions.
+
+::: callout-caution
+This course will make an extensive use of R and RStudio. Please install it before class. You can find instructions for installation [here](https://r4ds.hadley.nz/intro#prerequisites).
+
+You are also expected to have a previous knowledge of R and of the Tidyverse. If you do not, the book [**R for Data Science**](https://r4ds.hadley.nz/) is definitely the **best** resource to learn R and the [tidyverse](https://www.tidyverse.org/) by yourself. Read it from cover to cover, running all the code in the book yourself; by the time you finish the book, you will know R!
+:::

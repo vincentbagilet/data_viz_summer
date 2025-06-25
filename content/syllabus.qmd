@@ -1,0 +1,111 @@
+---
+title: "Syllabus - Topics in Econometrics (ECO5106)"
+subtitle: "MSc Advanced Economics - ENS Lyon - 2024/2025"
+engine: knitr
+---
+
+## Course website
+
+All the information relative to this class can be found on the [course website]().
+
+## Instructors
+
+-   [Vincent Bagilet](https://vincentbagilet.github.io/): [`r fontawesome::fa("envelope")` vincent.bagilet\@ens-lyon.fr](mailto:vincent.bagilet@ens-lyon.fr){.email} (5 first lectures)
+-   Sarra Ghaddab: [`r fontawesome::fa("envelope")` sarraghaddab\@gmail.com](mailto:vincent.bagilet@gmail.com){.email} (3 last lectures)
+
+## Class Meeting Times
+
+`r fontawesome::fa("book-open")` Lectures: Wednesday 8:30am - 11:30am
+
+`r fontawesome::fa("pencil")` Final Project report: Tuesday November 20th before 8:30am
+
+`r fontawesome::fa("tv")` Final Project presentation: Tuesday November 20th (8:30am - 11:30am, 15 min per presentation)
+
+## Course Objectives and Overview
+
+The course "Topics in Econometrics" is divided into two distinct parts, each taught by a different lecturer.
+
+The first part of this class (5 first lectures) will explore how to avoid some pitfalls commonly encountered in applied econometrics. In particular, we will delve into approaches to put design, modeling and identification hypotheses to a test. As such, simulations will constitute the cornerstone of this class as they allow easily identifying some design or modeling failures. This first part of the class will be heavily hands-on and R based. It will aim to provide you with tools to test by yourself the hypotheses you make in your own analyses. Through this exploration, we will also review most canonical identification strategies and their identification assumptions.
+
+The second part explores the econometrics of qualitative variables. It covers models for discrete dependent variables, including the Linear Probability Model (LPM), Probit model, Logit model, Multinomial Logit, Conditional Logit, Ordered Probit, and Ordered Logit models. Additionally, it addresses models for corner solutions or censored dependent variables, specifically the Tobit model. Students will gain an understanding of the theoretical foundations, estimation techniques, and practical applications of these models. Through a combination of lectures, hands-on sessions using statistical software, case studies, and assignments, students will learn to estimate, interpret, and apply these models in empirical research.
+
+## Outline
+
+More specifically, the course content will be divided into eight 3h-long lectures:
+
+1. [Pitfalls and Simulation Basics](lect/lect_1_pitfalls.qmd): pitfalls in applied research, implementation of simple simulations for regressions in R
+
+2. [Simulations](lect/lect_2_sim_contd.qmd): Why, when and how to do simulations?
+
+3. [Low Statistical Power and Exaggeration](lect/lect_3_exaggeration.qmd): some challenges with the estimation of small effects
+
+4. [Causal Exaggeration and Calibration](lect/lect_4_causal_exagg.qmd): using causal identification strategies relies on a trade-off between exaggeration and avoiding confoundings
+
+5. [Design Beyond Identification](lect/lect_5_design.qmd): how do heterogeneity, a multiplicity of outcomes and external validity may affect design?
+
+<!-- 5. Data visualization: how can we use data viz to put some of our modeling and identification hypotheses to test? -->
+
+## Prerequisites
+
+Prerequisites for this class include foundational knowledge in econometrics, statistical theory, causal inference, mathematics for economists, and familiarity with statistical software, in particular R and the Tidyverse.
+
+## Grading
+
+Your grade for this class will be divided between oral participation and attendance (10%) and a final project (90%), in pairs.
+
+### Overview of the Project
+
+Start from a research question you are interested in. This question can either be your own or can be derived from an existing paper. In this project, you will implement a fake data simulation to evaluate whether the research design chosen to answer this research question actually allows you retrieve the effect of interest. You can think of this simulation as some sort of **robustness check**; it should allow to detect errors in your model specification, potential power issues, etc.
+
+::: {.callout-tip title="Objective of the Project"}
+Implement a fake data simulation to evaluate the robustness of an analysis to one or several pitfalls. Does your research design actually allows you to capture the effect you are aiming for?
+:::
+
+### Type of analysis
+
+For this project you can either start from:
+
+-   **Your own research idea**. You may have a research project in mind, for instance for your master thesis. Before implementing it, you may wonder if you will be able to detect the effect you are interested in. Will your design have enough statistical power? Is your econometrics model correct? Will it allow you to retrieve the effect of interest?. In this case a simulation may help answering these questions. In this project, you will have to actually implement such a simulation. If your simulation underlines issues, that may help you identify errors or limiting factors in your analysis/design and what you should do to address them.
+
+-   **An existing paper**. You may ask yourself whether the results from a paper actually hold, at least in a pristine setting, and which violation of assumptions may affect the results of the analysis. To explore this question, you could first start by implementing a fake-data simulation to test whether the analysis implemented in the paper would retrieve the effect of interest in a pristine setting. As for your own research idea, if your simulation underlines issues, that may help you identify errors or limiting factors in the analysis/design and what could be done to address them. If you choose this second option and start from an existing paper for your project, you should first replicate the results of the paper you are interested in, before simulating it.
+
+### Deliverables
+
+For this project, we ask you to produce 3 deliverables. The report and `.html` documents are **due on November 20th before class**.
+
+-   A **short standalone report** of about 5 pages. It should basically be structured as follows:
+    -   A section describing the research question you are interested in, discussing in particular:
+        -   The question itself,
+        -   The context of the analysis,
+        -   The data set leveraged to answer this question, in particular its structure (its granularity, for instance at the city-month level),
+        -   The research design and model implemented to capture the effect of interest.
+    -   A section presenting the simulation, briefly discussing the following (it should be short; you will provide the details in the Quarto document):
+        -   What you are trying to evaluate with this simulation, *eg*, the ability of your design to detect the effect of interest, under a certain set of assumptions),
+        -   An overview of the DGP, in particular the main assumptions you made regarding the DGP,
+        -   How you calibrated the simulation, *eg* "we derived the distribution of variable $x$ from paper Someone et al (2017), that of variables $z$ from ...",
+        -   The overall structure of your analysis, *eg*, "we first made these assumptions, then relaxed this one, then this one. The same results hold across settings",
+        -   The results of the simulation, your conclusions and what you would do in your actual research analysis to address the issues your simulations may have pointed out.
+-   A **.html document generated with Quarto** presenting your whole analysis. You should return a rendered and standalone `.html` version of a Quarto document. It should be roughly similar to the documents describing the simulations we implemented together (for instance [here](sim/sim_1_school_lessons.qmd) or [here](sim/sim_2_high_temp.qmd) ). Report your code and describe your choices concisely but extensively.
+-   A **15 min presentation** on November 20th basically summarizing your report.
+
+### Content of the analysis
+
+You are required to implement a few things in your analysis:
+
+-   A **fake data** simulation, including several DGP--basically complexifying the analysis one DGP after the other-- and varying some of the parameters values.
+-   At least part of the outcome variables in your analysis should be **categorical**. You should therefore use the econometric models and estimators presented in class.
+-   If you starting from an existing paper, you are required to first **replicate** the main result you are interested in.
+
+A couple of other things are optional:
+
+-   A real data simulation. You could implement it **in addition** to your fake-data simulation. The two simulations should be relatively separate.
+-   Very complex DGPs. You are required to implement some rather simple DGPs, adding some complexity but your most complex DGP can remain relatively basic. However, you may be interested in making your DGP quite realistic and complexify it.
+
+## Bibliography
+
+The course website provides a series of references to complement and go beyond the material taught in this class. Among those, key references are:
+
+-   Gelman, Andrew, Jennifer Hill, and Aki Vehtari. *Regression and Other Stories*. of *Analytical Methods for Social Research*. Cambridge University Press, 2020.
+-   Angrist, Joshua D. and Jorn-Stefen Prischke. *Mostly Harmless Econometrics: An Empiricist’s Companion*. Princeton University Press, 2009.
+-   Hayashi, F.. *Econometrics*, Princeton University Press, 2000, chapter 7.
+-   Wooldridge, J.M.: *Econometric Analysis of Cross Section and Panel Data*, MIT Press, 2002, chapters 15, 16, 17.

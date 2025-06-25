@@ -1,0 +1,15 @@
+{
+  "hash": "fe0589f62b6442ead05e30e61a39f597",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Simulations (cont'd)\"\nsubtitle: \"What is the usefulness of simulations in regression analysis and how to implement them?\"\npublished-title: \"Date\"\ndate: \"2024-09-18\"\nself-contained: true\nengine: knitr\n---\n\n\n::: callout-tip\n## Objective\n\nAfter this session, you should be able to implement a basic simulation for regression analysis in R and use it to test some of the hypotheses you made in you own analysis.\n:::\n\n## Materials\n\n`<svg aria-hidden=\"true\" role=\"img\" viewBox=\"0 0 384 512\" style=\"height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;\"><path d=\"M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm72 208c-13.3 0-24 10.7-24 24V336v56c0 13.3 10.7 24 24 24s24-10.7 24-24V360h44c42 0 76-34 76-76s-34-76-76-76H136zm68 104H160V256h44c15.5 0 28 12.5 28 28s-12.5 28-28 28z\"/></svg>`{=html} [Open slides](../slides/lecture_2/slides_2_sim_contd.html)\n\n\n::: {.cell}\n<iframe src=\"https://vincentbagilet.github.io/metrics_m2_2024/slides/lecture_2/slides_2_sim_contd.html\" width=\"100%\" height=\"400px\" data-external=\"1\"></iframe>\n:::\n\n\n\n## Session Outline\n\n1.  Summary from last week\n1.  Simulations: what, why and how?\n1.  R coding together: finish our simulation\n1.  Exercise\n\n## Exercise\n\nDuring the lecture, we will continue the simple simulation exercise we started last week. In this exercise, we emulate an RCT studying the impact of additional courses on students' grades.\n\nYou can find the document for this exercise [here](sim/sim_1_school_lessons.qmd).\n\n<!-- ## Specific resources for this lecture -->\n\n<!-- - A fun website with examples of spurious correlations: [https://tylervigen.com/](https://tylervigen.com/) -->\n<!-- - An introduction to Directed Acyclic Graphs (DAGs): [Chapter 3 of *Causal Inference, The Mixtape*](https://mixtape.scunning.com/03-directed_acyclical_graphs) -->\n\n\n\n\n\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

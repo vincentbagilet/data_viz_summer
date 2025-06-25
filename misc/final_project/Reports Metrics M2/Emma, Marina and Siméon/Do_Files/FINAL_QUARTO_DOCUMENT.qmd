@@ -1,0 +1,1052 @@
+---
+title: "Final QUARTO document"
+format:
+  html:
+    embed-resources: true
+---
+
+# Topics in Econometrics Project - Emma Klein, Marina Podgorneac, Siméon Zébina   
+
+[General Outline]{.underline}
+
+-   Replication and Tests
+
+-   Fake Data Simulation
+
+-   Real Data Simulation: First Steps
+
+    -   Categorical variables models
+
+## Replication and Tests
+
+This part has for goal to reproduce the results of table 2 of the paper "Emissions, Transmission, and the Environmental Value of Renewable Energy" by Harrison Fell, Daniel T. Kaffine, and Kevin Novan. The base regression is the followin:
+
+**tot_d_elec\_**hdmy**​=**β**1​⋅wind\_**hdmy**​+**β**2​⋅(wind\_**hdmy**​×segmented\_**hdmy**​)+**β**3​⋅segmented\_**hdmy**​+**ϵ**\_**hdmy,
+
+where:
+
+-   **tot_d_elec_hdmy**: Total environmental damage for a given **hour (h)**, **day (d)**, **month (m)**, and **year (y)**.
+
+-   **wind_hdmy**: Total wind generation for the same **hour, day, month, and year**.
+
+-   **segmented_hdmy**: congestion dummy =1 if the electricity grid is congested for the same **hour, day, month, and year**.
+
+-   **β1**, **β2**, and **β3** are coefficients for each variable.
+
+-   **ϵ_hdmy**: The error term for the specific **hour, day, month, and year**.
+
+```{r}
+
+# InstallATION OF PACKAGES
+library(haven) # to import .dta
+library(dplyr) # to work with data
+library(stargazer) # to produce lateX table
+library(lmtest) # for regressions tests
+library(sandwich) # for standard errors
+library(lmtest)
+library(here)
+
+#Load Dataset
+ERCOT <- haven::read_dta(
+  here::here("ERCOT_Final.dta"))
+
+
+# Creation of global variables for dmg
+totaldmg <- ERCOT$tot_d_elec
+localdmg <- ERCOT$local_d_elec
+co2damage <- ERCOT$co2_damage_elec
+so2damage <- ERCOT$so2_damage_elec
+noxdamage <- ERCOT$nox_damage_elec
+pm25damage <- ERCOT$pm25_damage_elec
+
+# Creation of a new dataframe with variables of interest
+damage_data <- data.frame(
+  co2_damage = ERCOT$co2_damage_elec,
+  so2_damage = ERCOT$so2_damage_elec,
+  nox_damage = ERCOT$nox_damage_elec,
+  pm25_damage = ERCOT$pm25_damage_elec
+)
+
+# Utilisation of stargazer to generate descriptive statistics.
+stargazer(damage_data, type = "text", title = "Summary Statistics Table 1")
+
+
+# Regressions for Table 2
+# We have to reproduce the regressions for table 2.
+
+ # Model 1: baseline model with minimal controls 
+"Column (1) is the most parsimonious specification and only includes month-year, hour-month and day of week fixed effects."
+
+mod1 <- lm(totaldmg ~ wind + segmented + wind:segmented + factor(hour):factor(month) + factor(month):factor(year) + factor(dow), data = ERCOT)
+
+# Model 2 : same with addition of more detailed terms (tot load2 and Fuelratio)
+"Coefficient estimates for Wind and Wind ∗ Congested are similar in Column (2), which adds linear and quadratic controls for total ERCOT load and fuel price ratios."
+
+mod2 <- lm(totaldmg ~ wind + segmented + wind:segmented + I(tot_load^2) + I(fuelratio^2) + factor(hour):factor(month) + factor(month):factor(year) + factor(dow), data = ERCOT)
+
+# Model 3: same with introduction of additional controls, improving the R2.
+"Column (3) adds
+linear and quadratic controls for average Texas temperatures as well as wind generation and load in the neighboring SPP market, with key coefficients essentially
+unchanged."
+
+mod3 <- lm(totaldmg ~ wind + segmented + wind:segmented + I(tot_load^2) + I(fuelratio^2) + I(TempCelsius^2) + I(spp_wind^2) + I(spp_load^2) + factor(hour):factor(month) + factor(month):factor(year) + factor(dow), data = ERCOT)
+
+# Model 4: additions of zonal load controls to estimate local and global damages.
+"Column (4) replaces total ERCOT load with linear and quadratic controls for the zonal loads in the four ERCOT zones"
+
+mod4 <- lm(totaldmg ~ wind + segmented + wind:segmented + poly(load_h, 2) + poly(load_n, 2) + poly(load_s, 2) + poly(load_w, 2) + poly(fuelratio, 2) + poly(TempCelsius, 2) + poly(spp_wind, 2) + poly(spp_load, 2) + factor(hour):factor(month) + factor(month):factor(year) + factor(dow), data = ERCOT)
+
+# Model 5: Same with a fully interacted model, allowing the Congested variable to interact with all fixed effects. The most detailed and complex regression.
+"Column (5) fully interacts all controls and fixed effects from Column (4) with Congested."
+
+mod5 <- lm(totaldmg ~ wind + segmented + wind:segmented + poly(load_h, 2)*segmented + poly(load_n, 2)*segmented + poly(load_s, 2)*segmented + poly(load_w, 2)*segmented + poly(fuelratio, 2)*segmented + poly(TempCelsius, 2)*segmented + poly(spp_wind, 2)*segmented + poly(spp_load, 2)*segmented +          factor(hour):factor(month)*segmented + factor(month):factor(year)*segmented + factor(dow)*segmented, data = ERCOT)
+
+```
+
+#Let's make some tests to observe to what extent this regression has limits. First of all, we have to question the presence of Heteroskedasticity in this model. Indeed, we have reasons to think that the presence of temporal data of wind generations in the model can influence the distribution of residuals.
+
+```{r}
+
+# 1) Breusch Pagan test
+
+bptest(mod1)
+#data:  mod1
+#BP = 4518.9, df = 344, p-value < 2.2e-16
+
+bptest(mod2)
+#data:  mod2
+#BP = 4722.4, df = 346, p-value < 2.2e-16
+
+bptest(mod3)
+#data:  mod3
+#BP = 4749, df = 349, p-value < 2.2e-16
+
+bptest(mod4)
+#data:  mod4
+#BP = 5140.7, df = 360, p-value < 2.2e-16
+
+bptest(mod5)
+#data:  mod5
+#BP = 5646.7, df = 717, p-value < 2.2e-16
+
+```
+
+#We do observe a 2.2e-16 p value, meaning that we have high probability of heteroskedasticity in the 5 regressions. We do observe the same for every regression, but the t statistic is a little higher for the model 4, meaning that the addition of controls for zonal loads changed the residual variation structure.
+
+```{r}
+
+# 2) White test
+
+white_test <- bptest(mod1, ~ fitted(mod1) + I(fitted(mod1)^2))
+#data:  mod1
+#BP = 540.6, df = 2, p-value < 2.2e-16
+
+white_test <- bptest(mod2, ~ fitted(mod2) + I(fitted(mod2)^2))	
+#data:  mod2
+#BP = 142.75, df = 2, p-value < 2.2e-16
+
+white_test <- bptest(mod3, ~ fitted(mod3) + I(fitted(mod3)^2))
+#data:  mod3
+#BP = 130.89, df = 2, p-value < 2.2e-16
+
+white_test <- bptest(mod4, ~ fitted(mod4) + I(fitted(mod4)^2))
+#data:  mod4
+#BP = 525.24, df = 2, p-value < 2.2e-16
+
+white_test <- bptest(mod5, ~ fitted(mod5) + I(fitted(mod5)^2))
+#data:  mod5
+#BP = 486.83, df = 2, p-value < 2.2e-16
+
+```
+
+We do observe great heterogeneity among the results... If the five regressions do have heterogeneity, we observe that the implementation of other variables on load and fuel price ratios is reducing heterogeneity. However, the addition of zonal load is creating higher heterogeneity.
+
+```{r}
+
+# 3) Test for autocorrelation. Durbin-Watson test to verify autocorrelation for residuals.
+
+dwtest(mod1)
+#data:  mod1
+#DW = 0.086573, p-value = 0.7603
+
+dwtest(mod2)
+#data:  mod2
+#DW = 0.12464, p-value = 0.7603
+
+dwtest(mod3)
+#data:  mod3
+#DW = 0.12491, p-value = 0.7603
+
+dwtest(mod4)
+#data:  mod4
+#DW = 0.12957, p-value = 0.7603
+
+dwtest(mod5)
+#data:  mod5
+#DW = 0.15427, p-value = 0.7603
+
+```
+
+We do observe an autocorrelation very close to 0, meaning a positive autocorrelation of the residuals... The use of time variables indicates that the observations can be correlated to each other... But we do observe a greater score for mod2 and others, meaning that addition of controls on ercot load and fuel price ratios has reduced autocorrelation, and that the addition of fixed effects in the last regression reduced autocorrelation too.
+
+```{r}
+
+# 4) Breusch-Godfrey test to detect the presence of autocorrelation in the residuals.
+
+bgtest(mod1)
+#data:  mod1
+#LM test = 40150, df = 1, p-value < 2.2e-16
+
+
+bgtest(mod2) 
+#data:  mod2
+#LM test = 38554, df = 1, p-value < 2.2e-16
+
+bgtest(mod3)
+#data:  mod3
+#LM test = 38544, df = 1, p-value < 2.2e-16
+
+bgtest(mod4)
+#data:  mod4
+#LM test = 38355, df = 1, p-value < 2.2e-16
+
+bgtest(mod5)
+#data:  mod5
+#LM test = 37578, df = 1, p-value < 2.2e-16
+
+# We do find the same results as in the previous test concerning the p value, with more homogeneity across the regressions.
+```
+
+```{r}
+
+# Perform Ramsey RESET test for each model
+reset_mod1 <- resettest(mod1)
+reset_mod2 <- resettest(mod2)
+reset_mod3 <- resettest(mod3)
+reset_mod4 <- resettest(mod4)
+reset_mod5 <- resettest(mod5)
+
+# Collect results
+reset_results <- list(
+  "Model 1" = reset_mod1,
+  "Model 2" = reset_mod2,
+  "Model 3" = reset_mod3,
+  "Model 4" = reset_mod4,
+  "Model 5" = reset_mod5
+)
+
+# Print results
+print(reset_results)
+
+#data:  mod1
+#RESET = 429.52, df1 = 2, df2 = 43476, p-value < 2.2e-16
+#data:  mod2
+#RESET = 2802.9, df1 = 2, df2 = 43474, p-value < 2.2e-16
+#data:  mod3
+#RESET = 3051.8, df1 = 2, df2 = 43471, p-value < 2.2e-16
+#data:  mod4
+#RESET = 708.34, df1 = 2, df2 = 43460, p-value < 2.2e-16
+#data:  mod5
+#RESET = 706.19, df1 = 2, df2 = 43102, p-value < 2.2e-16
+
+```
+
+As usual the test detects problem of specification, meaning that some variable are probably missing. We do observe that the reset stat is growing with the addition of fuel and ercot control, but the addition of zonal loads control is reducing the score...
+
+```{r}
+library(retrodesign)
+# 6) Retrodesign  
+# Let's make a retrodesign of the first regression (wind)
+
+#Definition of parameters
+estimation <- -51.65  #Coefficient for Wind
+std_error <- 3.314     #Associated standard error
+true_effect <- -55     #estimation of size effect
+
+# Power and bias according to retrodesign
+retro <- retrodesign(A = true_effect, s = std_error)
+print(retro)
+
+
+
+# power [1] 1 type_s [1] 3.631815e-77 type_m [1] 0.9995319
+
+```
+
+The result of this retrodesign show us a very high type S error, meaning that there is very little probability that the direction of the effect related to wind is wrong However, the error of type M show us that there are very high probability that the estimate effect is exaggerated... The coefficient effect is thus probably inflated, that is a common problem in econometric.
+
+Finally, it is difficult to determine which regressions have the most limits because the results are changing across tests. But it seems that these 5 regressions has great limits in heterogeneity and autocorrelation in residuals. These results are probably related with the time parameters. In all cases, these results give us an additional reason to make simulations of the paper and obtain better results.
+
+## Fake Data Simulation
+
+#### Panel generation
+
+The generated panel dataset is based on the paper *"Emissions, Transmission, and the Environmental Value of Renewable Energy"* by Harrison Fell, Daniel T. Kaffine, and Kevin Novan.
+
+Table 2 in the paper is the source of the coefficients and specifications used for the simulated models.
+
+This code simulates a panel dataset with daily and hourly observations for the years 2011-2015. It generates variables like wind, segmented (binary), total load, and fuel ratio using specific distributions, then calculates the outcome variable (`tot_d_elec`) using a linear model with predefined coefficients. The final dataset (`generate_data`) includes these simulated values for further analysis.
+
+The base regression looks like:
+
+**tot_d_elec\_**hdmy**​=**β**1​⋅wind\_**hdmy**​+**β**2​⋅(wind\_**hdmy**​×segmented\_**hdmy**​)+**β**3​⋅segmented\_**hdmy**​+**ϵ**\_**hdmy,
+
+where:
+
+-   **tot_d_elec_hdmy**: Total environmental damage for a given **hour (h)**, **day (d)**, **month (m)**, and **year (y)**.
+
+-   **wind_hdmy**: Total wind generation for the same **hour, day, month, and year**.
+
+-   **segmented_hdmy**: congestion dummy =1 if the electricity grid is congested for the same **hour, day, month, and year**.
+
+-   **β1**, **β2**, and **β3** are coefficients for each variable.
+
+-   **ϵ_hdmy**: The error term for the specific **hour, day, month, and year**.
+
+```{r}
+# Set knitr options to suppress messages and warnings in the output
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+# Load necessary libraries
+library(knitr)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(broom)
+library(sandwich)
+library(car)
+library(xtable)
+library(pwr)
+library(dplyr)
+library(kableExtra)
+library(lmtest)
+
+# Set seed for reproducibility of results
+set.seed(123)
+
+# Create baseline_param tibble containing parameters for the simulation
+baseline_param <- tibble(
+  n = 43800,  # number of observations
+  n_s = 5,  # number of years
+  beta_1 = -52,  # coefficient for the wind variable
+  beta_2 = 12,   # coefficient for the interaction between wind and segmented
+  beta_3 = -239890,  # coefficient for the segmented (dummy variable)
+  sd_epsilon = 157535  # standard deviation of the error term 
+)
+
+# Print baseline_param tibble using kable() for better readability
+baseline_param |> 
+  kable()
+
+# Define the years for the simulation
+years <- 2011:2015
+
+# Generate the structure of the panel data (for each year, we will have 365 days)
+panel <- crossing(year = years)
+
+# Add day of the year variable (1-365) for each year
+panel <- panel %>%
+  group_by(year) %>%
+  uncount(365, .id = "dayofyear")
+
+# Add day of the week variable (0-6), with modulo operation to ensure days cycle correctly
+panel <- panel %>%
+  mutate(dayofweek = (dayofyear - 1) %% 7)
+
+# Add hour variable (0-23) for each day, cycling through all 24 hours
+panel <- panel %>%
+  group_by(dayofyear) %>%
+  uncount(24, .id = "hour") %>%
+  mutate(hour = (hour - 1) %% 24)
+
+# Add month variable (1-12) based on day of the year (assuming no leap year)
+month_lengths <- c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)  # days per month
+cumulative_days <- c(0, cumsum(month_lengths))  # cumulative days per month
+panel <- panel %>%
+  mutate(month = findInterval(dayofyear, cumulative_days, rightmost.closed = TRUE))
+
+# Create a month-year variable that combines both the year and month
+panel <- panel %>%
+  mutate(monthyear = (year - min(year)) * 12 + month)
+
+# Preview the first few rows of the panel structure
+head(panel)
+
+# Generate the tibble with simulated data for each observation
+generate_data <- panel %>%
+  mutate(
+    wind = rgamma(n(), shape = 2.1, scale = 1995),  # simulate wind data from a Gamma distribution
+    segmented = sample(c(0, 1), size = n(), replace = TRUE, prob = c(0.62, 0.38)),  # binary segmented variable
+    tot_load = rgamma(n(), shape = (38288.37 / 9240.967)^2, scale = (9240.967^2) / 38288.37),  # total load from a Gamma distribution
+    fuelratio = rlnorm(n(), meanlog = log(0.0155), sdlog = sqrt(log(1 + (0.0039 / 0.0155)^2))),  # fuel ratio from a log-normal distribution
+    spp_wind = rgamma(n(), shape = 2.217376 , scale = 1191.614),  # simulate spp_wind data from Gamma distribution (we planned to use it in a further more complex DGP)
+    epsilon = rnorm(n(), mean = 0, sd = baseline_param$sd_epsilon),  # error term from normal distribution
+    tot_d_elec = baseline_param$beta_1 * wind + baseline_param$beta_2 * wind * segmented + baseline_param$beta_3 * segmented + epsilon  # dependent variable calculation
+  )
+
+# Preview the first few rows of the generated data
+head(generate_data)
+
+```
+
+A challenge with the generated values for the outcome variable **tot_d_elec** is that it takes both positive and negative values in the simulated panel, whereas, in the real dataset, environmental damages are strictly positive, with values greater than or equal to 573,046.
+
+Additionally, we attempted to model the distributions of the **TempCelsius** and **spp_load** variables. However, due to the serial autocorrelation present in these variables, which is difficult to model from scratch, they were not included in the **generate_data**.
+
+#### **Distribution of variables**
+
+We aimed to model distributions that closely resemble the variables in the actual ERCOT dataset.
+
+We modeled them well for all chosen variables, except for the outcome variable *tot_d_elec.*
+
+The code plots the following types of distributions:
+
+-   **`wind`**: Plotted as a histogram and density curve, fitting a Gamma distribution.
+
+-   **`segmented`**: A binary variable (dummy) shown as a bar plot.
+
+-   **`tot_load`**: Plotted with a histogram and density curve, fitting a Gamma distribution.
+
+-   **`fuelratio`**: Plotted with a histogram and density curve, fitting a Log-Normal distribution.
+
+-   **`spp_wind`**: Plotted with a histogram and density curve, fitting a Gamma distribution.
+
+-   **`tot_d_elec`**: Plotted with a histogram and density curve, likely representing a distribution based on a linear model with added normal error.
+
+```{r}
+# Load necessary library
+library(ggplot2)
+library(gridExtra)
+
+# Create a list of plots for each variable
+p1 <- ggplot(generate_data, aes(x = wind)) +
+  geom_histogram(binwidth = 100, fill = 'blue', alpha = 0.5) +
+  geom_density(colour = 'red') +
+  labs(title = "Distribution of Wind") +
+  theme_minimal()
+
+p2 <- ggplot(generate_data, aes(x = segmented)) +
+  geom_bar(fill = 'green', alpha = 0.5) +
+  labs(title = "Distribution of Congestion dummy") +
+  theme_minimal()
+
+p3 <- ggplot(generate_data, aes(x = tot_load)) +
+  geom_histogram(binwidth = 500, fill = 'purple', alpha = 0.5) +
+  geom_density(colour = 'red') +
+  labs(title = "Distribution of Total Load") +
+  theme_minimal()
+
+p4 <- ggplot(generate_data, aes(x = fuelratio)) +
+  geom_histogram(binwidth = 0.01, fill = 'orange', alpha = 0.5) +
+  geom_density(colour = 'red') +
+  labs(title = "Distribution of Fuel Ratio") +
+  theme_minimal()
+
+p5 <- ggplot(generate_data, aes(x = spp_wind)) +
+  geom_histogram(binwidth = 50, fill = 'pink', alpha = 0.5) +
+  geom_density(colour = 'red') +
+  labs(title = "Distribution of Spp Wind") +
+  theme_minimal()
+
+p6 <- ggplot(generate_data, aes(x = tot_d_elec)) +
+  geom_histogram(binwidth = 500, fill = 'yellow', alpha = 0.5) +
+  geom_density(colour = 'red') +
+  labs(title = "Distribution of Total Environmental Damages") +
+  theme_minimal()
+
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+print(p5)
+print(p6)
+
+```
+
+#### Simulation of the 1st regression (simplified)
+
+The code runs a the simplest DGP model, and calculates statistical power by checking if the p-value is significant after Bonferroni correction. The results are displayed in tables.
+
+```{r}
+# Function to run the estimation for each dataset
+run_estim <- function(n, n_s, beta_1, beta_2, beta_3, sd_epsilon) {
+  # Fit a linear model to the generated data, estimating the impact of wind, segmented, and their interaction
+  model <- lm(tot_d_elec ~ wind + wind * segmented + segmented, data = generate_data) |> 
+    summary() |>   # Get the summary of the model
+    broom::tidy(conf.int = TRUE, conf.level = 0.95) |>  # Tidy the results, including confidence intervals
+    filter(term == "wind" | term == "segmented" | term == "wind:segmented") |>  # Filter for relevant coefficients
+    select(-term)  # Remove the 'term' column, as we are only interested in the estimates
+}
+
+# Function to generate data, run the estimation, and return results
+compute_sim <- function(n, n_s, beta_1, beta_2, beta_3, sd_epsilon) {
+  # Generate simulated data based on the provided parameters
+  generate_data(n, n_s, beta_1, beta_2, beta_3, sd_epsilon) %>%  
+    run_estim() %>%  # Run the estimation on the generated data
+    cbind(as_tibble(list(n = n, n_s = n_s, beta_1 = beta_1, beta_2 = beta_2, beta_3 = beta_3))) |>  # Add the parameters as columns
+    as_tibble()  # Convert the result into a tibble
+}
+
+# Run the simulation using the baseline parameters and return the results as a table
+baseline_param |> 
+  purrr::pmap(.f = compute_sim) |>  # Apply 'compute_sim' to each set of parameters in baseline_param
+  list_rbind() |>  # Combine the results from each iteration into a single data frame
+  kable()  # Display the results in a readable table format
+
+# Set the number of iterations for the simulation
+n_iter <- 100
+
+# Expand the parameter grid by replicating the rows for the number of iterations
+param <- baseline_param |> 
+  uncount(n_iter)  # Replicate each row in the 'baseline_param' dataset 'n_iter' times
+
+# Preview the first 10 rows of the expanded parameter dataset
+param |> 
+  slice(1:10) |>  # Select the first 10 rows for inspection
+  kable()  # Display them in a readable table format
+
+# Run the simulation for each set of parameters and combine the results into a single dataset
+result_sim <- pmap(param, compute_sim) |>  # Apply 'compute_sim' to each row of the parameter dataset
+  list_rbind()  # Combine the results into a single data frame
+
+# Display the simulation results in a table with scroll box for easy viewing
+result_sim |> 
+  kable() |>  # Display the simulation results in a readable table format
+  scroll_box(height = "200px", width = "100%")  # Add scroll box for long tables
+
+# Calculate statistical power by checking if the p-value is below the Bonferroni-corrected significance level
+sim_power <- result_sim |> 
+  mutate(signif = (p.value < 0.004)) |>  # Adjusted significance level for Bonferroni correction (0.004)
+  summarise(
+    power = mean(signif),  # Calculate the power as the proportion of significant results
+    se_power = sd(signif)  # Calculate the standard error of the power
+  )
+
+# Display the statistical power results in a table
+sim_power |> 
+  kable()  # Display the statistical power and its standard error in a readable table format
+```
+
+Initially, we used the beta coefficients from the first column of Table 2 (beta_1 = -51, beta_2 = 8, beta_3 = 4220). The power for the first (simplified) regression in Table 2 was 0.66. When we varied the probability of congestion (the probability of treatment), it did not affect the power, even with extreme values (e.g., 0.9 vs. 0.1 or 0.1 vs. 0.9). However, when we adjusted the beta coefficients (effect size) or the sample size, the power was noticeably impacted.
+
+The power increases sharply, reaching nearly 1, as we increase beta_3 (the coefficient for the congestion dummy) to a value close to 8500. This suggests that if we assume electricity grid congestion increases gas emissions by nearly twice (with 8500 being almost double the initial coefficient from the paper, which was not statistically significant), the probability of detecting an effect, if it exists, becomes almost certain. However, this rapid increase in power—from 0.66 to nearly 1—once beta_3 approaches 8500 seems counterintuitive, as we would expect the power to increase more gradually rather than sharply.
+
+The power remains unaffected by changes in beta_1 or beta_2, even when these coefficients take on very large or small values. Additionally, the power increases to 1 when the standard deviation of the residuals (sd_epsilon) is significantly reduced.
+
+Interestingly, varying the sample size (n = 43800) does not impact the power, even when n is increased or decreased substantially. However, when the study's time period is extended from 5 years to at least 9 years, the number of observations increases automatically to n = 9 years × 365 days × 24 hours = 78840 observations. This causes a sharp rise in power, pushing it to 1.
+
+Let's try to further refine the data generation process (DGP) by gradually incorporating time fixed effects, clustering, and additional controls.
+
+#### Simulation of the 1st regression with time fixed effects, without clustering by monthyear
+
+This code runs the same regression, but with with time fixed effects (hour by month, month by year, day of the week) and calculates statistical power based on p-values. It then displays the results in a table.
+
+```{r}
+# Function to run the regression with time fixed effects
+run_estim_with_time_FE <- function(data, n, n_s, beta_1, beta_2, beta_3, sd_epsilon) {
+  # Run the regression with fixed effects for hour, month, year, and day of the week
+  model_with_time_FE <- lm(tot_d_elec ~ wind + wind:segmented + segmented + 
+                                      factor(hour):factor(month) +  # Include interaction of hour and month
+                                      factor(month):factor(year) +  # Include interaction of month and year
+                                      factor(dayofweek),  # Include the day of the week as a fixed effect
+                                      data = data)
+  
+  # Summarize the model results and filter for relevant terms (wind, segmented, and their interaction)
+  broom::tidy(model_with_time_FE, conf.int = TRUE, conf.level = 0.95) |> 
+    filter(term == "wind" | term == "segmented" | term == "wind:segmented") |>  # Keep only relevant coefficients
+    select(-term)  # Remove the 'term' column as it's already filtered and not needed
+}
+
+# Function to simulate data and run the regression, then return results
+compute_sim_with_time_FE <- function(data, n, n_s, beta_1, beta_2, beta_3, sd_epsilon) {
+  # Run the regression using the pre-generated data
+  reg_results <- run_estim_with_time_FE(data, n, n_s, beta_1, beta_2, beta_3, sd_epsilon)
+  
+  # Add simulation parameters to the results for easy tracking
+  reg_results <- reg_results %>% 
+    mutate(n = n, n_s = n_s, beta_1 = beta_1, beta_2 = beta_2, beta_3 = beta_3) %>%
+    as_tibble()  # Convert the result into a tibble for easier manipulation
+  
+  return(reg_results)  # Return the regression results with added parameters
+}
+
+# Replicating the parameter rows for multiple iterations (10 iterations)
+n_iter <- 10
+param <- baseline_param %>% 
+  uncount(n_iter)  # Replicates each row in the parameter dataset 'n_iter' times for multiple simulation runs
+
+# Preview of the parameters for the first few rows (to inspect the parameter setup)
+param %>% 
+  slice(1:10) |>  # Select the first 10 rows to display
+  kable()  # Display the first 10 rows in a table format for review
+
+# Run simulations and combine the results into one data frame
+result_sim_with_time_FE <- param %>%
+  pmap(function(n, n_s, beta_1, beta_2, beta_3, sd_epsilon) {
+    # For each parameter set, run the simulation and gather the results
+    compute_sim_with_time_FE(generate_data, n, n_s, beta_1, beta_2, beta_3, sd_epsilon)
+  }) %>%
+  bind_rows()  # Combine the list of results into one large data frame
+
+# Display the simulation results in a neat table with scrolling functionality
+result_sim_with_time_FE %>%
+  kable() %>%
+  scroll_box(height = "200px", width = "100%")  # Make the table scrollable for better viewing
+
+# Calculate statistical power based on the significance level (p-value < 0.004 due to Bonferroni correction)
+sim_power <- result_sim_with_time_FE %>%
+  mutate(signif = (p.value < 0.004)) %>%  # Check if p-value is below the significance threshold
+  summarise(
+    power = mean(signif),  # Calculate the power as the proportion of significant results
+    se_power = sd(signif)  # Calculate the standard error of the power estimate
+  )
+
+# Display the power calculation results in a table
+sim_power %>%
+  kable()  # Display the calculated power and its standard error in a readable table format
+```
+
+The power does not change after adding the time fixed effects, but the standard error of the power (se_power) increases slightly, which is undesirable. Clustering by month-year, as done in the paper, may impact the power, and we will test this next.
+
+#### Simulation of the 1st regression with time fixed effects, with clustering by monthyear
+
+This code runs the previous regression with time fixed effects, but adds month-year clustering. It calculates the power by checking the significance of results (p-value \< 0.004). Finally, it displays the results in a table.
+
+```{r}
+# Function to run the regression with time fixed effects and clustering by monthyear
+run_estim_with_time_FE_clustered <- function(data, n, n_s, beta_1, beta_2, beta_3, sd_epsilon) {
+  # Run the regression with fixed effects for hour, month, year, and day of the week
+  model_with_time_FE <- lm(tot_d_elec ~ wind + wind:segmented + segmented + 
+                                      factor(hour):factor(month) + 
+                                      factor(month):factor(year) + 
+                                      factor(dayofweek),
+                                      data = data)
+  
+  # Compute clustered standard errors by monthyear using vcovCL
+  cluster_se <- vcovCL(model_with_time_FE, cluster = ~ monthyear)
+  
+  # Use coeftest to apply clustered standard errors and extract results
+  result <- coeftest(model_with_time_FE, vcov = cluster_se)
+  
+  # Convert the result to a tidy format and filter for relevant terms
+  tidy_results <- broom::tidy(result, conf.int = TRUE, conf.level = 0.95) %>%
+    filter(term == "wind" | term == "segmented" | term == "wind:segmented") %>%
+    select(-term)  # Remove the 'term' column, as it is already filtered
+  
+  return(tidy_results)  # Return the cleaned results
+}
+
+# Function to simulate data and run the regression, then return results
+compute_sim_with_time_FE_clustered <- function(generate_data, n, n_s, beta_1, beta_2, beta_3, sd_epsilon) {
+  # Run the regression using the pre-generated data
+  reg_results <- run_estim_with_time_FE_clustered(generate_data, n, n_s, beta_1, beta_2, beta_3, sd_epsilon)
+  
+  # Add simulation parameters to the results (e.g., sample size, parameters)
+  reg_results <- reg_results %>% 
+    mutate(n = n, n_s = n_s, beta_1 = beta_1, beta_2 = beta_2, beta_3 = beta_3) %>%
+    as_tibble()  # Convert to tibble for easier manipulation
+  
+  return(reg_results)  # Return the simulation results
+}
+
+# Replicating the parameter rows for multiple iterations (10 iterations)
+n_iter <- 10 # 10 iterations because a higher number of iterations takes more time to run the code
+param <- baseline_param %>% 
+  uncount(n_iter)  # Replicates the rows for the number of iterations (e.g., 10 iterations)
+
+# Run simulations and combine the results into one data frame using pmap
+result_sim_with_time_FE_clustered <- param %>%
+  pmap(function(n, n_s, beta_1, beta_2, beta_3, sd_epsilon) {
+    compute_sim_with_time_FE_clustered(generate_data, n, n_s, beta_1, beta_2, beta_3, sd_epsilon)
+  }) %>%
+  bind_rows() # Combines the list of data frames into one large data frame
+
+# Display the simulation results in a neat table with scroll box for better readability
+result_sim_with_time_FE_clustered %>%
+  kable() %>%
+  scroll_box(height = "200px", width = "100%")
+
+# Calculate power based on the significance level (p-value < 0.004)
+sim_power <- result_sim_with_time_FE_clustered %>%
+  mutate(signif = (p.value < 0.004)) %>%
+  summarise(
+    power = mean(signif), # Proportion of significant results (power)
+    se_power = sd(signif)  # Standard error of the power estimate
+  )
+
+# Display the power calculation results
+sim_power %>%
+  kable()  # Display the power calculation results in a table format
+```
+
+Clustering does not appear to improve the power, based on the results.
+
+#### Simulation of the 1st regression with time fixed effects, with clustering by monthyear and controls
+
+This code runs teh previous regression with time fixed effects, clustering by `monthyear`, but adds additional controls (**tot_load** and **fuelratio**). It simulates the model, calculates power (proportion of significant p-values), and displays the results with their standard errors.
+
+```{r}
+# Function to run the regression with time fixed effects, clustering by monthyear, and additional controls
+run_estim_with_time_FE_clustered_controls <- function(generate_data) {
+  # Run the regression with additional control variables and fixed effects for time
+  model_with_time_FE_clustered_controls <- lm(tot_d_elec ~ wind + wind:segmented + segmented + tot_load +
+                                              tot_load * tot_load + fuelratio +  fuelratio * fuelratio + 
+                                               factor(hour):factor(month) + 
+                                               factor(month):factor(year) + 
+                                               factor(dayofweek) + 
+                                               factor(monthyear),
+                                               data = generate_data)
+  
+  # Compute clustered standard errors by monthyear using vcovCL
+  cluster_se <- vcovCL(model_with_time_FE_clustered_controls, cluster = ~ monthyear)
+  
+  # Use coeftest to apply clustered standard errors and extract results
+  result <- coeftest(model_with_time_FE_clustered_controls, vcov = cluster_se)
+  
+  # Convert the result to a tidy format and filter for relevant terms
+  tidy_results <- broom::tidy(result, conf.int = TRUE, conf.level = 0.95) %>%
+    filter(term == "wind" | term == "segmented" | term == "wind:segmented") %>%
+    select(-term)  # Remove the 'term' column, as it is already filtered
+  
+  return(tidy_results)  # Return the cleaned results
+}
+
+# Function to simulate data and run the regression with time fixed effects, clustering by monthyear, and controls
+compute_sim_with_time_FE_clustered_controls <- function(generate_data) {
+  # Run the regression using the pre-generated data
+  reg_results <- run_estim_with_time_FE_clustered_controls(generate_data)
+  
+  # Add simulation parameters (like sample size) to the results
+  reg_results <- reg_results %>% 
+    mutate(n = nrow(generate_data)) %>%  # Add the number of observations to the results
+    as_tibble()  # Convert to tibble for easier manipulation
+  
+  return(reg_results)  # Return the simulation results
+}
+
+# Example parameters for the simulation (repeated for multiple iterations)
+n_iter <- 10
+param <- baseline_param %>% 
+  uncount(n_iter)  # Replicates the rows for the number of iterations (e.g., 10 iterations)
+
+# Run simulations and combine the results into one data frame using pmap
+result_sim_with_time_FE_clustered_controls <- param %>%
+  pmap(function(n, n_s, beta_1, beta_2, beta_3, sd_epsilon) {
+    compute_sim_with_time_FE_clustered_controls(generate_data)  # Run the regression for each parameter set
+  }) %>%
+  bind_rows() # Combines the list of data frames from each iteration into one large data frame
+
+# Display the simulation results in a neat table with scroll box for better readability
+result_sim_with_time_FE_clustered_controls %>%
+  kable() %>%
+  scroll_box(height = "200px", width = "100%")
+
+# Calculate power based on the significance level (p-value < 0.004) for each simulation
+sim_power <- result_sim_with_time_FE_clustered_controls %>%
+  mutate(signif = (p.value < 0.004)) %>%  # Mark whether the p-value is below the threshold (significant)
+  summarise(
+    power = mean(signif),  # Proportion of significant results (the estimated power)
+    se_power = sd(signif)  # Standard error of the power estimate
+  )
+
+# Display the power calculation results in a table format
+sim_power %>%
+  kable()  # Display the power results in a readable table format
+
+```
+
+Adding controls doesn't improve the power either. Therefore, making the data generation process more complex does not significantly increase the power of the model.
+
+**Recall that:**
+
+Initially, we used the coefficients from the first column of Table 2 and observed that the power was not very satisfactory. We then performed various parameter variations based on these "incorrect" coefficients. However, after switching the baseline parameters to the coefficients from the fifth column (the preferred specification according to the authors), the power for all models improved and reached 1.
+
+So now, if you run this code with the updated coefficients from the fifth column, the power will be 1 across all models.
+
+Anyway, trying to vary the parameters and the DGP was a useful exercise to understand that complexifying the DGP doesn't improve power. Instead, using the correct coefficients, a sufficient sample size, and a well-chosen study period are much more effective approaches to increasing power.
+
+## Real Data Simulation 
+
+Identification of Problems in the IV; Use of Categorical Variables Models
+
+### Setup
+
+```{r}
+#Necessary packages
+#| warning: false
+#| code-fold: true
+library(tibble)
+library(tidyverse)
+library(magrittr)
+library(ggthemes)
+library(here)
+library(fixest)
+library(patchwork)
+library(tseries)
+library(fixest)
+library(modelsummary)
+library(MASS)
+set.seed(34)
+```
+
+### IV Replication
+
+Before implementing our Real Data Simulation, we need to analyze the IV implemented by the authors.
+
+#### IV-LASSO
+
+To select between many available instruments for an IV (1,700), the authors implement an IV-LASSO to select a set of only 56 instruments.
+
+Replicating this part of the code is very important as the set of instruments obtained from the IV-LASSO methodology is listed nowhere, neither in the paper nor in the appendix.
+
+The replication was however really challenging. We did not manage to do it on R. The packages used to perform an IV-LASSO, ivlasso, pdslasso and lassopack, are not compatible with the latest version of R. We tried to resort to another package, glmnet, but it was too complicated and time-consuming. Although we acknowledged that we may have made mistakes during the replication, we believe that the code of the authors was not clear enough to allow for an easy replication of their study.
+
+We eventually chose to do the replication on Stata. The code ran for an hour and provided two times more instruments than what the authors claimed in their article (108 instead of 56). Due to time constraints, and because this result was actually better than the one we had obtained with our own code, we decided to use these instruments in our analyses.
+
+```{r}
+##List of instrument variables as selected by IV-LASSO
+#See Stata file for the computation
+vlist <- c("TempCelsius1", "WindDir1", "WindSpd1", "CloudCover1", "onehrPrcp1", "TempCelsius2", "WindDir2", "WindSpd2", "CloudCover2", "onehrPrcp2", "TempCelsius3", "WindDir3", "WindSpd3", "CloudCover3", "onehrPrcp3", "TempCelsius4", "WindDir4", "WindSpd4", "CloudCover4", "onehrPrcp4", "TempCelsius5", "WindDir5", "WindSpd5", "CloudCover5", "onehrPrcp5", "TempCelsius6", "WindDir6", "WindSpd6", "CloudCover6", "onehrPrcp6", "TempCelsius7", "WindDir7", "WindSpd7", "CloudCover7", "onehrPrcp7", "TempCelsius8", "WindDir8", "WindSpd8", "CloudCover8", "onehrPrcp8", "TempCelsius9", "WindDir9", "WindSpd9", "CloudCover9", "onehrPrcp9", "TempCelsius10", "WindDir10", "WindSpd10", "CloudCover10", "onehrPrcp10", "TempCelsius11", "WindDir11", "WindSpd11", "CloudCover11", "onehrPrcp11", "TempCelsius12", "WindDir12", "WindSpd12", "CloudCover12", "onehrPrcp12", "TempCelsius13", "WindDir13", "WindSpd13", "CloudCover13", "onehrPrcp13", "TempCelsius14", "WindDir14", "WindSpd14", "CloudCover14", "onehrPrcp14", "TempCelsius15", "WindDir15", "WindSpd15", "CloudCover15", "onehrPrcp15", "TempCelsius16", "WindDir16", "WindSpd16", "CloudCover16", "onehrPrcp16", "TempCelsius17", "WindDir17", "WindSpd17", "CloudCover17", "onehrPrcp17", "TempCelsius18", "WindDir18", "WindSpd18", "CloudCover18", "onehrPrcp18", "TempCelsius19", "WindDir19", "WindSpd19", "CloudCover19", "onehrPrcp19",  "TempCelsius20", "WindDir20", "WindSpd20", "CloudCover20", "onehrPrcp20", "TempCelsius21", "WindDir21", "WindSpd21", "CloudCover21", "onehrPrcp21", "TempCelsius22", "WindDir22", "WindSpd22", "CloudCover22", "onehrPrcp22", "TempCelsius23", "WindDir23", "WindSpd23", "CloudCover23", "onehrPrcp23", "TempCelsius24", "WindDir24", "WindSpd24", "CloudCover24", "onehrPrcp24", "TempCelsius25", "WindDir25", "WindSpd25", "CloudCover25", "onehrPrcp25", "TempCelsius26", "WindDir26", "WindSpd26", "CloudCover26", "onehrPrcp26", "TempCelsius27", "WindDir27", "WindSpd27", "CloudCover27", "onehrPrcp27", "TempCelsius28", "WindDir28", "WindSpd28", "CloudCover28", "onehrPrcp28", "TempCelsius29", "WindDir29", "WindSpd29", "CloudCover29", "onehrPrcp29", "TempCelsius30", "WindDir30", "WindSpd30", "CloudCover30", "onehrPrcp30", "TempCelsius31", "WindDir31", "WindSpd31", "CloudCover31", "onehrPrcp31")
+
+#Wind segmented variable (interaction term)
+ERCOT$wind_seg <- ERCOT$wind * ERCOT$segmented
+
+#Interaction terms between CREZ_voltmiles and each variable in ivlist
+for (var in vlist) {
+  interaction_name <- paste0("crez_", var)
+  ERCOT[[interaction_name]] <- ERCOT$CREZ_voltmiles * ERCOT[[var]]
+}
+
+#Interaction terms for three selected instruments
+ERCOT$CREZ_voltmiles_cubed <- ERCOT$CREZ_voltmiles^3
+ERCOT$crez_tot_load <- ERCOT$CREZ_voltmiles * ERCOT$tot_load
+ERCOT$crez_wind <- ERCOT$CREZ_voltmiles * ERCOT$wind
+
+#Set of instruments as selected by the IV-LASSO
+ivlist <- c("CREZ_voltmiles_cubed", "crez_tot_load", "crez_wind", "WindSpd3", "WindSpd5", "CloudCover6", "WindDir7", "CloudCover8", "WindDir12", "WindSpd14", "WindDir15", "WindDir19", "WindSpd19", "CloudCover19", "WindDir20", "CloudCover24", "WindDir27", "WindDir28", "WindDir31", "TempCelsiusSQ1", "wind_WD1", "loadh_WD1", "loads_WS1", "wind_WD2", "loadh_Temp2", "loads_WD2", "loads_Precip2", "wind_CC3", "loads_WD3", "loads_CC3", "TempCelsiusSQ4", "loads_WD4", "loadn_Precip4", "loadh_Temp5", "loads_WD5", "loads_Temp5", "TempCelsiusSQ6", "wind_WD6", "loads_WD6", "loads_WS6", "wind_WD7", "wind_WS7", "wind_Precip7", "loadh_Temp7", "TempCelsiusSQ8", "wind_CC8", "loads_WD8", "wind_WD11", "loadh_WD11", "loads_WS11", "loads_CC11", "wind_CC12", "wind_WD13", "wind_Temp13", "WindSpdSQ14", "TempCelsiusSQ14", "wind_CC14", "WindSpdSQ15", "wind_WS16", "wind_CC16", "loadh_WD16", "loads_CC16", "TempCelsiusSQ18", "wind_WD18", "loads_WD18", "loads_CC18", "TempCelsiusSQ19", "wind_WD20", "wind_WS20", "wind_WD21", "loadh_Temp21", "loads_WD22", "wind_WD23", "wind_WS23", "wind_WSSQ23", "loads_WD23", "wind_Temp24", "wind_Precip24", "loadh_Temp24", "loads_WS24", "wind_CC25", "loads_WS25", "wind_WD26", "wind_WS26", "loads_WD26", "loads_WS26", "wind_WD27", "loads_WD27", "loads_WS27", "wind_WS28", "loads_WS28", "loads_CC28", "loads_CC29", "wind_WS30", "loads_WS30", "wind_WS31", "wind_CC31", "crez_WindDir7", "crez_WindSpd7", "crez_TempCelsius10", "crez_WindDir10", "crez_WindDir14", "crez_WindSpd16", "crez_CloudCover19", "crez_WindSpd20", "crez_onehrPrcp24", "crez_WindSpd26", "crez_TempCelsius31")
+```
+
+#### First Stage of the IV and Use of Logit/Probit Models
+
+The authors use an IV to account for the endogeneity of the regressors, segmented and wind_segmented. The first variable being a binary variable (eg the network being congested (1) or not (0)), we can use logit/probit models to do the first stage of our IV.
+
+This is not the methodology chosen by the authors, but we will demonstrate how it can benefit the analysis and provide robust coefficients.
+
+##### First Stage for wind_segmented
+
+```{r}
+#Alternative ERCOT dataset, without the first observation
+#Regressions only run without this observation
+ERCOT_minus_1 <- ERCOT[-1,]
+
+#Variable "montyear" for clustering
+ERCOT_minus_1$monthyear <- paste(ERCOT_minus_1$year, ERCOT_minus_1$month, sep = "-")
+
+#List of controls
+controls <- c("wind", "load_h", "I(load_h^2)", "load_n", "I(load_n^2)", "load_s", "I(load_s^2)", "load_w", "I(load_w^2)", "fuelratio", "I(fuelratio^2)", "TempCelsius", "I(TempCelsius^2)", "spp_wind","I(spp_wind^2)", "spp_load", "I(spp_load^2)", "interaction(hour, month)", "dow","interaction(month, year)")
+
+#Formula for the regression
+formula_string <- paste("wind_seg", "~", paste(c(ivlist, controls), collapse = " + "))
+formula <- formula(formula_string)
+
+#First Stage Regression for wind_seg
+first_stage_model <- feols(formula, data = ERCOT_minus_1, cluster = "monthyear")
+
+#Fitted values for the first stage regression on segmented
+ERCOT_minus_1$wind_seg_predicted <- fitted(first_stage_model)
+```
+
+##### First Stage for segmented
+
+We want to regress the binary variable segmented on the instruments.
+
+For this regression, the authors use a linear regression (the command "reg" in Stata). It is however a flawed methodolody, as linear regressions face two main issues when applied to binary outcomes, heteroskedasticity and prediction outside the \[0, 1\] range. There are also concerns about the efficiency of the estimates.
+
+In this section, we will compare the results obtained from three regressions and discuss which one fits best.
+
+```{r}
+##Regressions
+#Formula for the regression
+formula_string_2 <- paste("segmented", "~", paste(c("wind_seg_predicted", ivlist, controls), collapse = " + "))
+formula_2 <- formula(formula_string_2)
+
+#Regression: Standard Linear Regression
+intermediate_model_seg_lm <- lm(formula_2, data = ERCOT_minus_1)
+first_stage_seg_lm  <- vcovCL(intermediate_model_seg_lm, cluster = ERCOT_minus_1$monthyear)
+
+#Regression: Logit Model
+first_stage_seg_logit <- feglm(formula_2, family = binomial(link = "logit"), data = ERCOT_minus_1, cluster = "monthyear")
+
+#Regression: Probit Model 
+first_stage_seg_probit <- feglm(formula_2, family = binomial(link = "probit"), data = ERCOT_minus_1, cluster = "monthyear")
+```
+
+```{r}
+##Comparison between the regressions based on AICs and BICs
+#AICs and BICs for each model
+aic_lm <- AIC(intermediate_model_seg_lm)
+bic_lm <- BIC(intermediate_model_seg_lm)
+#This computation does not seem to work with the model using clustered standard errors...
+
+aic_logit <- AIC(first_stage_seg_logit) 
+bic_logit <- BIC(first_stage_seg_logit)
+
+aic_probit <- AIC(first_stage_seg_probit) 
+bic_probit <- BIC(first_stage_seg_probit)
+
+#Comparison AICs and BICs
+comparison_AIC_BIC_df <- data.frame(
+  Model = c("Linear", "Logit", "Probit"),
+  AIC = c(aic_lm, aic_logit, aic_probit),
+  BIC = c(bic_lm, bic_logit, bic_probit)
+)
+print(comparison_AIC_BIC_df)
+```
+
+Both the Logit and the Probit Models seem to be a better fit than the Linear Regression Model. The Logit Model seems to perform slightly better.
+
+We will do another comparison based on the prediction accuracy of the models.
+
+```{r}
+##Prediction accuracy metrics for each model
+#Compute probabilities
+predict_lm <- predict(intermediate_model_seg_lm)
+prob_logit <- predict(first_stage_seg_logit, type = "response")
+prob_probit <- predict(first_stage_seg_probit, type = "response")
+
+#Visualizing the distribution of the predictions
+ggplot() +
+  geom_density(aes(x = predict_lm, color = "Linear"), alpha = 0.5) +
+  geom_density(aes(x = prob_logit, color = "Logit"), alpha = 0.5) +
+  geom_density(aes(x = prob_probit, color = "Probit"), alpha = 0.5) +
+  labs(title = "Distribution of Probabilities/Predictions by Model Type",
+       x = "Probabilities (Logit/Probit) and Predicted Values (Lm model)",
+       y = "Density") +
+  theme_minimal()
+
+summary(prob_logit)
+summary(prob_probit)
+summary(predict_lm)
+```
+
+The predictions of the linear regression fall outside the valid probability range \[0, 1\]. It is thus not suitable for the binary outcome segmented.
+
+The distribution of the probabilities provided by the Logit and the Probit Models are very similar. The models are not making fundamentally different predictions. The Logit Model makes slightly more concentrated predictions, which suggests that it is slightly more confident than the Probit.
+
+**To conclude, the Logit Model seems to be the best fit for the first stage regression on the binary regressor segmented.**
+
+#### Second Stage of the IV
+
+```{r}
+#Add the predicted values of segmented (thanks to Logit) to the dataset
+#We need to make the variable binary (not ranging from 0 to 1)
+#we convert the probabilities to binary predictions, with a threshold of 0.5
+ERCOT_minus_1$predicted_seg <- ifelse(prob_logit > 0.5, 1, 0)
+```
+
+```{r}
+#Second Stage Formula 
+second_stage_formula <- as.formula(paste("tot_d_elec", "~", paste(c("wind_seg_predicted", "predicted_seg", controls), collapse = " + ")))
+
+#Second-stage regression
+second_stage_model <- feols(second_stage_formula, data = ERCOT_minus_1, cluster = "monthyear")
+
+modelsummary(second_stage_model, coef_map = c("wind", "wind_seg_predicted", "predicted_seg"))
+```
+
+How will did we manage to replicate the code, and what differences are worth noticing?
+
+[Coefficients:]{.underline}
+
+-   The coefficient for wind is -43.59, -54.65 in the paper
+
+-   The coefficient for congested (segmented) is -40 815, -121 458 in the paper
+
+-   The coefficient for wind.congested is 0.3, 19.99 in the paper
+
+The magnitude of our coefficients is less important. Provided that our methodology is not flawed, it could provide a solution to the inflation of the interaction term coefficient denoted by the authors (we find a coefficient for the interaction term actually smaller than the OLS coefficient).
+
+We also have to keep in mind that part of the difference in the coefficients is probably due to the difference in the instruments that we used. If the code for the IV-LASSO was more easily replicable, we probably would have been able to have better coefficients.
+
+[R^2^:]{.underline} it is smaller than in the paper (0.870 vs. 0.915). The explanatory power of our model seems to be less important than that of the authors.
+
+### Real Data Simulation
+
+Now that we have analyzed the IV implemented by the authors by replicating it, we can do a real data simulation. This simulation tries to identify possible explanations for the inflation of the interaction term observed by the authors and unexplained by them.
+
+NB: since we have obtained different coefficients than the authors, we will compare the results of the simulations to the ones that we obtained.
+
+[We do two simulations, corresponding to two hypotheses identified by the authors:]{.underline}
+
+-   We consider segmented as multinomial and not binary. We therefore modify the variable in the dataset before re-running the first stage regression thanks to an Ordered Logit Model.
+
+-   We check if the authors are capturing a local average treatment effect (LATE) by creating our own variable wind (on the same model than in the fake data simulation). By doing this, we make sure that the instruments do not explain the variation in congestion in periods prone to a larger loss in the environmental value of wind.
+
+#### segmented as multinomial
+
+In their article, the authors do a specification where they consider different cutoffs for the variable segmented depending on the values of the average speed, avgspread. As a simulation, we will code segmented as a multinomial variable ranging from 1 to 5 by using the cutoffs used by the authors.
+
+```{r}
+##Generate segmented_mul
+ERCOT_minus_1$segmented_mul <- 0
+ERCOT_minus_1$segmented_mul <- 
+  ifelse(ERCOT_minus_1$avgspread > 5, 5,
+    ifelse(ERCOT_minus_1$avgspread > 3, 4,
+      ifelse(ERCOT_minus_1$avgspread > 0.5, 3,
+        ifelse(ERCOT_minus_1$avgspread > 0.1, 2,     
+          ifelse(ERCOT_minus_1$avgspread >= 0, 1)))))
+
+#Convert the variable to an ordered factor
+ERCOT_minus_1$segmented_mul <- factor(ERCOT_minus_1$segmented_mul, ordered = TRUE, levels = sort(unique(ERCOT_minus_1$segmented_mul)))
+```
+
+```{r}
+##Run first stage of the IV for segmented
+formula_string_3 <- paste("segmented_mul", "~", paste(c("wind_seg_predicted", ivlist, controls), collapse = " + "))
+formula_3 <- formula(formula_string_3)
+
+ord_logit <- polr(formula_3, data = ERCOT_minus_1, Hess = TRUE)
+```
+
+Due to time constraints, we were not able to implement the second stage of the IV. We faced issues while computing predictions.
+
+#### wind as an exogenous variable
+
+```{r}
+##Generate wind as an exogenous variable 
+ERCOT_minus_1$wind_sim <- rgamma(nrow(ERCOT_minus_1), shape = 2.1, scale = 1995)
+```
+
+```{r}
+##IV (not many comments, similar to the previous code)
+#Controls with the new simulated variable
+controls_2 <- c("wind_sim", "load_h", "I(load_h^2)", "load_n", "I(load_n^2)", "load_s", "I(load_s^2)", "load_w", "I(load_w^2)", "fuelratio", "I(fuelratio^2)", "TempCelsius", "I(TempCelsius^2)", "spp_wind","I(spp_wind^2)", "spp_load", "I(spp_load^2)", "interaction(hour, month)", "dow","interaction(month, year)")
+
+#First stage regression
+formula_string_alpha <- paste("wind_seg", "~", paste(c(ivlist, controls), collapse = " + "))
+formula_alpha <- formula(formula_string_alpha)
+first_stage_model_alpha <- feols(formula_alpha, data = ERCOT_minus_1, cluster = "monthyear")
+ERCOT_minus_1$wind_seg_predicted_alpha <- fitted(first_stage_model_alpha)
+formula_string_2_alpha <- paste("segmented", "~", paste(c("wind_seg_predicted_alpha", ivlist, controls_2), collapse = " + "))
+formula_2_alpha <- formula(formula_string_2_alpha)
+first_stage_seg_logit_alpha <- feglm(formula_2_alpha, family = binomial(link = "logit"), data = ERCOT_minus_1, cluster = "monthyear")
+prob_logit_alpha <- predict(first_stage_seg_logit_alpha, type = "response")
+ERCOT_minus_1$predicted_seg_alpha <- ifelse(prob_logit_alpha > 0.5, 1, 0)
+
+#Second stage regression
+second_stage_formula_alpha <- as.formula(paste("tot_d_elec", "~", paste(c("wind_seg_predicted_alpha", "predicted_seg_alpha", controls_2), collapse = " + ")))
+second_stage_model_alpha <- feols(second_stage_formula_alpha, data = ERCOT_minus_1, cluster = "monthyear")
+modelsummary(second_stage_model_alpha, coef_map = c("wind_sim", "wind_seg_predicted_alpha", "predicted_seg_alpha"))
+```
+
+[Comparison of our coefficients:]{.underline}
+
+-   The coefficient for wind is 0.63, previously -43.59
+
+-   The coefficient for congested (segmented) is 9617, previously -53.05
+
+-   The coefficient for wind.congested is -53.05, previously 0.3
+
+It is difficult to draw conclusions despite for the fact that our simulation must be flawed in some way. We were expecting to find similar estimates (if LATE = overall effect) or smaller ones (if LATE != overall effect). Due to time constraints, we will unfortunately not be able to run this simulation.
+
+We think however that trying to implement this real data simulation was really interesting. It shade light on given parts of the authors' code, like their use of a linear regression model to predict a binary outcome.

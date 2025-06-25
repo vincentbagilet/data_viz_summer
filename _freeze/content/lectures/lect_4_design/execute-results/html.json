@@ -1,0 +1,17 @@
+{
+  "hash": "3fdc7809694b9217df249c6f29883c99",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Design Beyond Identification\"\nsubtitle: \"Design is crutial to ensure causality. Here we discuss to what extent it also matters beyond identification.\"\npublished-title: \"Date\"\ndate: \"2024-10-02\"\nself-contained: true\nengine: knitr\n---\n\n\n::: callout-tip\n## Objective\n\nAfter this session, you should be able to run a simulation, vary its parameters and have a basic understanding of the statistical power, its drivers and what its lack thereof entails. \n:::\n\n## Summary\n\nIn this session, we focus on statistical power and the impact of lack thereof. \n\nFirst, we study some of its drivers by expanding our simple simulations. We vary parameters values (sample size, effect size, proportion of treated) and look at their impact on statistical power. Then, we present the related concept of exaggeration and discuss how it may interact with causal identification strategies.\n\n### Session Outline\n\n1.  Summary from last week\n1.  R coding on your own: varying parameters\n1.  A primer on exaggeration\n1.  Causal exaggeration\n1.  Exercise: implementing a complex simulation\n\n## Materials\n\n`<svg aria-hidden=\"true\" role=\"img\" viewBox=\"0 0 384 512\" style=\"height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;\"><path d=\"M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm72 208c-13.3 0-24 10.7-24 24V336v56c0 13.3 10.7 24 24 24s24-10.7 24-24V360h44c42 0 76-34 76-76s-34-76-76-76H136zm68 104H160V256h44c15.5 0 28 12.5 28 28s-12.5 28-28 28z\"/></svg>`{=html} [Open slides](../slides/lecture_3/slides_3_exaggeration.html)\n\n\n::: {.cell}\n<iframe src=\"../slides/lecture_3/slides_3_exaggeration.html\" width=\"100%\" height=\"400px\" data-external=\"1\"></iframe>\n:::\n\n\n## Exercise\n\n<!-- Before class next week (October 2nd), please send me via email a `html` document, generated with Quarto, implementing the analysis required and answering the questions listed in this [document](exercises/exercise_01_heterogeneity.qmd). -->\n\nPlease implement the whole simulation from scratch. You can copy/paste what we have done before and use this as a starting point.\n\n## Specific resources for this lecture\n\n- An introduction to Directed Acyclic Graphs (DAGs): [Chapter 3 of *Causal Inference, The Mixtape*](https://mixtape.scunning.com/03-directed_acyclical_graphs)\n\n\n\n\n\n\n\n\n\n",
+    "supporting": [
+      "lect_4_design_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

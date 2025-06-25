@@ -1,0 +1,784 @@
+---
+title: "Rage Against The Machine - Replication and simulation"
+authors: M.Bortoli, E.Malhaire
+format:
+  html:
+    embed-resources: true
+editor: visual
+---
+
+## Set up
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+library(haven)
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(ivreg)
+library(tibble)
+library(MASS)
+library(tidyr)
+library(broom)
+library(AER)
+library(purrr)
+library(retrodesign)
+library(gridExtra)
+library(plotly)
+set.seed(35)
+```
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+#the data from the replication package (in the zip folder)
+#to load the code, change the data_path
+
+data_path <- "C:/Users/borto/OneDrive/Bureau/ECO_2025/ECONOMETRICS/SIMULATION_FINAL/replication-files/data"
+
+swing_cross <- read_dta(file.path(data_path, "swing-cross.dta"))
+
+```
+
+## Replication
+
+#### Summary
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+#Summary statististics for our variables of interest (reproduction table 1)
+
+
+summary_stats <- swing_cross %>%
+  filter(sample == 1) %>%
+  summarise(
+    across(
+      c(SWING, thresh, density, agri_share, sex_ratio, distel, distnews, cer, heavysh),
+      list(Min = ~min(., na.rm = TRUE),
+           Mean = ~mean(., na.rm = TRUE),
+           Max = ~max(., na.rm = TRUE),
+           SD = ~sd(., na.rm = TRUE),
+           Obs = ~sum(!is.na(.)))
+    )
+  )
+
+print(summary_stats)
+```
+
+#### Regression
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+#We keep only observations where there is a value for each variables.
+swing_cross <- swing_cross %>% filter(sample == 1) 
+
+# OLS 
+model_ols <- lm(SWING ~ thresh + log_density + agri_share + log_sex_ratio + log_distel + log_distnews, data = swing_cross)
+summary(model_ols)
+
+
+# IV  
+model_iv <- ivreg(SWING ~ thresh + cer + log_density + agri_share + log_sex_ratio + log_distel + log_distnews |.-thresh + heavysh, data = swing_cross)
+summary(model_iv)
+
+```
+
+#### Distribution of the variables
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+
+#Variables that can be modelled as a normal law 
+
+variables <- c("log_density", "log_sex_ratio", "log_distnews", "log_distel", "cer")
+
+coord_list <- list()
+graph_list <- list()
+
+for (i in seq_along(variables)) {
+	var <- variables[i]
+  	
+  var_mean <- mean(swing_cross[[var]], na.rm = TRUE)
+  var_sd <- sd(swing_cross[[var]], na.rm = TRUE)
+  
+  x_vals <- seq(min(swing_cross[[var]], na.rm = TRUE), max(swing_cross[[var]], na.rm = TRUE), length.out = 100)
+  
+  y_vals <- dnorm(x_vals, mean = var_mean, sd = var_sd)
+  
+  coord_list[[var]] <- data.frame(x = x_vals, y = y_vals)
+  
+  p <- ggplot(swing_cross, aes_string(x = var)) +
+    geom_histogram(aes(y = ..density..), bins = 30, fill = "skyblue", alpha = 0.7) +
+    geom_density(color = "darkblue", linetype = "dashed", size = 0.8) +
+    stat_function(fun = dnorm, args = list(mean = var_mean, sd = var_sd), color = "black", size = 0.8) +
+    labs(
+      title = paste("Distribution de", var),
+      x = var,
+      y = "Densité",
+      caption = paste("Courbe normale théorique en noir\n Moyenne =", round(var_mean, 2), ", SD =", round(var_sd, 2))
+    ) +
+    theme_minimal()
+  
+  print(p)
+  graph_list[[i]] <-p
+}
+
+g1 <- graph_list[[1]]
+g2 <- graph_list[[2]]
+g3 <- graph_list[[3]]
+g4 <- graph_list[[4]]
+g5 <- graph_list[[5]]
+
+```
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+
+# variable that can be modelled as a beta law 
+
+normalized_heavysh <- (swing_cross$heavysh - min(swing_cross$heavysh)) / 
+                      (max(swing_cross$heavysh) - min(swing_cross$heavysh))
+
+mean_heavysh <- mean(normalized_heavysh, na.rm = TRUE)
+var_heavysh <- var(normalized_heavysh, na.rm = TRUE)
+
+shape1 <- ((1 - mean_heavysh) / var_heavysh - 1) * mean_heavysh^2
+shape2 <- shape1 * (1 / mean_heavysh - 1)
+
+g6 <- ggplot(data.frame(heavysh = normalized_heavysh), aes(x = heavysh)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "skyblue", alpha = 0.7) +  # Histogram of heavysh
+  geom_density(color = "darkblue", linetype = "dashed", size = 0.8) +  # Empirical density
+  stat_function(fun = dbeta, args = list(shape1 = shape1, shape2 = shape2), color = "red", size = 0.8, aes(label = "Beta Distribution")) +  # Fitted Beta distribution
+  labs(
+    title = "Comparaison des distributions pour heavysh",
+    x = "heavysh",
+    y = "Densité",
+    caption = paste("Paramètres de la loi Beta:\nshape1 =", round(shape1, 2), 
+                    "\nshape2 =", round(shape2, 2))
+  ) +
+  theme_minimal()
+
+print(g6)
+```
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+#variable that can be modelled as a gamma law
+
+
+# Calcul de la moyenne et de l'écart-type pour la distribution normale
+  var_mean <- mean(swing_cross[["agri_share"]], na.rm = TRUE)
+  var_sd <- sd(swing_cross[["agri_share"]], na.rm = TRUE)
+  
+  # Estimation des paramètres de la loi gamma par méthode des moments
+  shape_gamma <- (var_mean / var_sd) ^ 2
+  scale_gamma <- var_sd^2 / var_mean
+  
+  # Générer le graphique avec les densités empirique, normale et gamma
+  g7 <- ggplot(swing_cross, aes_string(x = "agri_share")) +
+    geom_histogram(aes(y = ..density..), bins = 30, fill = "skyblue", alpha = 0.7) +  # Histogramme avec bandes bleu ciel
+    geom_density(color = "darkblue", linetype = "dashed", size = 0.8) +  # Densité empirique
+    stat_function(fun = dnorm, args = list(mean = var_mean, sd = var_sd), color = "black", size = 0.8, linetype = "dashed") +  # Courbe normale théorique
+    stat_function(fun = dgamma, args = list(shape = shape_gamma, scale = scale_gamma), color = "red", size = 0.8) +  # Courbe gamma théorique en rouge
+    labs(
+      title = paste("Comparaison des distributions pour agri_share"),
+      x = "agri_share",
+      y = "Densité",
+      caption = paste("Ligne noire : normale | Ligne rouge : gamma\n Moyenne =", round(var_mean, 2), ", SD =", round(var_sd, 2),
+                      "\n Gamma shape =", round(shape_gamma, 2), ", Gamma scale =", round(scale_gamma, 2))
+    ) +
+    theme_minimal()
+  
+  print(g7)
+  
+  grid.arrange(g1, g2, g3, g4, g5, g6, g7, ncol = 3)
+```
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+#variable that can be modelled as a binary variable 
+
+
+  
+  p <- ggplot(swing_cross, aes_string(x = "thresh")) +
+    geom_histogram(, bins = 30, fill = "skyblue", alpha = 0.7) +
+    theme_minimal()
+  
+  print(p)
+
+```
+
+## First simulation - The OLS
+
+#### Define the DGP
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+# Fonction de génération de données
+generate_data <- function(n , beta_0, beta_thresh, beta_pop, beta_agri_share, beta_sex_ratio, beta_distnews, beta_distel, sd_swing = 1.5) {
+  baseline_param <- tibble(
+    thresh = ifelse(runif(n) > 0.95, 1, 0),
+    agri_share = rgamma(n, shape = 2.11, scale = 0.18), 
+    log_density = rnorm(n, mean = 3.65, sd = 0.96),
+    log_sex_ratio = rnorm(n, mean = -0.03, sd = 0.19),
+    log_distnews = rnorm(n, mean = 2.95, sd = 0.73),
+    log_distel = rnorm(n, mean = 5.33, sd = 0.62),
+    heavysh = rbeta(n, shape1 = 0.71, shape2 = 0.66),
+    cer = rnorm(n, mean = 0.63, sd = 0.1),
+    REGION = sample(1:5, n, replace = TRUE)
+  )
+  
+  swing_sim <- baseline_param %>%
+    mutate(
+      SWING = beta_0 +
+        beta_thresh * thresh +
+        beta_pop * log_density +
+        beta_agri_share * agri_share +
+        beta_sex_ratio * log_sex_ratio +
+        beta_distnews * log_distnews +
+        beta_distel * log_distel +
+        rnorm(n, mean = 0, sd = sd_swing)
+    )
+  
+  return(swing_sim)
+}
+
+# Fonction d'estimation
+run_estim <- function(data) {
+  lm(SWING ~ thresh + cer + log_density + agri_share + log_sex_ratio + log_distel + log_distnews, 
+        data = data) |>
+    broom::tidy(conf.int = TRUE, conf.level = 0.95) |>
+    dplyr::filter(term == "thresh") |>
+    dplyr::select(term, estimate, std.error, conf.low, conf.high, p.value)
+}
+
+# Fonction pour effectuer la simulation et l'estimation
+compute_sim <- function(...) {
+  generate_data(...) |>
+    run_estim() |>
+    cbind(as_tibble(list(...))) |>
+    as_tibble()
+}
+
+baseline_params <- tibble(
+  n = 5000,
+  beta_0 = 1.014,
+  beta_pop = 0.099,
+  beta_agri_share = -0.056,
+  beta_sex_ratio = -0.193,
+  beta_distnews = 0.019,
+  beta_distel = -0.217
+)
+```
+
+#### Generate the data
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+n_iter <- 100
+
+beta_thresh_values <- c(0.35306, 6.557)
+
+results_list <- list()
+
+for (beta_thresh in beta_thresh_values) {
+  param <- baseline_params %>%
+    mutate(beta_thresh = beta_thresh)%>%
+    tidyr::expand_grid(iter = 1:n_iter) %>%
+    dplyr::select(-iter)
+  
+  result_sim <- param %>%
+    purrr::pmap_dfr(.f = compute_sim)
+  
+  results_list[[paste0("beta_thresh ", beta_thresh)]] <- result_sim
+}
+
+for (name in names(results_list)) {
+  cat("Résultats pour", name, ":\n")
+  print(summary(results_list[[name]]$estimate))
+  print(summary(results_list[[name]]$p.value))
+  cat("\n")
+}
+```
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+for (name in names(results_list)) {
+  result_sim <- results_list[[name]]
+  
+  # Calculate the mean and standard deviation
+  mean_estimate <- mean(result_sim$estimate)
+  sd_estimate <- sd(result_sim$estimate)
+  
+  plot <- ggplot(result_sim, aes(x = estimate)) +
+  geom_density(fill = "lightblue", alpha = 0.8) + 
+  geom_vline(aes(xintercept = mean(result_sim$estimate)),linetype = "dashed", color = "red", linewidth = 0.5) +
+  labs(
+    title = paste("Distribution of the estimate", name),
+    x = "estimate",
+    y = "density",
+    caption = paste("Mean estimate:", round(mean_estimate, 2), "| Standard deviation:", round(sd_estimate, 2))) +
+  theme_minimal() 
+  print(plot)
+}
+```
+
+#### Statistical Power
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+retrodesign_results <- list()
+# Boucle sur chaque ensemble de résultats dans results_list pour exécuter retrodesign
+for (name in names(results_list)) {
+  result_sim <- results_list[[name]]
+  
+  # Calculer la moyenne de l'estimation et de l'erreur standard
+  effet <- mean(result_sim$estimate)
+  erreur_standard <- mean(result_sim$std.error)
+  
+  # Exécuter retrodesign pour chaque effet et erreur standard
+  resultats <- retrodesign(A = effet, s = erreur_standard, alpha = 0.05)
+  
+  # Stocker les résultats dans la liste
+  retrodesign_results[[name]] <- resultats
+}
+
+# Afficher les résultats détaillés pour chaque beta_thresh
+lapply(names(retrodesign_results), function(name) {
+  cat("Retrodesign results for", name, ":\n")
+  cat("Power:", retrodesign_results[[name]]$power, "\n")
+  cat("Type S Error Rate:", retrodesign_results[[name]]$type_s, "\n")
+  cat("Type M Error (Magnification Ratio):", retrodesign_results[[name]]$type_m, "\n")
+  cat("\n")
+})
+```
+
+#### Varying sample size
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+sd_values <- 2
+sample_size <- seq(500, 5000, by = 500)
+n_iter <- 100
+beta_thresh_values <- c(0.35306, 6.557)
+
+power_results <- list()
+
+for (beta_thresh in beta_thresh_values) { 
+  power_results[[paste0("beta_thresh_", beta_thresh)]] <- purrr::map_dfr(sample_size, function(sample_size) {
+    param <- baseline_params %>%
+      mutate(
+
+        beta_thresh = beta_thresh,
+        sd_swing = sd_values,
+        n = sample_size
+        
+      ) %>%
+      tidyr::expand_grid(iter = 1:n_iter) %>%
+      dplyr::select(-iter)
+    result_sim <- param %>%
+      purrr::pmap_dfr(.f = compute_sim)
+    tibble(
+      n = sample_size,
+      mean_pvalue = mean(result_sim$p.value)
+    )
+  })
+}
+
+for (name in names(power_results)) {
+  plot_p_values_sample_size <- ggplot(power_results[[name]]) +
+    geom_line(aes(x = n, y = mean_pvalue, color = "P-value"), size = 1) +
+    geom_point(aes(x = n, y = mean_pvalue, color = "P-value")) +
+    scale_color_manual(name = "Metrics", values = c("P-value" = "red")) +
+    theme_minimal() +
+    labs(
+      title = "P-values over sample size",
+      subtitle = paste("Beta Threshold =", gsub("beta_thresh_", "", name)),
+      x = "sample size",
+      y = "Mean P-value"
+    ) +
+    theme(
+      plot.title = element_text(hjust = 0.5),
+      plot.subtitle = element_text(hjust = 0.5),
+      legend.position = "bottom"
+    ) +
+    geom_hline(yintercept = 0.05, linetype = "dashed", color = "gray", alpha = 0.5)
+  print(plot_p_values_sample_size)
+}
+```
+
+#### Varying SWING standard deviation
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+sd_values <- seq(0.01, 10, by = 0.5)
+n_iter <- 100
+beta_thresh_values <- c(0.35306, 6.557)
+
+power_results <- list()
+
+for (beta_thresh in beta_thresh_values) { 
+  power_results[[paste0("beta_thresh_", beta_thresh)]] <- purrr::map_dfr(sd_values, function(sd) {
+    param <- baseline_params %>%
+      mutate(
+        beta_thresh = beta_thresh,
+        sd_swing = sd
+      ) %>%
+      tidyr::expand_grid(iter = 1:n_iter) %>%
+      dplyr::select(-iter)
+    result_sim <- param %>%
+      purrr::pmap_dfr(.f = compute_sim)
+    tibble(
+      sd_swing = sd,
+      mean_pvalue = mean(result_sim$p.value)
+    )
+  })
+}
+
+for (name in names(power_results)) {
+  plot_p_values <- ggplot(power_results[[name]]) +
+    geom_line(aes(x = sd_swing, y = mean_pvalue, color = "P-value"), size = 1) +
+    geom_point(aes(x = sd_swing, y = mean_pvalue, color = "P-value")) +
+    scale_color_manual(name = "Metrics", values = c("P-value" = "red")) +
+    theme_minimal() +
+    labs(
+      title = "P-values vs Standard Deviation of Swing",
+      subtitle = paste("Beta Threshold =", gsub("beta_thresh_", "", name)),
+      x = "Standard Deviation of Swing",
+      y = "Mean P-value"
+    ) +
+    theme(
+      plot.title = element_text(hjust = 0.5),
+      plot.subtitle = element_text(hjust = 0.5),
+      legend.position = "bottom"
+    ) +
+    geom_hline(yintercept = 0.05, linetype = "dashed", color = "gray", alpha = 0.5)
+  print(plot_p_values)
+}
+```
+
+## Second Simulation - The IV
+
+#### Define the GDP
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+
+# Define baseline parameters
+baseline_params <- tibble(
+  n = 5000,
+  beta_0 = 1.014,
+  beta_pop = 0.099,
+  beta_agri_share = -0.056,
+  beta_sex_ratio = -0.193,
+  beta_distnews = 0.019,
+  beta_distel = -0.217
+)
+
+# Modified data generation function with binary thresh
+generate_data_iv <- function(n = baseline_params$n, 
+                           beta_0 = baseline_params$beta_0,
+                           beta_thresh = 2,
+                           beta_pop = baseline_params$beta_pop,
+                           beta_agri_share = baseline_params$beta_agri_share,
+                           beta_sex_ratio = baseline_params$beta_sex_ratio,
+                           beta_distnews = baseline_params$beta_distnews,
+                           beta_distel = baseline_params$beta_distel,
+                           prob_zero = 0.95) {
+  
+  # First stage: Generate instrument (heavysh)
+  heavysh <- rbeta(n, shape1 = 0.71, shape2 = 0.66)
+  
+  # Generate error terms with correlation (endogeneity between thresh and SWING)
+  error_matrix <- MASS::mvrnorm(n = n,
+                               mu = c(0, 0),
+                               Sigma = matrix(c(1, 0.5, 0.5, 1), 2, 2)) #Matrice variance/covariance : correlation term is 0.5
+  
+  # Generate binary thresh with endogeneity
+  # First create latent variable
+  latent_thresh <- -0.1 * heavysh + error_matrix[,1]
+  # Convert to binary using quantile threshold
+  cutoff <- quantile(latent_thresh, prob_zero)
+  thresh <- as.numeric(latent_thresh > cutoff)
+  
+  # Generate other covariates
+  baseline_param <- tibble(
+    thresh = thresh,
+    heavysh = heavysh,
+    agri_share = rgamma(n, shape = 2.11, scale = 0.18),
+    log_density = rnorm(n, mean = 3.65, sd = 0.96),
+    log_sex_ratio = rnorm(n, mean = -0.03, sd = 0.19),
+    log_distnews = rnorm(n, mean = 2.95, sd = 0.73),
+    log_distel = rnorm(n, mean = 5.33, sd = 0.62),
+    cer = rnorm(n, mean = 0.63, sd = 0.1)
+   )
+  
+  # Generate outcome with endogeneity and ensure positivity
+  swing_sim <- baseline_param %>%
+    mutate(
+      linear_pred = beta_0 +
+        beta_thresh * thresh +
+        beta_pop * log_density +
+        beta_agri_share * agri_share +
+        beta_sex_ratio * log_sex_ratio +
+        beta_distnews * log_distnews +
+        beta_distel * log_distel +
+        error_matrix[,2],
+      SWING = exp(linear_pred/4)
+    )
+  
+  return(swing_sim)
+}
+
+# Function to run linear model and extract results
+run_estim <- function(data) {
+  ivreg(SWING ~ thresh + cer + log_density + agri_share + log_sex_ratio + log_distel + log_distnews |.-thresh + heavysh, data = data) %>%
+    broom::tidy(conf.int = TRUE, conf.level = 0.95) %>%
+    dplyr::filter(term == "thresh") %>%
+    dplyr::select(term, estimate, std.error, conf.low, conf.high, p.value)
+}
+
+# Function to simulate data and run estimation
+compute_sim <- function(...) {
+  generate_data_iv(...) %>%
+    run_estim() %>%
+    cbind(as_tibble(list(...))) %>%
+    as_tibble()
+}
+
+# Simulation loop
+beta_thresh_values <- c(0.35306, 6.557)
+results_list <- list()
+n_iter <- 1000
+
+for (beta_thresh in beta_thresh_values) {
+  param <- baseline_params %>%
+    mutate(beta_thresh = beta_thresh) %>%
+    tidyr::expand_grid(iter = 1:n_iter) %>%
+    dplyr::select(-iter)
+  
+  result_sim <- param %>%
+    purrr::pmap_dfr(.f = compute_sim)
+  
+  results_list[[paste0("beta_thresh ", beta_thresh)]] <- result_sim
+}
+
+for (name in names(results_list)) {
+  result_sim <- results_list[[name]]
+  
+  # Calculate the mean and standard deviation
+  mean_estimate <- mean(result_sim$estimate)
+  sd_estimate <- sd(result_sim$estimate)
+  
+  plot <- ggplot(result_sim, aes(x = estimate)) +
+  geom_density(fill = "lightblue", alpha = 0.8) + 
+  geom_vline(aes(xintercept = mean(estimate)),linetype = "dashed", color = "red", linewidth = 0.5) +
+  labs(
+    title = paste("Distribution of the estimate", name),
+    x = "estimate",
+    y = "density",
+    caption = paste("Mean estimate:", round(mean_estimate, 2), "| Standard deviation:", round(sd_estimate, 2))) +
+  theme_minimal() 
+  print(plot)
+}
+
+# Print summary of results
+for (name in names(results_list)) {
+  cat("Results for", name, ":\n")
+  print(summary(results_list[[name]]$estimate))
+  cat("\n")
+}
+
+retrodesign_results <- list()
+# Loop over each result set in results_list to run retrodesign
+for (name in names(results_list)) {
+  result_sim <- results_list[[name]]
+  
+  # Calculate mean of estimate and standard error
+  effet <- mean(result_sim$estimate)
+  erreur_standard <- mean(result_sim$std.error)
+  
+  # Run retrodesign for each effect and standard error
+  resultats <- retrodesign(A = effet, s = erreur_standard, alpha = 0.05)
+  
+  # Store results in the list
+  retrodesign_results[[name]] <- resultats
+}
+
+# Display detailed results for each beta_thresh
+lapply(names(retrodesign_results), function(name) {
+  cat("Retrodesign results for", name, ":\n")
+  cat("Power:", retrodesign_results[[name]]$power, "\n")
+  cat("Type S Error Rate:", retrodesign_results[[name]]$type_s, "\n")
+  cat("Type M Error (Magnification Ratio):", retrodesign_results[[name]]$type_m, "\n")
+  cat("\n")
+})
+
+
+
+```
+
+#### First and Second stage relationship
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+
+sim_data <- generate_data_iv()
+
+
+
+# Distribution plots
+p1 <- ggplot(sim_data, aes(x = factor(thresh))) +
+  geom_bar(fill = "steelblue", alpha = 0.7) +
+  theme_minimal() +
+  labs(title = " Thresh",
+       x = "Thresh")
+
+# Box plot of SWING by thresh
+p2 <- ggplot(sim_data, aes(x = factor(thresh), y = SWING)) +
+  geom_boxplot(fill = "steelblue", alpha = 0.7) +
+  theme_minimal() +
+  labs(title = "SWING by Thresh",
+       x = "Thresh")
+p3 <- ggplot(sim_data, aes(x=factor(thresh), y = heavysh)) + 
+	  geom_boxplot(fill = "steelblue", alpha = 0.7) +
+  theme_minimal() +
+  labs(title = "Thresh by share of heavy soil",
+       x = "thresh")
+
+# Arrange all plots
+p2_p3 <- grid.arrange(p2, p3, ncol = 2)
+
+
+# Function for first stage diagnostics with binary outcome
+first_stage_diagnostics <- function(data) {
+  # Probit first stage
+  first_stage <- glm(thresh ~ heavysh, 
+                     family = binomial(link = "probit"), 
+                     data = data)
+  
+  # Pseudo R-squared (McFadden)
+  null_model <- glm(thresh ~ heavysh, family = binomial(link = "probit"), data = data)
+  pseudo_r2 <- 1 - first_stage$deviance/null_model$deviance
+  
+  # Create visualization
+  predicted_probs <- predict(first_stage, type = "response")
+  plot_data <- data.frame(
+    heavysh = data$heavysh,
+    thresh = data$thresh,
+    predicted = predicted_probs
+  )
+  
+  first_stage_plot <- ggplot(plot_data) +
+    geom_point(aes(x = heavysh, y = thresh), alpha = 0.5) +
+    geom_smooth(aes(x = heavysh, y = predicted), method = "loess", color = "red") +
+    theme_minimal() +
+    labs(title = "First Stage Relationship (Binary Thresh)",
+         subtitle = sprintf("Pseudo R²: %.3f", pseudo_r2),
+         y = "P(Thresh = 1)")
+  
+  return(list(
+    pseudo_r2 = pseudo_r2,
+    plot = first_stage_plot,
+    model = first_stage
+  ))
+
+}
+
+
+
+fs_diag <- first_stage_diagnostics(sim_data)
+print(fs_diag$plot)
+
+```
+
+## Alternative Scenario: does gender influence riots?
+
+Using simulated data, we’ll assess the potential impact of a gender parity on social movements by plotting the average treatment effect over gender parity (coded as a change in a the mean of the log_sex_ratio variable from -1 to 1.
+
+```{r, error=FALSE, warning = FALSE, message = FALSE}
+# Enhanced data generation function
+generate_data_3d <- function(n = 500, 
+                             beta_0 = 1.014, 
+                             beta_thresh = 0.5, 
+                             beta_pop = 0.099, 
+                             beta_agri_share = -0.056,
+                             beta_sex_ratio = -0.193, # true beta to be varied
+                             beta_distnews = 0.019, 
+                             beta_distel = -0.217,
+                             log_sex_ratio_override = NULL, 
+                             sd_swing = 1.5) {
+  # Generate baseline data
+  data <- generate_data(
+    n, beta_0, beta_thresh, beta_pop, 
+    beta_agri_share, beta_sex_ratio, 
+    beta_distnews, beta_distel, sd_swing
+  )
+  
+  # Override log sex ratio if provided
+  if (!is.null(log_sex_ratio_override)) {
+    data$log_sex_ratio <- log_sex_ratio_override
+  }
+  
+  return(data)
+}
+
+# Run simulation with varying true beta and log sex ratio
+run_comprehensive_simulation <- function(
+  true_beta_sex_ratio, 
+  log_sex_ratio, 
+  num_sims = 50
+) {
+  results <- replicate(num_sims, {
+    # Generate data with the specific true beta sex ratio
+    data <- generate_data_3d(
+      beta_sex_ratio = true_beta_sex_ratio, 
+      log_sex_ratio_override = log_sex_ratio
+    )
+    
+    # Run estimation
+    model_results <- run_estim(data)
+    model_results$estimate
+  }, simplify = TRUE)
+  
+  tibble(
+    true_beta_sex_ratio = true_beta_sex_ratio,
+    log_sex_ratio = log_sex_ratio,
+    mean_estimate = mean(results, na.rm = TRUE),
+    sd_estimate = sd(results, na.rm = TRUE),
+    ci_lower = quantile(results, 0.025, na.rm = TRUE),
+    ci_upper = quantile(results, 0.975, na.rm = TRUE)
+  )
+}
+
+# Create grid of simulations with more density
+sim_grid <- expand_grid(
+  true_beta_sex_ratio = seq(-1, 1, length.out = 30),
+  log_sex_ratio = seq(-1, 1, length.out = 30)
+)
+
+# Run comprehensive simulation
+simulation_results_3d <- pmap_dfr(
+  list(
+    sim_grid$true_beta_sex_ratio, 
+    sim_grid$log_sex_ratio
+  ), 
+  run_comprehensive_simulation
+)
+
+# Reshape data for plotting
+plot_matrix <- simulation_results_3d %>%
+  pivot_wider(
+    names_from = log_sex_ratio, 
+    values_from = mean_estimate, 
+    id_cols = true_beta_sex_ratio
+  )
+
+# Convert to matrix
+plot_matrix_values <- as.matrix(plot_matrix[,-1])
+rownames(plot_matrix_values) <- plot_matrix$true_beta_sex_ratio
+
+# Create interactive 3D plot
+p_3d <- plot_ly(
+  z = plot_matrix_values, 
+  x = colnames(plot_matrix_values) %>% as.numeric(), 
+  y = rownames(plot_matrix_values) %>% as.numeric(),
+  type = "surface",
+  colorscale = "Blues"
+) %>%
+  layout(
+    title = "3D Visualization of Treatment Effect Estimation",
+    scene = list(
+      xaxis = list(title = "Log Sex Ratio"),
+      yaxis = list(title = "True Beta Sex Ratio"),
+      zaxis = list(title = "Estimated Treatment Effect")
+    )
+  )
+
+
+# Render the plot
+p_3d
+```

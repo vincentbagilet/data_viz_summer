@@ -1,0 +1,15 @@
+{
+  "hash": "6d23aab107e7915b7d96eef3229c8a28",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Exercise - Complex Simulation\"\nsubtitle: \"Simulate data that replicates a paper on the impacts of high temperature on agricultural yields.\"\npublished-title: \"Date\"\ndate: \"2024-10-16\"\nself-contained: true\nengine: knitr\nhtml-math-method: mathml\n---\n\n::: {.cell}\n\n:::\n\n\n::: {.callout-important title=\"Instructions\"}\n**Due date**: Tuesday October 22nd, 7pm\n\n**Submission link (no email this time)**: [https://forms.gle/eTr4ZdbZtiHYZ7ko7](https://forms.gle/Y7WtebRouGHHGqHv8)\n\n**Exercise**: Follow the steps at the end of the [document describing the simulation](../sim/sim_2_high_temp.qmd).\n\n**Submission type**: please submit your `.html` document (not a `.qmd` document), generated with Quarto, implementing the analysis required and answering the questions listed in the [document describing the simulation](../sim/sim_2_high_temp.qmd).\n:::\n\n::: callout-warning\nMake sure to include the following lines as an option to your document (at the very top of your .qmd document, between the two series of `---`. Don't forget to remove the pre-existing `format: html` line, if there is one). It will produce [a self-contained html](https://quarto.org/docs/output-formats/html-basics.html#self-contained), *ie*, a nicely rendered html that stands alone:\n\n```\nformat:\n  html:\n    embed-resources: true\n```\n:::\n\nThe goal of this exercise is to implement a simulation replicating, to some degree, [Burke and Emerick (2016)](https://www.aeaweb.org/articles?id=10.1257/pol.20130025). This exercise continues the previous exercise.\n\n\n\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
