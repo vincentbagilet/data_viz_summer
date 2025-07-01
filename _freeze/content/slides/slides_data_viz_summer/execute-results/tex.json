@@ -1,0 +1,17 @@
+{
+  "hash": "0a8af9181884ff6370aec70cada1e06d",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Data Visualization for Economics Research\"\nsubtitle: \"<br> Lyon Summer School in Empirical Research Methods - ENS de Lyon\"\nauthor: \"Vincent Bagilet\"\ndate: \"2025-07-01\"\n# bibliography: ../env_econ.bib\nformat:\n  pdf\n  # revealjs:\n  #   theme: [default, vb_qmd.scss]\n  #   slide-number: true\n  #   title-slide-attributes:\n  #       data-background-color: \"#392F29\"\n  #       slide-number: false\n  #   embed-resources: true\n---\n\n::: {.cell}\n\n:::\n\n\n\n\n\n\n\n\n\n# Intro {.inverse}\n\n\n\n\n\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ngapminder::gapminder |> \n  filter(country == \"France\") |> \n  ggplot(aes(x = year, y = lifeExp)) + \n  geom_point()\n```\n\n::: {.cell-output-display}\n![](slides_data_viz_summer_files/figure-pdf/unnamed-chunk-1-1.pdf){fig-pos='H'}\n:::\n:::\n\n\n\n\n\n\n\n\n\n\n\n# Introduction {.inverse}\n\n## Périmètre de ce cours\n\n::: {.centered}\n\n- Une thématique étudiée par de nombreuses disciplines (sociologie, sciences politiques, économie)\n- On se concentre sur la littérature en économie\n- Approche en économie (d'après @cantoni_protests_2024) :\n\n  - **Cadre théorique** aux comportements rationnels des individus\n  - **Évaluation empirique** et causale des comportements\n  \n- **Activisme**: attitude politique qui favorise l'action directe et la propagande active^[Définition donnée par Le Robert.]\n\n:::\n\n# Key data viz principles {.inverse}\n\n## Perception\n\n- Theory on principle\n\n# Building a graph {.inverse}\n\n\n## Know what types exists\n\n::: {.centered}\n\n- Know what is possible to do to **find what you need**\n\n- Know **graph names** (to search the internet regarding how to code them)\n\n- Refer to existing graph galleries\n\n:::\n\n---\n\n\n\n\n\n\n\n\n\n::: {.cell}\n<iframe src=\"https://datavizproject.com/\" width=\"100%\" height=\"600px\" data-external=\"1\"></iframe>\n:::\n\n\n\n\n\n\n\n\n\n## Choosing a graph type\n\n::: {.centered}\n\n- What do you want to show in your graph?\n\n- **What is the main message you want to convey?**\n\n- With the same data, you can:\n\n  - Tell a lot of different stories\n  \n  - Emphasize different points\n  \n:::\n\n## One data, many graphs, many stories\n\n\n\n\n\n\n\n\n\n::: {.cell}\n<iframe src=\"https://100.datavizproject.com/\" width=\"100%\" height=\"450px\" data-external=\"1\"></iframe>\n:::\n\n\n\n\n\n\n\n\n\n- How to choose the right type? \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+    "supporting": [
+      "slides_data_viz_summer_files/figure-pdf"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}

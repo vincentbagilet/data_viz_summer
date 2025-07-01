@@ -1,16 +1,68 @@
 ---
-title: "Lecture"
+title: "Detaild Lecture Outline and Additional Resources"
 published-title: "Date"
+description: "Resources associated with each section of the lecture."
 date: "2025-07-01"
 self-contained: true
 engine: knitr
 ---
 
-::: callout-tip
-## Objective
+## Detailed outline and resources
 
-Help you develop essential skills for effective data visualization.
-:::
+Here is the outline of the lecture, along with links to additional resources on each topic.
+
+### Introduction
+
+### Usefulness and importance
+  
+- Explore and explain
+  - [Why looking at data?](https://socviz.co/lookatdata.html#why-look-at-data)
+  - [Existing tools for exploratory data analysis in R ](https://cosimameyer.com/post/exploratory-data-analysis-in-r/) 
+- Deceptive visualizations
+  - [Defense against dishonest charts](https://flowingdata.com/projects/dishonest-charts/)
+  
+### Key data viz principles
+
+- Perception and color
+  - More on [Gestalt principles](https://medium.muz.li/gestalt-principles-in-ui-design-6b75a41e9965) (plus [a research article](https://www.nature.com/articles/nmeth1110-863))
+  - [How to find and create good color palettes](https://www.datawrapper.de/blog/beautifulcolors) on 
+- Data-to-ink ratio
+  - [A critique of the data-to-ink ratio](https://www.frank.computer/blog/2025/04/data-to-ink.html)
+- Aesthetics
+  - [Reasons to make beautiful graphs](https://medium.com/accurat-in-sight/beautiful-reasons-c1c6926ab7d7) on 
+  - [Credibility and typography](https://practicaltypography.com/why-does-typography-matter.html)
+  - [In defense of simple charts](https://www.datawrapper.de/blog/in-defense-of-simple-charts)
+  
+### Building a graph
+
+- Graph galeries
+  - [Data Viz Project](https://datavizproject.com/)
+  - [Flowing Data - Chart type](https://flowingdata.com/chart-types/)
+  - [Dataviz Inspiration](https://www.dataviz-inspiration.com/)
+  - [R graph gallery](https://r-graph-gallery.com/)
+- [What questions to ask when creating charts](https://www.datawrapper.de/blog/better-charts)
+- Decision trees for a graph type
+  - [Financial Times tree](https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary)
+  - [Data viz catalogue](https://datavizcatalogue.com/search.html)
+  - [Datawrapper guide](https://www.datawrapper.de/blog/chart-types-guide)
+  - [Data to viz graph](https://www.data-to-viz.com/)
+- Concrete recommendations
+  - [For color](https://www.datawrapper.de/blog/colors)
+  - [For text](https://www.datawrapper.de/blog/text-in-data-visualizations)
+- Specific do's and don'ts
+  - [Statistics oriented](https://github.com/cxli233/FriendsDontLetFriends)
+  - [A collection of dataviz caveats](https://www.data-to-viz.com/caveats.html)
+  - [Sometimes it's ok to break the rules](https://medium.economist.com/why-you-sometimes-need-to-break-the-rules-in-data-viz-4d8ece284919)
+  
+### Data viz for research in economics
+
+- When do we use graphs in econ? 
+- Specificities of viz in econ
+  - [Avoid overplotting](https://www.data-to-viz.com/caveat/overplotting.html)
+  - [Visualize regression output](https://modelsummary.com/)
+  - [Visualize regression output with distributions](https://mjskay.github.io/ggdist/articles/freq-uncertainty-vis.html?q=estimate#point-estimates)
+
+### Main take-away messages
   
 ## Slides
 
@@ -37,11 +89,11 @@ renderthis::to_pdf(
 ```{r out.width='100%'}
 #| echo: false
 
-knitr::include_url("../slides/slides_06_env_econ_activism.html")
+knitr::include_url("../slides/slides_data_viz_summer.html")
 ```
 
 
-## Detailed outline and resources
+
 
 
 

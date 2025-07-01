@@ -12,11 +12,16 @@ engine: knitr
 
 A significant portion of communicating economic research results-whether in presentations or written papers—relies on graphs and visuals. This session aims to **help you develop essential skills for effective data visualization**. We will cover fundamental visualization principles and general **best practices** before examining the specific challenges of data visualization for **causal inference**. While it can be a powerful rhetorical tool for causal inference, data visualizations can also be misleading if not handled carefully.
 
-## Outline
+## Class outline
 
+1. Introduction
+1. Usefulness and importance
+1. Key data viz principles
+1. Building a graph
+1. Data viz for research in economics
+1. Main take-away points
 
-
-## Bibliography
+## Useful handbooks
 
 ### Data Viz
 

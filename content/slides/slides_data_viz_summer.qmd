@@ -3,7 +3,6 @@ title: "Data Visualization for Economics Research"
 subtitle: "<br> Lyon Summer School in Empirical Research Methods - ENS de Lyon"
 author: "Vincent Bagilet"
 date: "2025-07-01"
-# bibliography: ../env_econ.bib
 format:
   revealjs:
     theme: [default, vb_qmd.scss]
@@ -22,69 +21,1137 @@ format:
 library(tidyverse)
 library(mediocrethemes)
 library(knitr)
+library(gapminder)
+library(gghighlight)
+library(readr)
+library(ggdist)
+library(fixest)
+library(broom)
+library(distributional)
+library(modelsummary)
 
-set_mediocre_all("coty", background = FALSE)
+set_mediocre_all("portal", background = FALSE)
 
 opts_chunk$set(dev.args = list(bg="transparent"))  
 ```
 
-# Examen {.inverse}
-
-## Questions de "cours"
-
-::: {.centered}
-
-- Tendances dans une littérature précise
-- Exemples :
-  
-  - Méthodes classiques pour étudier X ?
-  - Biais/écueils à éviter pour étudier l'impact de X sur Y ?
-
-:::
-
-## Question de réflexion
-
-::: {.centered}
-
-- Vous aurez une description d'un cas particulier, avec un contexte particulier
-- Quelle stratégie d'identification mettriez vous en place pour étudier cette question ? 
-- Quelles hypothèses d'identification ? 
-- Limites ? 
-- etc
-
-:::
 
 # Introduction {.inverse}
 
-## Périmètre de ce cours
+## Everywhere but not so simple
 
 ::: {.centered}
 
-- Une thématique étudiée par de nombreuses disciplines (sociologie, sciences politiques, économie)
-- On se concentre sur la littérature en économie
-- Approche en économie (d'après @cantoni_protests_2024) :
+- Data viz is **everywhere**
 
-  - **Cadre théorique** aux comportements rationnels des individus
-  - **Évaluation empirique** et causale des comportements
-  
-- **Activisme**: attitude politique qui favorise l'action directe et la propagande active^[Définition donnée par Le Robert.]
+- We work with data, we routinely (need to) visualize it
+
+- **Seems pretty simple**, we all know how to make graphs
+
+- Sure BUT **there are a few things we need to think about** when visualizing data
+
+- Once you pay attention to data viz, it is fun, instructive and satisfying!
 
 :::
 
+## Data viz can be obviously deceptive
+
+[![](images/trump.webp){fig-align="center" width=40%}](https://www.reddit.com/r/dataisugly/comments/1cc4rbn/crushing_victory/)
+
+## ...or difficult to interpret
+
+<br>
+
+[![](images/slope_diff.png){fig-align="center" width=80%}](https://ieeevis.org/year/2024/program/paper_v-short-1081.html)
 
 
 
+## They can be memorable and insightfull
+
+<br>
+
+[![](images/pollution_paris.png){fig-align="center" width=100%}](https://www.washingtonpost.com/climate-solutions/2025/04/12/air-pollution-paris-health-cars/)
+
+## ...and also beautiful 
+
+```{r website_diversity, echo=FALSE, fig.dpi=500}
+knitr::include_url("https://mappingdiversity.eu/france/lyon/", height = "550px")
+```
+
+
+## Outline
+
+<br><br><br>
+1. Usefulness and importance
+
+<br>
+2. Key data viz principles
+
+<br>
+3. Building a graph
+
+<br>
+4. Data viz for research in economics
+
+# Usefulness and importance {.inverse}
+
+## Types of graphs
+
+<br><br>
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+::: {.callout-note title="Graphs to explore" icon=false}
+
+<br>
+
+::: {.r-stack}
+
+- Analyze
+- Confirm
+
+:::
+
+<br>
+
+:::
+
+:::
+
+::: {.column width="20%"}
+
+::: 
+
+::: {.column width="40%"}
+
+::: {.callout-note title="Graphs to explain" icon=false}
+
+<br>
+
+::: {.r-stack}
+
+- Inform
+- Convince
+
+:::
+
+<br>
+
+:::
+
+:::
+
+::::
+
+<br>
+
+::: {.r-stack}
+ They have **different goals and audiences**
+:::
+
+## Explore: make sense of your data
+
+
+::: {.centered}
+
+- Data often contain patterns; data viz can be tremendously helpful to identify them
+
+- But need to look at your raw data
+
+- That's the role of the exploratory data analysis (**EDA**)
+
+- It may also help you formulating hypotheses (to test on other data sets)
+
+:::
+
+## Look at your raw data
+
+```{r anscombe}
+#| fig-width: 6
+#| fig-align: center
+
+anscombe <- read_delim("data/anscombe.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
+
+anscombe |> 
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 2) +
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
+  facet_wrap(~ dataset) +
+  labs(
+    title = "Anscombe's quartet"
+  )
+```
+
+
+::: {.r-stack}
+
+Same relation, different patterns
+
+:::
+
+## Look at your raw data
+
+[![](images/dont_bar_plot.png){fig-align="center" width=90%}](https://github.com/cxli233/FriendsDontLetFriends)
+
+::: {.r-stack}
+
+Some plots (or summary statistics) help summarize but can also **hide** information
+
+:::
+
+## Explain: communicate your results {.scrollable}
+
+```{r freedom_press}
+freedom_press <- read_delim("data/freedom_press.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE) 
+
+freedom_press |> 
+  kable()
+```
+
+## Getting your point across
+
+[![](images/press_freedom.png){fig-align="center" width=35%}](https://app.flourish.studio/visualisation/24021917/edit)
+
+## Data viz as a rhetorical tool
+
+```{r pop_gdp_graph}
+#| fig-height: 4.5
+#| fig-width: 7
+#| fig-align: center
+#| fig-dpi: 400
+
+gapminder::gapminder |> 
+  ggplot(aes(x = log(pop), y = log(gdpPercap))) + 
+  geom_point(alpha = 0.4) + 
+  geom_smooth(method = "lm") + 
+  labs(
+    title = "Population Against GDP per Capita",
+    x = "log(Population)",
+    y = "log(gdpPercapita)"
+  )
+```
+
+## Data viz as a rhetorical tool
+
+```{r pop_gdp_graph_country}
+#| fig-height: 5
+#| fig-width: 7
+#| fig-align: center
+#| fig-dpi: 400
+
+gapminder::gapminder |> 
+  mutate(
+    country_name = paste(country),
+    display_country = ifelse(str_starts(country_name, "T"), country_name, NA)
+  ) |> 
+  ggplot(aes(x = log(pop), y = log(gdpPercap), color = display_country)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  labs(
+    title = "Within Country Population Against GDP per Capita",
+    subtitle = "For a subset of countries",
+    x = "log(Population)",
+    y = "log(gdpPercapita)",
+    color = NULL
+  ) 
+```
+
+
+## The power of data viz
+
+<br><br>
+
+> *We can easily see patterns presented in certain ways, but if they are presented in other ways, they become invisible [..] 
+<br><br>Following perception-based rules, we can present our data in such a way that the important and informative patterns stand out. If we disobey the rules, our data will be incomprehensible or misleading.* 
+<br><br><br>Ware, C. (2012). Information Visualization, Third Edition: Perception for Design
+
+## Data viz can be misleading
+
+::: {.centered}
+
+- We have briefly discussed that before
+
+- There is a breadth of ways in which they can be misleading
+
+- Charts can be wrong. They can also be correct BUT misleading
+
+- See [*Defense Against Dishonest Charts*](https://flowingdata.com/projects/dishonest-charts/) on Flowing Data
+
+:::
+
+## Map projections
+
+<br><br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+[![](images/map_mercator.webp){fig-align="center" width=60%}](https://whereexactlymaps.com/blogs/articles/an-introduction-to-map-projections)
+
+:::
+
+::: {.column width="50%"}
+
+<br>
+[![](images/map_robinson.webp){fig-align="center" width=80%}](https://whereexactlymaps.com/blogs/articles/an-introduction-to-map-projections)
+
+:::
+
+::::
+
+## Cutting 0 on the y-axis
+
+{{< video https://www.youtube.com/watch?v=14VYnFhBKcY width="1000" height="600">}}
+
+# Key data viz principles {.inverse}
+
+## Theory
+
+::: {.centered}
+
+- There is actually a lot of theory behind data viz:
+  
+  - Perception, 
+  - Colors, 
+  - Design,
+  - etc
+
+- Worth learning about it and being aware of key principles
+
+- Leverage it to make better data viz
+
+:::
+
+## Perception
+
+[![](images/eddinghaus.png){fig-align="center" width=70%}](https://en.wikipedia.org/wiki/Ebbinghaus_illusion)
+
+::: {.r-stack}
+Ebbinghaus illusion
+:::
+
+## Relative differences matter
+
+[![](images/sim_contrast.png){fig-align="center" width=30%}](https://en.wikipedia.org/wiki/Contrast_effect)
+
+::: {.r-stack}
+Law of simultaneous contrast
+:::
+
+## Gestalt principles
+
+:::: {.columns}
+
+::: {.column width="40%"}
+<br><br>
+
+- How our brain interprets what we see
+- How it organize visual information
+- How we group elements together
+
+- Use them to highlight some patterns and downplay others
+
+:::
+
+::: {.column width="60%"}
+
+[![](images/gestalt_sketch.webp){fig-align="center" width=90%}](https://sketchplanations.com/gestalt-principles)
+
+:::
+
+::::
+
+
+## Data-to-ink ratio 
+
+:::: {.columns}
+
+::: {.column width="40%"}
+<br><br><br>
+
+- Introduced by Edward Tufte
+
+- In a nutshell: **avoid clutter**
+
+- Erase non-essential and redundant information
+
+- *"Above all else show the data"*
+
+- Sometimes good to break these rules
+
+:::
+
+::: {.column width="60%"}
+
+[![](images/tufte.jpg){fig-align="center" width=70%}](https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/)
+
+:::
+
+::::
+
+## Data-to-ink ratio 
+
+<br>
+
+::: {.r-stack}
+
+$\text{data-ink ratio} = \dfrac{\text{data  ink}}{\text{total ink on graph}}$
+
+:::
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+[![](images/data_ink_low.png){fig-align="center" width=100%}](https://infovis-wiki.net/wiki/Data-Ink_Ratio)
+
+:::
+
+::: {.column width="50%"}
+
+
+[![](images/data_ink_high.png){fig-align="center" width=100%}](https://infovis-wiki.net/wiki/Data-Ink_Ratio)
+
+:::
+
+::::
+
+## Graph aesthetics
+
+::: {.centered}
+- Why make nice looking visualizations? 
+
+- To trigger interest, to intrigue, to **catch the eye**
+
+- That affects how people perceive information
+
+- Nice looking visuals may be more **memorable**
+
+- In that sense, not everything is *chartjunk*
+:::
+
+## Pretty and memorable
+
+[![](images/map_rayshader.jpeg){fig-align="center" width=60%}](https://x.com/researchremora)
+
+
+## Engaging the audience
+
+[![](images/picasso.webp){fig-align="center" width=90%}](https://medium.com/accurat-in-sight/beautiful-reasons-c1c6926ab7d7)
+
+## Graph aesthetics in academia
+
+<br><br>
+
+- Pretty graphs are useful in data journalism and so on, but what about academia? 
+
+- They are also only more pleasing to look at, they also make readers want to **engage more** with them
+
+- Maybe better to keep the design rather minimalist
+
+- Pretty does not always mean non-simple. [Simple graphs have value](https://www.datawrapper.de/blog/in-defense-of-simple-charts).
+
+- Opinion on **credibility** partly based on aesthetics
+
+>“This paper did not receive the care it deserved” *comment given to a now senior researcher when they submitted a paper with a sketchy graph*
+
+## Credibility and aesthetics
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+[![](images/resume_1.png){fig-align="center" width=80%}](https://practicaltypography.com/why-does-typography-matter.html)
+
+:::
+
+::: {.column width="50%"}
+
+[![](images/resume_2.png){fig-align="center" width=80%}](https://practicaltypography.com/why-does-typography-matter.html)
+
+:::
+
+::::
+
+
+## "Originality" VS "familiarity"
+
+::: {.centered}
+- **Original** graphs may trigger interest
+  
+- **Familiar** graphs may convey the point more easily
+  
+- My take: 
+
+  - Use the best type of graph, regardless of its originality/familiarity
+  
+  - If it is different from what people are used to, make it easy to read
+:::
+
+# Building a graph {.inverse}
+
+## Know what chart types exist
+
+::: {.centered}
+
+- Know what is possible to do to find what you need
+
+- Know **graph names** (to search the internet regarding how to code them)
+
+- Refer to existing graph (type) galleries:
+
+  - [Data Viz Project](https://datavizproject.com/)
+  
+  - [Flowing Data - Chart type](https://flowingdata.com/chart-types/)
+  
+  - [Dataviz Inspiration](https://www.dataviz-inspiration.com/)
+  
+  - [R graph gallery](https://r-graph-gallery.com/)
+
+:::
+
+---
+
+```{r website_list_types, echo=FALSE, fig.dpi=400}
+knitr::include_url("https://datavizproject.com/", height = "600px")
+```
+
+## Steps to choose a chart type
+
+::: {.centered}
+
+- What do you want to show in your graph?
+
+- **What is the main message you want to convey?**
+
+- With the same data, you can:
+
+  - Tell a lot of different stories
+  
+  - Emphasize different points
+  
+- Making a graph = choosing a lighting for your data
+  
+:::
+
+## 1 dataset, many graphs, many stories
+
+```{r website_100_project, echo=FALSE, fig.dpi=500}
+knitr::include_url("https://100.datavizproject.com/", height = "550px")
+```
+
+##  Type of relationship to show 
+
+<br><br>
+
+In your graph, you may want to show a:
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- Distribution 
+- Evolution over time
+- Magnitude
+- Part of a whole
+- Ranking
+
+:::
+
+::: {.column width="50%"}
+
+- Geographical patterns
+- Flow 
+- Correlations
+- Deviation
+
+:::
+
+::::
+
+## Graph type decision tree 
+
+[![](images/decision_tree_ft.png){fig-align="center" width=80%}](https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary)
+
+## Example data {.scrollable}
+
+```{r ex_data}
+ex_data <- gapminder::gapminder |> 
+  filter(country %in% c("France", "Japan", "Niger")) |>
+  select(country, year, lifeExp) |> 
+  group_by(country) |> 
+  mutate(lifeExp_norm = lifeExp/min(lifeExp)*100) |> 
+  ungroup()
+
+ex_data |> 
+  select(-lifeExp_norm) |> 
+  kable()
+```
+
+## A concrete example
+
+```{r example_inti}
+#| fig-width: 20
+#| fig-height: 10
+
+ex_plot <- ex_data |>
+  ggplot(aes(x = year, y = lifeExp, color = country)) +
+  geom_line(linewidth = 1.4) + 
+  theme_gray() +
+  scale_color_brewer(palette = "Set2")
+
+ex_plot
+```
+
+## Legible text
+
+```{r example_legible}
+ex_plot
+```
+
+## Title, clear axis labels and source
+
+```{r example_title}
+ex_plot <- ex_plot + 
+  labs(
+    title = "Life expectancy is still much lower in Niger than in France or Japan",
+    subtitle = "Evolution of average life expectancy at birth",
+    x = NULL,
+    y = "Life expectancy at birth, in years",
+    color = NULL,
+    caption = "Source: Gapminder"
+  )
+
+ex_plot
+```
+
+## Scale of the y-axis
+
+```{r example_y_axis}
+ex_plot + 
+  ylim(c(0, NA))
+```
+
+## Stylize
+
+```{r example_style}
+#| fig-width: 7
+#| fig-align: center
+
+ex_plot <- ex_plot + 
+  scale_mediocre_d(pal = "portal") + 
+  theme_mediocre(pal = "portal")
+
+ex_plot
+```
+
+
+## An alternative story
+
+```{r example_alt}
+#| fig-width: 7
+#| fig-align: center
+
+ex_data |>
+  ggplot(aes(x = year, y = lifeExp_norm, color = country)) +
+  geom_line(linewidth = 1.4) + 
+  labs(
+    title = "Life expectancy at birth increased sharply in Niger since 1980",
+    subtitle = "Evolution of an average life expectancy at birth index",
+    x = NULL,
+    y = "Life expectancy at birth index,\n base 100 in 1952",
+    color = NULL,
+    caption = "Source: Gapminder"
+  )
+```
+
+## Graphs in an oral presentation
+
+::: {.centered}
+
+- **Explain orally what your graph represents!**
+
+  - What is on the x-axis? 
+
+  - What is on the y-axis? 
+  
+  - What is the message you want to convey?
+  
+:::
+
+
+## Avoid using many different colors
+
+<br>
+
+If need more than 7 colors or so:
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- Use another graph
+ 
+[![](images/colors_many_cat.avif){fig-align="center" width=90%}](https://www.datawrapper.de/blog/colors)
+
+:::
+
+::: {.column width="50%"}
+
+- Group categories together
+
+[![](images/colors_group.avif){fig-align="center" width=90%}](https://www.datawrapper.de/blog/colors)
+
+:::
+
+::::
+
+## Use intuitive colors
+
+```{r example_intuitive}
+#| fig-width: 7
+#| fig-align: center
+
+ex_plot +
+  scale_color_manual(values = c("#002E91", "#91002E", "#007550")) 
+```
+
+
+## Colorblind-friendly visualizations
+
+[![](images/colors_colorblind.webp){fig-align="center" width=50% fig-dpi=500}](https://www.datawrapper.de/blog/colors)
+
+## Use gray. Emphasize.
+
+<!-- <br> -->
+
+<!-- - What is your point? -->
+
+<!-- - What do you want the reader to see first? -->
+
+<!-- [![](images/colors_gray.avif){fig-align="center" width=60%}](https://www.datawrapper.de/blog/https://www.datawrapper.de/blog/10-ways-to-use-fewer-colors-in-your-data-visualizations) -->
+
+```{r example_highlight}
+#| fig-height: 6
+#| fig-align: center
+
+gapminder::gapminder |> 
+  filter(continent %in% c("Europe", "Asia", "Africa")) |>
+  ggplot(aes(x = year, y = lifeExp, color = country)) +
+  geom_line(linewidth = 1.4) + 
+  gghighlight(country %in% c("France", "Japan", "Niger"), use_direct_label = FALSE, calculate_per_facet = TRUE) +  
+  labs(
+    title = "Life expectancy in France, Japan and Niger as compared to their own continent",
+    subtitle = "Evolution of average life expectancy at birth, by continent",
+    x = NULL,
+    y = "Life expectancy at birth, in years",
+    color = NULL,
+    caption = "Source: Gapminder"
+  ) +
+  scale_color_manual(values = c("#002E91", "#91002E", "#007550")) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
+  facet_wrap(~ continent)
+```
+
+## Label directly
+
+
+```{r example_label}
+#| fig-height: 6
+#| fig-align: center
+
+gapminder::gapminder |> 
+  filter(continent %in% c("Europe", "Asia", "Africa")) |>
+  ggplot(aes(x = year, y = lifeExp, color = country)) +
+  geom_line(linewidth = 1.4) + 
+  gghighlight(country %in% c("France", "Japan", "Niger"),  calculate_per_facet = TRUE) +  
+  labs(
+    title = "Life expectancy in France, Japan and Niger as compared to their own continent",
+    subtitle = "Evolution of average life expectancy at birth, by continent",
+    x = NULL,
+    y = "Life expectancy at birth, in years",
+    color = NULL,
+    caption = "Source: Gapminder"
+  ) +
+  scale_color_manual(values = c("#002E91", "#91002E", "#007550")) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) + 
+  facet_wrap(~ continent)
+```
+
+## Order your data
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r fig.dpi=500}
+#| fig-width: 5
+#| fig-height: 6
+
+data_eu <- gapminder::gapminder |> 
+  filter(continent == "Europe", year == 2007)
+
+data_eu |> 
+  ggplot(aes(x = lifeExp, y = country)) + 
+  geom_point() + 
+  geom_segment(aes(x = 0, xend = lifeExp, y = country), linewidth = 0.3) + 
+  labs(
+    title = "Life Expectancy in Europe",
+    x = "Life expectancy in 2007 (in years)", 
+    y = NULL
+  )
+```
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r fig.dpi=500}
+#| fig-width: 5
+#| fig-height: 6
+
+data_eu |> 
+  mutate(country = fct_reorder(country, lifeExp)) |> 
+  ggplot(aes(x = lifeExp, y = country)) + 
+  geom_point() + 
+  geom_segment(aes(x = 0, xend = lifeExp, y = country), linewidth = 0.3) + 
+  labs(
+    title = "Life Expectancy in Europe",
+    x = "Life expectancy in 2007 (in years)", 
+    y = NULL
+  ) 
+```
+
+:::
+
+::::
 
 
 
+## Data viz caveats
+
+```{r caveats, echo=FALSE, fig.dpi=500}
+knitr::include_url("https://www.data-to-viz.com/caveats.html", height = "550px")
+```
+
+## Sometimes you may break the rules
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+[![](images/break_many_colors.webp){fig-align="center" width=70%}](https://medium.economist.com/why-you-sometimes-need-to-break-the-rules-in-data-viz-4d8ece284919)
+
+:::
+
+::: {.column width="40%"}
+
+<br><br><br>
+
+9 colors
+
+<br>
+
+BUT 
+
+<br>
+
+- Labeled directly
+- Shade reinforces grouping
+
+:::
+
+::::
+
+<!-- ## Diverging vs sequential color scale -->
+
+<!-- 1 Use a diverging color scale if there’s a meaningful middle point -->
+<!-- 2 Use a diverging color scale to emphasize the extremes -->
+<!-- 3 Use a diverging color scale to let readers see more differences in the data -->
+<!-- 4 Use a sequential color scale for a more intuitive reading -->
+
+## Nice data viz
+
+[![](images/measles.png){fig-align="center" width=75%}](https://ourworldindata.org/measles-vaccines-save-lives)
+
+## Nice data viz
+
+[![](images/nice_viz_ice.avif){fig-align="center" width=100%}](https://www.datawrapper.de/blog/readers-time)
+
+## Pay attention to data viz 
+
+::: {.centered}
+
+- If you start paying attention to data viz when you see them, you will see what works, what does not
+
+- It is a process that takes place in the "background": you will learn quickly and not realize it
+
+- You will see nice looking graphs (and hopefully enjoy it)
+
+- You will build better and more impactful graphs
+i
+:::
+
+## Summary of concrete recommendations
+
+<br><br>
+
+::: {.callout-note title="Take-away messages"}
+
+- Build legible, understandable and nice looking graphs.
+
+- Have a title and explicit axes; present them.
+
+- Limit the number of colors you use. Use gray. 
+
+- Label your graphs directly, add annotations.
+
+- Think twice before cutting the y-axis
+
+- Overall, facilitate the retrieval of information.
+
+:::
+
+# Data viz in economics {.inverse}
 
 
+## When do we use graphs in econ? 
+
+::: {.centered}
+
+- As **rhetorical** visualization tools for models 
+
+- To **explore** our data
+
+- To check the validity of our **models**
+
+- As **diagnostics**
+
+- To **communicate** results
+
+:::
+
+## Specificities of viz in economics
+
+::: {.centered}
+
+- We often have to deal with a **massive number of observations**
+  
+- We often want to display a specific type of graph: **estimation output**
+
+- Our analysis are often based on **identifying assumptions** that we can sometimes check through graphs
+
+- We often use very complex models. Visualization can help **understand what we are actually estimating**
+
+:::
+
+## Large numbers of observations
+
+```{r}
+ex_duration <- readRDS("~/Documents/Teaching/data_viz_summer/content/slides/data/ex_duration.RDS")
+ex_duration <- readRDS("data/ex_duration.RDS")
+
+ex_duration |> 
+  ggplot(aes(x = date, y = log(duration))) + 
+  geom_point() + 
+  labs(
+    title = "Evolution of the duration of items in time",
+    x = NULL, 
+    y = "Log(duration (in s))"
+  )
+```
+
+## Opacity and subsamples
+
+```{r}
+ex_duration |> 
+  ggplot(aes(x = date, y = log(duration))) + 
+  geom_point(alpha = 0.01) + 
+  labs(
+    title = "Evolution of the duration of items in time, by channel",
+    x = NULL, 
+    y = "Log(duration (in s))"
+  ) + 
+  facet_wrap(~ channel)
+```
+
+## Use heatmaps instead of scatter plots
+
+```{r}
+ex_duration |> 
+  ggplot(aes(x = date, y = log(duration))) + 
+  geom_bin2d(bins = 70) + 
+  labs(
+    title = "Evolution of the duration of items in time, by channel",
+    x = NULL, 
+    y = "Log(duration (in s))"
+  ) + 
+  facet_wrap(~ channel) + 
+  scale_mediocre_c(pal = "coty", gradient = "left") + 
+  labs(fill = "Number of observations per tile")
+```
+  
+
+<!-- ## Rhetorical visualization tools for models  -->
+
+<!-- <br> -->
+
+<!-- [![](images/surplus.png){fig-align="center" width=100%}](https://www.econgraphs.org/) -->
+
+<!-- ## For data exploration -->
+
+<!-- - To understand the structure of your data,  -->
+
+<!-- - To build accurate models, that actually represent the data generating process (cf Anscombe's quartet) -->
+
+<!-- ## As diagnostic plots -->
+
+<!-- -  -->
+
+## Table of estimation outputs
+
+```{r}
+reg <- feols(data = gapminder::gapminder, log(lifeExp) ~ log(pop) + log(gdpPercap) | country + year)
+
+modelsummary::modelsummary(reg, gof_omit = "AIC|BIC|R2 Within")
+```
+
+## Whisker plot of estimation outputs
+
+```{r}
+#| height: 3
+#| fig-align: center
+
+modelsummary::modelplot(reg) + 
+  geom_vline(xintercept = 0) +
+  labs(
+    title = "Point estimates for the regression of log(life expectancy)",
+    subtitle = "With 95% confidence intervals",
+    x = "Point estimate",
+    y = NULL,
+    caption = "R package: modelsummary or dotwhisker"
+  )
+```
+
+## Whisker and distribution
+
+```{r}
+reg |> 
+  broom::tidy() |> 
+  ggplot(aes(y = term)) +
+  ggdist::stat_halfeye(
+    aes(xdist = distributional::dist_student_t(
+      df = df.residual(reg), mu = estimate, sigma = std.error)),
+    fill = colors_mediocre$complementary,
+    color = colors_mediocre$base,
+    # size = 10, 
+    alpha = 0.6
+  ) + 
+  geom_vline(xintercept = 0) +
+  labs(
+    title = "Distribution of estimates for the regression of log(life expectancy)",
+    x = "Point estimate",
+    y = NULL,
+    caption = "R package: ggdist"
+  )
+```
 
 
+## Graphs hierarchy
+
+::: {.centered} 
+
+- We make graphs for different audiences: 
+
+  - For **you** (and your future self): can be quite rough on the edges, but you will want to be able to understand it in the future
+  
+  - For **presentations**: you have some leeway for explaining orally your graphs
+  
+  - For the **paper**: there is only a couple of graphs in a paper; make them perfect
+  
+:::
+
+# Main take-away points {.inverse}
+
+## Data viz at large
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<br>
+ 
+- Data viz is **powerful**, harness its power
+
+- It can be super **insightful** or equally **deceptive**
+
+- It can make your point **memorable**
+
+- It can also be truly **beautiful** 
+
+- Leverage perception and data viz **principles**
+
+:::
+
+::: {.column width="50%"}
 
 
+![](images/spiderman.jpg){fig-align="center" width=90%}
+
+:::
+
+::::
 
 
+## How to build a graph?
+
+<br><br>
+
+::: {.callout-note title="Take-away messages"}
+
+- There are **many rules** in data viz
+
+- The main goal is to **facilitate the transmission of your message**
+
+- What is the main point you want to convey?
+
+- Choose (one of) the right graph types
+
+- Explain your graphs, orally and by facilitating reading, on your graph
+
+- BUT avoid clutter
+
+:::
+
+## Data viz for economics
+
+::: {.centered}
+
+- Most data viz principles and ideas also apply to economics and academia in general
+
+- There are however some specificities
+
+- In particular, some graphs and **types of analyses** are specific to academic research
+
+- Data viz can be extremely useful for research and communication
+
+:::
+
+# Thanks {.inverse}
 
 
 

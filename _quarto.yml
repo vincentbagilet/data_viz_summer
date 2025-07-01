@@ -20,7 +20,7 @@ website:
     left:
     - text: Syllabus
       href: content/syllabus.qmd
-    - text: Lecture content
+    - text: Outline and Resources
       href: content/lect_pages/lect_page_data_viz_summer.qmd
     - text: Slides
       menu:
