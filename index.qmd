@@ -3,7 +3,7 @@ title: "Data Visualization for Economics Research"
 subtitle: "Lyon Summer School in Empirical Research Methods - ENS de Lyon"
 ---
 
-This website gathers resources for the lecture *Data Visualization for Economics Research* of the Lyon Summer School in Empirical Research Methods at ENS de Lyon (July 1 - July 3 2025)
+This website gathers resources for the lecture *Data Visualization for Economics Research* of the Lyon Summer School in Empirical Research Methods at ENS de Lyon (July 1 - July 3 2025).
 
 ![](images/paper_graph.jpg "Photo by Isaac Smith on Unsplash.com"){fig-align="center" width=70%}
 
