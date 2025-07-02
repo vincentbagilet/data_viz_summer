@@ -1,0 +1,541 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Data Visualization for Economics Research",
+    "section": "",
+    "text": "This website gathers resources for the lecture Data Visualization for Economics Research of the Lyon Summer School in Empirical Research Methods at ENS de Lyon (July 1 - July 3 2025).\n\n\n\n\n\nA significant portion of communicating economic research results-whether in presentations or written papers—relies on graphs and visuals. This session aims to help you develop essential skills for effective data visualization. We will cover fundamental visualization principles and general best practices before examining the specific challenges of data visualization for causal inference. While it can be a powerful rhetorical tool for causal inference, data visualizations can also be misleading if not handled carefully."
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#everywhere-but-not-so-simple",
+    "href": "content/slides/slides_data_viz_summer.html#everywhere-but-not-so-simple",
+    "title": "Data Visualization for Economics Research",
+    "section": "Everywhere but not so simple",
+    "text": "Everywhere but not so simple\n\n\nData viz is everywhere\nWe work with data, we routinely (need to) visualize it\nSeems pretty simple, we all know how to make graphs\nSure BUT there are a few things we need to think about when visualizing data\nOnce you pay attention to data viz, it is fun, instructive and satisfying!"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#data-viz-can-be-obviously-deceptive",
+    "href": "content/slides/slides_data_viz_summer.html#data-viz-can-be-obviously-deceptive",
+    "title": "Data Visualization for Economics Research",
+    "section": "Data viz can be obviously deceptive",
+    "text": "Data viz can be obviously deceptive"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#or-difficult-to-interpret",
+    "href": "content/slides/slides_data_viz_summer.html#or-difficult-to-interpret",
+    "title": "Data Visualization for Economics Research",
+    "section": "…or difficult to interpret",
+    "text": "…or difficult to interpret"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#they-can-be-memorable-and-insightfull",
+    "href": "content/slides/slides_data_viz_summer.html#they-can-be-memorable-and-insightfull",
+    "title": "Data Visualization for Economics Research",
+    "section": "They can be memorable and insightfull",
+    "text": "They can be memorable and insightfull"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#and-also-beautiful",
+    "href": "content/slides/slides_data_viz_summer.html#and-also-beautiful",
+    "title": "Data Visualization for Economics Research",
+    "section": "…and also beautiful",
+    "text": "…and also beautiful"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#outline",
+    "href": "content/slides/slides_data_viz_summer.html#outline",
+    "title": "Data Visualization for Economics Research",
+    "section": "Outline",
+    "text": "Outline\n 1. Usefulness and importance\n 2. Key data viz principles\n 3. Building a graph\n 4. Data viz for research in economics"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#types-of-graphs",
+    "href": "content/slides/slides_data_viz_summer.html#types-of-graphs",
+    "title": "Data Visualization for Economics Research",
+    "section": "Types of graphs",
+    "text": "Types of graphs\n\n\n\n\n\n\n\nGraphs to explore\n\n\n\n\n\nAnalyze\nConfirm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGraphs to explain\n\n\n\n\n\nInform\nConvince\n\n\n\n\n\n\n\n\n\n\nThey have different goals and audiences"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#explore-make-sense-of-your-data",
+    "href": "content/slides/slides_data_viz_summer.html#explore-make-sense-of-your-data",
+    "title": "Data Visualization for Economics Research",
+    "section": "Explore: make sense of your data",
+    "text": "Explore: make sense of your data\n\n\nData often contain patterns; data viz can be tremendously helpful to identify them\nBut need to look at your raw data\nThat’s the role of the exploratory data analysis (EDA)\nIt may also help you formulating hypotheses (to test on other data sets)"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#look-at-your-raw-data",
+    "href": "content/slides/slides_data_viz_summer.html#look-at-your-raw-data",
+    "title": "Data Visualization for Economics Research",
+    "section": "Look at your raw data",
+    "text": "Look at your raw data\n\n\nSame relation, different patterns"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#look-at-your-raw-data-1",
+    "href": "content/slides/slides_data_viz_summer.html#look-at-your-raw-data-1",
+    "title": "Data Visualization for Economics Research",
+    "section": "Look at your raw data",
+    "text": "Look at your raw data\n\n\n\n\n\n\nSome plots (or summary statistics) help summarize but can also hide information"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#explain-communicate-your-results",
+    "href": "content/slides/slides_data_viz_summer.html#explain-communicate-your-results",
+    "title": "Data Visualization for Economics Research",
+    "section": "Explain: communicate your results",
+    "text": "Explain: communicate your results\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCountry\nISO\n2020\n2020 Ranking\n2025\n2025 Ranking\nRegion\nPattern\n\n\n\n\nAfghanistan\nAFG\n62.30\n122\n17.88\n175\nAsia-Pacific\nLower\n\n\nAlbania\nALB\n69.75\n84\n58.18\n80\nEU & Balkans\nLower\n\n\nAlgeria\nDZA\n54.48\n146\n44.64\n126\nMENA\nLower\n\n\nAndorra\nAND\n76.77\n37\n63.30\n65\nEU & Balkans\nLower\n\n\nAngola\nAGO\n66.08\n106\n52.67\n100\nAfrica\nLower\n\n\nArgentina\nARG\n71.22\n64\n56.14\n87\nAmericas\nLower\n\n\nArmenia\nARM\n71.40\n61\n73.96\n34\nEECA\nHigher\n\n\nAustralia\nAUS\n79.79\n26\n75.15\n29\nAsia-Pacific\nLower\n\n\nAustria\nAUT\n84.22\n18\n78.12\n22\nEU & Balkans\nLower\n\n\nAzerbaijan\nAZE\n41.52\n168\n25.47\n167\nEECA\nLower\n\n\nBahrain\nBHR\n39.87\n169\n30.24\n157\nMENA\nLower\n\n\nBangladesh\nBGD\n50.63\n151\n33.71\n149\nAsia-Pacific\nLower\n\n\nBelarus\nBLR\n50.25\n153\n25.73\n166\nEECA\nLower\n\n\nBelgium\nBEL\n87.43\n12\n80.12\n18\nEU & Balkans\nLower\n\n\nBelize\nBLZ\n72.50\n53\n68.32\n47\nAmericas\nLower\n\n\nBenin\nBEN\n64.89\n113\n54.60\n92\nAfrica\nLower\n\n\nBhutan\nBTN\n71.10\n67\n32.62\n152\nAsia-Pacific\nLower\n\n\nBolivia\nBOL\n64.63\n114\n54.09\n93\nAmericas\nLower\n\n\nBosnia and Herzegovina\nBIH\n71.49\n58\n56.33\n86\nEU & Balkans\nLower\n\n\nBotswana\nBWA\n76.44\n39\n57.64\n81\nAfrica\nLower\n\n\nBrazil\nBRA\n65.95\n107\n63.80\n63\nAmericas\nLower\n\n\nBrunei\nBRN\n50.35\n152\n53.47\n97\nAsia-Pacific\nHigher\n\n\nBulgaria\nBGR\n64.94\n111\n60.78\n70\nEU & Balkans\nLower\n\n\nBurkina Faso\nBFA\n76.53\n38\n52.25\n105\nAfrica\nLower\n\n\nBurundi\nBDI\n44.67\n160\n45.44\n125\nAfrica\nHigher\n\n\nCambodia\nKHM\n54.54\n144\n28.18\n161\nAsia-Pacific\nLower\n\n\nCameroon\nCMR\n56.72\n134\n42.75\n131\nAfrica\nLower\n\n\nCanada\nCAN\n84.71\n16\n78.75\n21\nAmericas\nLower\n\n\nCape Verde\nCPV\n79.85\n25\n74.98\n30\nAfrica\nLower\n\n\nCentral African Republic\nCAF\n57.13\n132\n60.15\n72\nAfrica\nHigher\n\n\nChad\nTCD\n60.30\n123\n51.89\n108\nAfrica\nLower\n\n\nChile\nCHL\n72.69\n51\n62.25\n69\nAmericas\nLower\n\n\nChina\nCHN\n21.52\n177\n14.80\n178\nAsia-Pacific\nLower\n\n\nColombia\nCOL\n57.34\n130\n49.80\n115\nAmericas\nLower\n\n\nComoros\nCOM\n70.23\n75\n59.27\n75\nAfrica\nLower\n\n\nCongo\nCOG\n63.44\n118\n60.58\n71\nAfrica\nLower\n\n\nCosta Rica\nCRI\n89.47\n7\n73.09\n36\nAmericas\nLower\n\n\nCroatia\nHRV\n71.49\n59\n64.20\n60\nEU & Balkans\nLower\n\n\nCuba\nCUB\n36.19\n171\n26.03\n165\nAmericas\nLower\n\n\nCyprus\nCYP\n79.55\n27\n59.04\n77\nEU & Balkans\nLower\n\n\nCyprus North\nCTU\n70.21\n77\n54.84\n91\nEU & Balkans\nLower\n\n\nCzechia\nCZE\n76.43\n40\n83.96\n10\nEU & Balkans\nHigher\n\n\nDR Congo\nCOD\n50.91\n150\n42.31\n133\nAfrica\nLower\n\n\nDenmark\nDNK\n91.87\n3\n86.93\n6\nEU & Balkans\nLower\n\n\nDjibouti\nDJI\n23.27\n176\n25.36\n168\nAfrica\nHigher\n\n\nDominican Republic\nDOM\n72.10\n55\n69.87\n43\nAmericas\nLower\n\n\nEast Timor\nTLS\n70.10\n78\n71.79\n39\nAsia-Pacific\nHigher\n\n\nEcuador\nECU\n67.38\n98\n53.76\n94\nAmericas\nLower\n\n\nEgypt\nEGY\n43.18\n166\n24.74\n170\nMENA\nLower\n\n\nEl Salvador\nSLV\n70.30\n74\n41.19\n135\nAmericas\nLower\n\n\nEquatorial Guinea\nGNQ\n43.62\n165\n48.68\n118\nAfrica\nHigher\n\n\nEritrea\nERI\n16.50\n178\n11.32\n180\nAfrica\nLower\n\n\nEstonia\nEST\n87.39\n14\n89.46\n2\nEU & Balkans\nHigher\n\n\nEswatini\nSWZ\n54.85\n141\n52.86\n98\nAfrica\nLower\n\n\nEthiopia\nETH\n67.18\n99\n36.92\n145\nAfrica\nLower\n\n\nFiji\nFJI\n72.59\n52\n71.20\n40\nAsia-Pacific\nLower\n\n\nFinland\nFIN\n92.07\n2\n87.18\n5\nEU & Balkans\nLower\n\n\nFrance\nFRA\n77.08\n34\n76.62\n25\nEU & Balkans\nLower\n\n\nGabon\nGAB\n62.80\n121\n70.65\n41\nAfrica\nHigher\n\n\nGambia\nGMB\n69.38\n87\n65.49\n58\nAfrica\nLower\n\n\nGeorgia\nGEO\n71.41\n60\n50.53\n114\nEECA\nLower\n\n\nGermany\nDEU\n87.84\n11\n83.85\n11\nEU & Balkans\nLower\n\n\nGhana\nGHA\n77.74\n30\n67.13\n52\nAfrica\nLower\n\n\nGreece\nGRC\n71.20\n65\n55.37\n89\nEU & Balkans\nLower\n\n\nGuatemala\nGTM\n64.26\n116\n40.32\n138\nAmericas\nLower\n\n\nGuinea\nGIN\n65.66\n110\n52.53\n103\nAfrica\nLower\n\n\nGuinea-Bissau\nGNB\n67.94\n94\n51.36\n110\nAfrica\nLower\n\n\nGuyana\nGUY\n73.37\n49\n60.12\n73\nAmericas\nLower\n\n\nHaiti\nHTI\n69.80\n83\n51.06\n111\nAmericas\nLower\n\n\nHonduras\nHND\n51.80\n148\n38.51\n142\nAmericas\nLower\n\n\nHong Kong\nHKG\n69.99\n80\n39.86\n140\nAsia-Pacific\nLower\n\n\nHungary\nHUN\n69.16\n89\n62.82\n68\nEU & Balkans\nLower\n\n\nIceland\nISL\n84.88\n15\n81.36\n17\nEU & Balkans\nLower\n\n\nIndia\nIND\n54.67\n142\n32.96\n151\nAsia-Pacific\nLower\n\n\nIndonesia\nIDN\n63.18\n119\n44.13\n127\nAsia-Pacific\nLower\n\n\nIran\nIRN\n35.19\n173\n16.22\n176\nMENA\nLower\n\n\nIraq\nIRQ\n44.63\n162\n30.69\n155\nMENA\nLower\n\n\nIreland\nIRL\n87.40\n13\n86.92\n7\nEU & Balkans\nLower\n\n\nIsrael\nISR\n69.16\n88\n51.06\n112\nMENA\nLower\n\n\nItaly\nITA\n76.31\n41\n68.01\n49\nEU & Balkans\nLower\n\n\nIvory Coast\nCIV\n71.06\n68\n63.69\n64\nAfrica\nLower\n\n\nJamaica\nJAM\n89.49\n6\n75.83\n26\nAmericas\nLower\n\n\nJapan\nJPN\n71.14\n66\n63.14\n66\nAsia-Pacific\nLower\n\n\nJordan\nJOR\n57.92\n128\n35.25\n147\nMENA\nLower\n\n\nKazakhstan\nKAZ\n45.89\n157\n39.34\n141\nEECA\nLower\n\n\nKenya\nKEN\n66.28\n103\n49.41\n117\nAfrica\nLower\n\n\nKosovo\nXKX\n70.67\n70\n52.73\n99\nEU & Balkans\nLower\n\n\nKuwait\nKWT\n65.70\n109\n44.06\n128\nMENA\nLower\n\n\nKyrgyzstan\nKGZ\n69.81\n82\n37.46\n144\nEECA\nLower\n\n\nLaos\nLAO\n35.72\n172\n33.22\n150\nAsia-Pacific\nLower\n\n\nLatvia\nLVA\n81.44\n22\n81.82\n15\nEU & Balkans\nHigher\n\n\nLebanon\nLBN\n66.81\n102\n42.62\n132\nMENA\nLower\n\n\nLesotho\nLSO\n69.55\n86\n52.07\n107\nAfrica\nLower\n\n\nLiberia\nLBR\n67.75\n95\n66.61\n54\nAfrica\nLower\n\n\nLibya\nLBY\n44.23\n164\n40.42\n137\nMENA\nLower\n\n\nLiechtenstein\nLIE\n80.48\n24\n83.42\n12\nEU & Balkans\nHigher\n\n\nLithuania\nLTU\n78.81\n28\n82.27\n14\nEU & Balkans\nHigher\n\n\nLuxembourg\nLUX\n84.54\n17\n83.04\n13\nEU & Balkans\nLower\n\n\nMadagascar\nMDG\n72.32\n54\n50.80\n113\nAfrica\nLower\n\n\nMalawi\nMWI\n70.68\n69\n59.20\n76\nAfrica\nLower\n\n\nMalaysia\nMYS\n66.88\n101\n56.09\n88\nAsia-Pacific\nLower\n\n\nMaldives\nMDV\n70.07\n79\n52.46\n104\nAsia-Pacific\nLower\n\n\nMali\nMLI\n65.88\n108\n48.23\n119\nAfrica\nLower\n\n\nMalta\nMLT\n69.84\n81\n62.96\n67\nEU & Balkans\nLower\n\n\nMauritania\nMRT\n67.46\n97\n67.52\n50\nAfrica\nHigher\n\n\nMauritius\nMUS\n72.00\n56\n67.31\n51\nAfrica\nLower\n\n\nMexico\nMEX\n54.55\n143\n45.55\n124\nAmericas\nLower\n\n\nMoldova\nMDA\n68.84\n91\n73.36\n35\nEECA\nHigher\n\n\nMongolia\nMNG\n70.39\n73\n52.57\n102\nAsia-Pacific\nLower\n\n\nMontenegro\nMNE\n66.17\n105\n72.83\n37\nEU & Balkans\nHigher\n\n\nMorocco\nMAR\n57.12\n133\n48.04\n120\nMENA\nLower\n\n\nMozambique\nMOZ\n66.21\n104\n52.63\n101\nAfrica\nLower\n\n\nMyanmar\nMMR\n55.23\n139\n25.32\n169\nAsia-Pacific\nLower\n\n\nNamibia\nNAM\n80.75\n23\n75.35\n28\nAfrica\nLower\n\n\nNepal\nNPL\n64.90\n112\n55.20\n90\nAsia-Pacific\nLower\n\n\nNetherlands\nNLD\n90.04\n5\n88.64\n3\nEU & Balkans\nLower\n\n\nNew Zealand\nNZL\n89.31\n9\n81.37\n16\nAsia-Pacific\nLower\n\n\nNicaragua\nNIC\n64.19\n117\n22.83\n172\nAmericas\nLower\n\n\nNiger\nNER\n71.75\n57\n57.05\n83\nAfrica\nLower\n\n\nNigeria\nNGA\n64.37\n115\n46.81\n122\nAfrica\nLower\n\n\nNorth Korea\nPRK\n14.18\n180\n12.64\n179\nAsia-Pacific\nLower\n\n\nNorth Macedonia\nMKD\n68.72\n92\n70.44\n42\nEU & Balkans\nHigher\n\n\nNorway\nNOR\n92.16\n1\n92.31\n1\nEU & Balkans\nHigher\n\n\nOECS\nCSS\n76.22\n44\n68.08\n48\nAmericas\nLower\n\n\nOman\nOMN\n56.58\n135\n42.29\n134\nMENA\nLower\n\n\nPakistan\nPAK\n54.48\n145\n29.62\n158\nAsia-Pacific\nLower\n\n\nPalestine\nPSE\n55.91\n137\n27.41\n163\nMENA\nLower\n\n\nPanama\nPAN\n70.22\n76\n66.75\n53\nAmericas\nLower\n\n\nPapua New Guinea\nPNG\n76.07\n46\n58.35\n78\nAsia-Pacific\nLower\n\n\nParaguay\nPRY\n67.03\n100\n56.84\n84\nAmericas\nLower\n\n\nPeru\nPER\n69.06\n90\n42.88\n130\nAmericas\nLower\n\n\nPhilippines\nPHL\n56.46\n136\n49.57\n116\nAsia-Pacific\nLower\n\n\nPoland\nPOL\n71.35\n62\n74.79\n31\nEU & Balkans\nHigher\n\n\nPortugal\nPRT\n88.17\n10\n84.26\n8\nEU & Balkans\nLower\n\n\nQatar\nQAT\n57.49\n129\n58.25\n79\nMENA\nHigher\n\n\nRomania\nROU\n74.09\n48\n66.42\n55\nEU & Balkans\nLower\n\n\nRussia\nRUS\n51.08\n149\n24.57\n171\nEECA\nLower\n\n\nRwanda\nRWA\n49.66\n155\n35.84\n146\nAfrica\nLower\n\n\nSamoa\nWSM\n81.75\n21\n69.28\n44\nAsia-Pacific\nLower\n\n\nSaudi Arabia\nSAU\n37.86\n170\n27.94\n162\nMENA\nLower\n\n\nSenegal\nSEN\n76.01\n47\n59.43\n74\nAfrica\nLower\n\n\nSerbia\nSRB\n68.38\n93\n53.55\n96\nEU & Balkans\nLower\n\n\nSeychelles\nSYC\n71.34\n63\n68.56\n45\nAfrica\nLower\n\n\nSierra Leone\nSLE\n69.72\n85\n66.36\n56\nAfrica\nLower\n\n\nSingapore\nSGP\n44.77\n158\n45.78\n123\nAsia-Pacific\nHigher\n\n\nSlovakia\nSVK\n77.33\n33\n71.93\n38\nEU & Balkans\nLower\n\n\nSlovenia\nSVN\n77.36\n32\n74.06\n33\nEU & Balkans\nLower\n\n\nSomalia\nSOM\n44.55\n163\n40.49\n136\nAfrica\nLower\n\n\nSouth Africa\nZAF\n77.59\n31\n75.71\n27\nAfrica\nLower\n\n\nSouth Korea\nKOR\n76.30\n42\n64.06\n61\nAsia-Pacific\nLower\n\n\nSouth Sudan\nSSD\n55.51\n138\n51.63\n109\nAfrica\nLower\n\n\nSpain\nESP\n77.84\n29\n77.35\n23\nEU & Balkans\nLower\n\n\nSri Lanka\nLKA\n58.06\n127\n39.93\n139\nAsia-Pacific\nLower\n\n\nSudan\nSDN\n44.67\n159\n30.34\n156\nAfrica\nLower\n\n\nSuriname\nSUR\n82.50\n20\n74.49\n32\nAmericas\nLower\n\n\nSweden\nSWE\n90.75\n4\n88.13\n4\nEU & Balkans\nLower\n\n\nSwitzerland\nCHE\n89.38\n8\n83.98\n9\nEU & Balkans\nLower\n\n\nSyria\nSYR\n27.43\n174\n15.82\n177\nMENA\nLower\n\n\nTajikistan\nTJK\n44.66\n161\n32.21\n153\nEECA\nLower\n\n\nTanzania\nTZA\n59.75\n124\n53.68\n95\nAfrica\nLower\n\n\nThailand\nTHA\n55.06\n140\n56.72\n85\nAsia-Pacific\nHigher\n\n\nTogo\nTGO\n70.67\n71\n48.03\n121\nAfrica\nLower\n\n\nTonga\nTON\n72.73\n50\n68.39\n46\nAsia-Pacific\nLower\n\n\nTrinidad and Tobago\nTTO\n76.78\n36\n79.71\n19\nAmericas\nHigher\n\n\nTunisia\nTUN\n70.55\n72\n43.48\n129\nMENA\nLower\n\n\nTurkey\nTUR\n49.98\n154\n29.40\n159\nEECA\nLower\n\n\nTurkmenistan\nTKM\n14.56\n179\n19.14\n174\nEECA\nHigher\n\n\nUganda\nUGA\n59.05\n125\n37.61\n143\nAfrica\nLower\n\n\nUkraine\nUKR\n67.48\n96\n63.93\n62\nEECA\nLower\n\n\nUnited Arab Emirates\nARE\n57.31\n131\n26.91\n164\nMENA\nLower\n\n\nUnited Kingdom\nGBR\n77.07\n35\n78.89\n20\nEU & Balkans\nHigher\n\n\nUnited States\nUSA\n76.15\n45\n65.49\n57\nAmericas\nLower\n\n\nUruguay\nURY\n84.21\n19\n65.18\n59\nAmericas\nLower\n\n\nUzbekistan\nUZB\n46.93\n156\n35.24\n148\nEECA\nLower\n\n\nVenezuela\nVEN\n54.34\n147\n29.21\n160\nAmericas\nLower\n\n\nVietnam\nVNM\n25.29\n175\n19.74\n173\nAsia-Pacific\nLower\n\n\nYemen\nYEM\n41.75\n167\n31.45\n154\nMENA\nLower\n\n\nZambia\nZMB\n63.00\n120\n57.33\n82\nAfrica\nLower\n\n\nZimbabwe\nZWE\n59.05\n126\n52.10\n106\nAfrica\nLower"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#getting-your-point-across",
+    "href": "content/slides/slides_data_viz_summer.html#getting-your-point-across",
+    "title": "Data Visualization for Economics Research",
+    "section": "Getting your point across",
+    "text": "Getting your point across"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#data-viz-as-a-rhetorical-tool",
+    "href": "content/slides/slides_data_viz_summer.html#data-viz-as-a-rhetorical-tool",
+    "title": "Data Visualization for Economics Research",
+    "section": "Data viz as a rhetorical tool",
+    "text": "Data viz as a rhetorical tool"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#data-viz-as-a-rhetorical-tool-1",
+    "href": "content/slides/slides_data_viz_summer.html#data-viz-as-a-rhetorical-tool-1",
+    "title": "Data Visualization for Economics Research",
+    "section": "Data viz as a rhetorical tool",
+    "text": "Data viz as a rhetorical tool"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#the-power-of-data-viz",
+    "href": "content/slides/slides_data_viz_summer.html#the-power-of-data-viz",
+    "title": "Data Visualization for Economics Research",
+    "section": "The power of data viz",
+    "text": "The power of data viz\n\n\nWe can easily see patterns presented in certain ways, but if they are presented in other ways, they become invisible [..] Following perception-based rules, we can present our data in such a way that the important and informative patterns stand out. If we disobey the rules, our data will be incomprehensible or misleading. Ware, C. (2012). Information Visualization, Third Edition: Perception for Design"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#data-viz-can-be-misleading",
+    "href": "content/slides/slides_data_viz_summer.html#data-viz-can-be-misleading",
+    "title": "Data Visualization for Economics Research",
+    "section": "Data viz can be misleading",
+    "text": "Data viz can be misleading\n\n\nWe have briefly discussed that before\nThere is a breadth of ways in which they can be misleading\nCharts can be wrong. They can also be correct BUT misleading\nSee Defense Against Dishonest Charts on Flowing Data"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#map-projections",
+    "href": "content/slides/slides_data_viz_summer.html#map-projections",
+    "title": "Data Visualization for Economics Research",
+    "section": "Map projections",
+    "text": "Map projections"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#cutting-0-on-the-y-axis",
+    "href": "content/slides/slides_data_viz_summer.html#cutting-0-on-the-y-axis",
+    "title": "Data Visualization for Economics Research",
+    "section": "Cutting 0 on the y-axis",
+    "text": "Cutting 0 on the y-axis"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#theory",
+    "href": "content/slides/slides_data_viz_summer.html#theory",
+    "title": "Data Visualization for Economics Research",
+    "section": "Theory",
+    "text": "Theory\n\n\nThere is actually a lot of theory behind data viz:\n\nPerception,\nColors,\nDesign,\netc\n\nWorth learning about it and being aware of key principles\nLeverage it to make better data viz"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#perception",
+    "href": "content/slides/slides_data_viz_summer.html#perception",
+    "title": "Data Visualization for Economics Research",
+    "section": "Perception",
+    "text": "Perception\n\n\n\n\n\n\nEbbinghaus illusion"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#relative-differences-matter",
+    "href": "content/slides/slides_data_viz_summer.html#relative-differences-matter",
+    "title": "Data Visualization for Economics Research",
+    "section": "Relative differences matter",
+    "text": "Relative differences matter\n\n\n\n\n\n\nLaw of simultaneous contrast"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#gestalt-principles",
+    "href": "content/slides/slides_data_viz_summer.html#gestalt-principles",
+    "title": "Data Visualization for Economics Research",
+    "section": "Gestalt principles",
+    "text": "Gestalt principles\n\n\n\n\nHow our brain interprets what we see\nHow it organize visual information\nHow we group elements together\nUse them to highlight some patterns and downplay others"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#data-to-ink-ratio",
+    "href": "content/slides/slides_data_viz_summer.html#data-to-ink-ratio",
+    "title": "Data Visualization for Economics Research",
+    "section": "Data-to-ink ratio",
+    "text": "Data-to-ink ratio\n\n\n\n\nIntroduced by Edward Tufte\nIn a nutshell: avoid clutter\nErase non-essential and redundant information\n“Above all else show the data”\nSometimes good to break these rules"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#data-to-ink-ratio-1",
+    "href": "content/slides/slides_data_viz_summer.html#data-to-ink-ratio-1",
+    "title": "Data Visualization for Economics Research",
+    "section": "Data-to-ink ratio",
+    "text": "Data-to-ink ratio\n\n\n\\(\\text{data-ink ratio} = \\dfrac{\\text{data  ink}}{\\text{total ink on graph}}\\)"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#graph-aesthetics",
+    "href": "content/slides/slides_data_viz_summer.html#graph-aesthetics",
+    "title": "Data Visualization for Economics Research",
+    "section": "Graph aesthetics",
+    "text": "Graph aesthetics\n\n\nWhy make nice looking visualizations?\nTo trigger interest, to intrigue, to catch the eye\nThat affects how people perceive information\nNice looking visuals may be more memorable\nIn that sense, not everything is chartjunk"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#pretty-and-memorable",
+    "href": "content/slides/slides_data_viz_summer.html#pretty-and-memorable",
+    "title": "Data Visualization for Economics Research",
+    "section": "Pretty and memorable",
+    "text": "Pretty and memorable"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#engaging-the-audience",
+    "href": "content/slides/slides_data_viz_summer.html#engaging-the-audience",
+    "title": "Data Visualization for Economics Research",
+    "section": "Engaging the audience",
+    "text": "Engaging the audience"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#graph-aesthetics-in-academia",
+    "href": "content/slides/slides_data_viz_summer.html#graph-aesthetics-in-academia",
+    "title": "Data Visualization for Economics Research",
+    "section": "Graph aesthetics in academia",
+    "text": "Graph aesthetics in academia\n\n\nPretty graphs are useful in data journalism and so on, but what about academia?\nThey are also only more pleasing to look at, they also make readers want to engage more with them\nMaybe better to keep the design rather minimalist\nPretty does not always mean non-simple. Simple graphs have value.\nOpinion on credibility partly based on aesthetics\n\n\n“This paper did not receive the care it deserved” comment given to a now senior researcher when they submitted a paper with a sketchy graph"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#credibility-and-aesthetics",
+    "href": "content/slides/slides_data_viz_summer.html#credibility-and-aesthetics",
+    "title": "Data Visualization for Economics Research",
+    "section": "Credibility and aesthetics",
+    "text": "Credibility and aesthetics"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#originality-vs-familiarity",
+    "href": "content/slides/slides_data_viz_summer.html#originality-vs-familiarity",
+    "title": "Data Visualization for Economics Research",
+    "section": "“Originality” VS “familiarity”",
+    "text": "“Originality” VS “familiarity”\n\n\nOriginal graphs may trigger interest\nFamiliar graphs may convey the point more easily\nMy take:\n\nUse the best type of graph, regardless of its originality/familiarity\nIf it is different from what people are used to, make it easy to read"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#know-what-chart-types-exist",
+    "href": "content/slides/slides_data_viz_summer.html#know-what-chart-types-exist",
+    "title": "Data Visualization for Economics Research",
+    "section": "Know what chart types exist",
+    "text": "Know what chart types exist\n\n\nKnow what is possible to do to find what you need\nKnow graph names (to search the internet regarding how to code them)\nRefer to existing graph (type) galleries:\n\nData Viz Project\nFlowing Data - Chart type\nDataviz Inspiration\nR graph gallery"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#steps-to-choose-a-chart-type",
+    "href": "content/slides/slides_data_viz_summer.html#steps-to-choose-a-chart-type",
+    "title": "Data Visualization for Economics Research",
+    "section": "Steps to choose a chart type",
+    "text": "Steps to choose a chart type\n\n\nWhat do you want to show in your graph?\nWhat is the main message you want to convey?\nWith the same data, you can:\n\nTell a lot of different stories\nEmphasize different points\n\nMaking a graph = choosing a lighting for your data"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#dataset-many-graphs-many-stories",
+    "href": "content/slides/slides_data_viz_summer.html#dataset-many-graphs-many-stories",
+    "title": "Data Visualization for Economics Research",
+    "section": "1 dataset, many graphs, many stories",
+    "text": "1 dataset, many graphs, many stories"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#type-of-relationship-to-show",
+    "href": "content/slides/slides_data_viz_summer.html#type-of-relationship-to-show",
+    "title": "Data Visualization for Economics Research",
+    "section": "Type of relationship to show",
+    "text": "Type of relationship to show\n\nIn your graph, you may want to show a:\n\n\n\n\nDistribution\nEvolution over time\nMagnitude\nPart of a whole\nRanking\n\n\n\nGeographical patterns\nFlow\nCorrelations\nDeviation"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#graph-type-decision-tree",
+    "href": "content/slides/slides_data_viz_summer.html#graph-type-decision-tree",
+    "title": "Data Visualization for Economics Research",
+    "section": "Graph type decision tree",
+    "text": "Graph type decision tree"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#example-data",
+    "href": "content/slides/slides_data_viz_summer.html#example-data",
+    "title": "Data Visualization for Economics Research",
+    "section": "Example data",
+    "text": "Example data\n\n\n\n\n\ncountry\nyear\nlifeExp\n\n\n\n\nFrance\n1952\n67.410\n\n\nFrance\n1957\n68.930\n\n\nFrance\n1962\n70.510\n\n\nFrance\n1967\n71.550\n\n\nFrance\n1972\n72.380\n\n\nFrance\n1977\n73.830\n\n\nFrance\n1982\n74.890\n\n\nFrance\n1987\n76.340\n\n\nFrance\n1992\n77.460\n\n\nFrance\n1997\n78.640\n\n\nFrance\n2002\n79.590\n\n\nFrance\n2007\n80.657\n\n\nJapan\n1952\n63.030\n\n\nJapan\n1957\n65.500\n\n\nJapan\n1962\n68.730\n\n\nJapan\n1967\n71.430\n\n\nJapan\n1972\n73.420\n\n\nJapan\n1977\n75.380\n\n\nJapan\n1982\n77.110\n\n\nJapan\n1987\n78.670\n\n\nJapan\n1992\n79.360\n\n\nJapan\n1997\n80.690\n\n\nJapan\n2002\n82.000\n\n\nJapan\n2007\n82.603\n\n\nNiger\n1952\n37.444\n\n\nNiger\n1957\n38.598\n\n\nNiger\n1962\n39.487\n\n\nNiger\n1967\n40.118\n\n\nNiger\n1972\n40.546\n\n\nNiger\n1977\n41.291\n\n\nNiger\n1982\n42.598\n\n\nNiger\n1987\n44.555\n\n\nNiger\n1992\n47.391\n\n\nNiger\n1997\n51.313\n\n\nNiger\n2002\n54.496\n\n\nNiger\n2007\n56.867"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#a-concrete-example",
+    "href": "content/slides/slides_data_viz_summer.html#a-concrete-example",
+    "title": "Data Visualization for Economics Research",
+    "section": "A concrete example",
+    "text": "A concrete example"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#legible-text",
+    "href": "content/slides/slides_data_viz_summer.html#legible-text",
+    "title": "Data Visualization for Economics Research",
+    "section": "Legible text",
+    "text": "Legible text"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#title-clear-axis-labels-and-source",
+    "href": "content/slides/slides_data_viz_summer.html#title-clear-axis-labels-and-source",
+    "title": "Data Visualization for Economics Research",
+    "section": "Title, clear axis labels and source",
+    "text": "Title, clear axis labels and source"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#scale-of-the-y-axis",
+    "href": "content/slides/slides_data_viz_summer.html#scale-of-the-y-axis",
+    "title": "Data Visualization for Economics Research",
+    "section": "Scale of the y-axis",
+    "text": "Scale of the y-axis"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#stylize",
+    "href": "content/slides/slides_data_viz_summer.html#stylize",
+    "title": "Data Visualization for Economics Research",
+    "section": "Stylize",
+    "text": "Stylize"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#an-alternative-story",
+    "href": "content/slides/slides_data_viz_summer.html#an-alternative-story",
+    "title": "Data Visualization for Economics Research",
+    "section": "An alternative story",
+    "text": "An alternative story"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#graphs-in-an-oral-presentation",
+    "href": "content/slides/slides_data_viz_summer.html#graphs-in-an-oral-presentation",
+    "title": "Data Visualization for Economics Research",
+    "section": "Graphs in an oral presentation",
+    "text": "Graphs in an oral presentation\n\n\nExplain orally what your graph represents!\n\nWhat is on the x-axis?\nWhat is on the y-axis?\nWhat is the message you want to convey?"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#avoid-using-many-different-colors",
+    "href": "content/slides/slides_data_viz_summer.html#avoid-using-many-different-colors",
+    "title": "Data Visualization for Economics Research",
+    "section": "Avoid using many different colors",
+    "text": "Avoid using many different colors\n\nIf need more than 7 colors or so:\n\n\n\n\nUse another graph\n\n\n\n\n\n\n\n\nGroup categories together"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#use-intuitive-colors",
+    "href": "content/slides/slides_data_viz_summer.html#use-intuitive-colors",
+    "title": "Data Visualization for Economics Research",
+    "section": "Use intuitive colors",
+    "text": "Use intuitive colors"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#colorblind-friendly-visualizations",
+    "href": "content/slides/slides_data_viz_summer.html#colorblind-friendly-visualizations",
+    "title": "Data Visualization for Economics Research",
+    "section": "Colorblind-friendly visualizations",
+    "text": "Colorblind-friendly visualizations"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#use-gray.-emphasize.",
+    "href": "content/slides/slides_data_viz_summer.html#use-gray.-emphasize.",
+    "title": "Data Visualization for Economics Research",
+    "section": "Use gray. Emphasize.",
+    "text": "Use gray. Emphasize."
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#label-directly",
+    "href": "content/slides/slides_data_viz_summer.html#label-directly",
+    "title": "Data Visualization for Economics Research",
+    "section": "Label directly",
+    "text": "Label directly"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#order-your-data",
+    "href": "content/slides/slides_data_viz_summer.html#order-your-data",
+    "title": "Data Visualization for Economics Research",
+    "section": "Order your data",
+    "text": "Order your data"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#data-viz-caveats",
+    "href": "content/slides/slides_data_viz_summer.html#data-viz-caveats",
+    "title": "Data Visualization for Economics Research",
+    "section": "Data viz caveats",
+    "text": "Data viz caveats"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#sometimes-you-may-break-the-rules",
+    "href": "content/slides/slides_data_viz_summer.html#sometimes-you-may-break-the-rules",
+    "title": "Data Visualization for Economics Research",
+    "section": "Sometimes you may break the rules",
+    "text": "Sometimes you may break the rules\n\n\n\n\n\n\n\n\n\n9 colors\n\nBUT\n\n\nLabeled directly\nShade reinforces grouping"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#nice-data-viz",
+    "href": "content/slides/slides_data_viz_summer.html#nice-data-viz",
+    "title": "Data Visualization for Economics Research",
+    "section": "Nice data viz",
+    "text": "Nice data viz"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#nice-data-viz-1",
+    "href": "content/slides/slides_data_viz_summer.html#nice-data-viz-1",
+    "title": "Data Visualization for Economics Research",
+    "section": "Nice data viz",
+    "text": "Nice data viz"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#pay-attention-to-data-viz",
+    "href": "content/slides/slides_data_viz_summer.html#pay-attention-to-data-viz",
+    "title": "Data Visualization for Economics Research",
+    "section": "Pay attention to data viz",
+    "text": "Pay attention to data viz\n\n\nIf you start paying attention to data viz when you see them, you will see what works, what does not\nIt is a process that takes place in the “background”: you will learn quickly and not realize it\nYou will see nice looking graphs (and hopefully enjoy it)\nYou will build better and more impactful graphs i"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#summary-of-concrete-recommendations",
+    "href": "content/slides/slides_data_viz_summer.html#summary-of-concrete-recommendations",
+    "title": "Data Visualization for Economics Research",
+    "section": "Summary of concrete recommendations",
+    "text": "Summary of concrete recommendations\n\n\n\n\n\n\n\n\nTake-away messages\n\n\n\nBuild legible, understandable and nice looking graphs.\nHave a title and explicit axes; present them.\nLimit the number of colors you use. Use gray.\nLabel your graphs directly, add annotations.\nThink twice before cutting the y-axis\nOverall, facilitate the retrieval of information."
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#when-do-we-use-graphs-in-econ",
+    "href": "content/slides/slides_data_viz_summer.html#when-do-we-use-graphs-in-econ",
+    "title": "Data Visualization for Economics Research",
+    "section": "When do we use graphs in econ?",
+    "text": "When do we use graphs in econ?\n\n\nAs rhetorical visualization tools for models\nTo explore our data\nTo check the validity of our models\nAs diagnostics\nTo communicate results"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#specificities-of-viz-in-economics",
+    "href": "content/slides/slides_data_viz_summer.html#specificities-of-viz-in-economics",
+    "title": "Data Visualization for Economics Research",
+    "section": "Specificities of viz in economics",
+    "text": "Specificities of viz in economics\n\n\nWe often have to deal with a massive number of observations\nWe often want to display a specific type of graph: estimation output\nOur analysis are often based on identifying assumptions that we can sometimes check through graphs\nWe often use very complex models. Visualization can help understand what we are actually estimating"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#large-numbers-of-observations",
+    "href": "content/slides/slides_data_viz_summer.html#large-numbers-of-observations",
+    "title": "Data Visualization for Economics Research",
+    "section": "Large numbers of observations",
+    "text": "Large numbers of observations"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#opacity-and-subsamples",
+    "href": "content/slides/slides_data_viz_summer.html#opacity-and-subsamples",
+    "title": "Data Visualization for Economics Research",
+    "section": "Opacity and subsamples",
+    "text": "Opacity and subsamples"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#use-heatmaps-instead-of-scatter-plots",
+    "href": "content/slides/slides_data_viz_summer.html#use-heatmaps-instead-of-scatter-plots",
+    "title": "Data Visualization for Economics Research",
+    "section": "Use heatmaps instead of scatter plots",
+    "text": "Use heatmaps instead of scatter plots"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#table-of-estimation-outputs",
+    "href": "content/slides/slides_data_viz_summer.html#table-of-estimation-outputs",
+    "title": "Data Visualization for Economics Research",
+    "section": "Table of estimation outputs",
+    "text": "Table of estimation outputs\n\n\n\n\n    \n\n    \n    \n      \n        \n        \n              \n                 \n                (1)\n              \n        \n        \n        \n                \n                  log(pop)\n                  0.172\n                \n                \n                  \n                  (0.021)\n                \n                \n                  log(gdpPercap)\n                  0.034\n                \n                \n                  \n                  (0.014)\n                \n                \n                  Num.Obs.\n                  1704\n                \n                \n                  R2\n                  0.935\n                \n                \n                  R2 Adj.\n                  0.929\n                \n                \n                  RMSE\n                  0.06\n                \n                \n                  Std.Errors\n                  by: country\n                \n                \n                  FE: country\n                  X\n                \n                \n                  FE: year\n                  X"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#whisker-plot-of-estimation-outputs",
+    "href": "content/slides/slides_data_viz_summer.html#whisker-plot-of-estimation-outputs",
+    "title": "Data Visualization for Economics Research",
+    "section": "Whisker plot of estimation outputs",
+    "text": "Whisker plot of estimation outputs"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#whisker-and-distribution",
+    "href": "content/slides/slides_data_viz_summer.html#whisker-and-distribution",
+    "title": "Data Visualization for Economics Research",
+    "section": "Whisker and distribution",
+    "text": "Whisker and distribution"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#graphs-hierarchy",
+    "href": "content/slides/slides_data_viz_summer.html#graphs-hierarchy",
+    "title": "Data Visualization for Economics Research",
+    "section": "Graphs hierarchy",
+    "text": "Graphs hierarchy\n\n\nWe make graphs for different audiences:\n\nFor you (and your future self): can be quite rough on the edges, but you will want to be able to understand it in the future\nFor presentations: you have some leeway for explaining orally your graphs\nFor the paper: there is only a couple of graphs in a paper; make them perfect"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#data-viz-at-large",
+    "href": "content/slides/slides_data_viz_summer.html#data-viz-at-large",
+    "title": "Data Visualization for Economics Research",
+    "section": "Data viz at large",
+    "text": "Data viz at large\n\n\n\n\n\nData viz is powerful, harness its power\nIt can be super insightful or equally deceptive\nIt can make your point memorable\nIt can also be truly beautiful\nLeverage perception and data viz principles"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#how-to-build-a-graph",
+    "href": "content/slides/slides_data_viz_summer.html#how-to-build-a-graph",
+    "title": "Data Visualization for Economics Research",
+    "section": "How to build a graph?",
+    "text": "How to build a graph?\n\n\n\n\n\n\n\n\nTake-away messages\n\n\n\nThere are many rules in data viz\nThe main goal is to facilitate the transmission of your message\nWhat is the main point you want to convey?\nChoose (one of) the right graph types\nExplain your graphs, orally and by facilitating reading, on your graph\nBUT avoid clutter"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#data-viz-for-economics",
+    "href": "content/slides/slides_data_viz_summer.html#data-viz-for-economics",
+    "title": "Data Visualization for Economics Research",
+    "section": "Data viz for economics",
+    "text": "Data viz for economics\n\n\nMost data viz principles and ideas also apply to economics and academia in general\nThere are however some specificities\nIn particular, some graphs and types of analyses are specific to academic research\nData viz can be extremely useful for research and communication"
+  },
+  {
+    "objectID": "content/lect_pages/lect_page_data_viz_summer.html",
+    "href": "content/lect_pages/lect_page_data_viz_summer.html",
+    "title": "Detaild Lecture Outline and Additional Resources",
+    "section": "",
+    "text": "Here is the outline of the lecture, along with links to additional resources on each topic.\n\n\n\n\n\n\nExplore and explain\n\nWhy looking at data?\nExisting tools for exploratory data analysis in R\n\nDeceptive visualizations\n\nDefense against dishonest charts\n\n\n\n\n\n\nPerception and color\n\nMore on Gestalt principles (plus a research article)\nHow to find and create good color palettes on\n\nData-to-ink ratio\n\nA critique of the data-to-ink ratio\n\nAesthetics\n\nReasons to make beautiful graphs on\nCredibility and typography\nIn defense of simple charts\n\n\n\n\n\n\nGraph galeries\n\nData Viz Project\nFlowing Data - Chart type\nDataviz Inspiration\nR graph gallery\n\nWhat questions to ask when creating charts\nDecision trees for a graph type\n\nFinancial Times tree\nData viz catalogue\nDatawrapper guide\nData to viz graph\n\nConcrete recommendations\n\nFor color\nFor text\n\nSpecific do’s and don’ts\n\nStatistics oriented\nA collection of dataviz caveats\nSometimes it’s ok to break the rules\n\n\n\n\n\n\nWhen do we use graphs in econ?\nSpecificities of viz in econ\n\nAvoid overplotting\nVisualize regression output\nVisualize regression output with distributions"
+  },
+  {
+    "objectID": "content/lect_pages/lect_page_data_viz_summer.html#detailed-outline-and-resources",
+    "href": "content/lect_pages/lect_page_data_viz_summer.html#detailed-outline-and-resources",
+    "title": "Detaild Lecture Outline and Additional Resources",
+    "section": "",
+    "text": "Here is the outline of the lecture, along with links to additional resources on each topic.\n\n\n\n\n\n\nExplore and explain\n\nWhy looking at data?\nExisting tools for exploratory data analysis in R\n\nDeceptive visualizations\n\nDefense against dishonest charts\n\n\n\n\n\n\nPerception and color\n\nMore on Gestalt principles (plus a research article)\nHow to find and create good color palettes on\n\nData-to-ink ratio\n\nA critique of the data-to-ink ratio\n\nAesthetics\n\nReasons to make beautiful graphs on\nCredibility and typography\nIn defense of simple charts\n\n\n\n\n\n\nGraph galeries\n\nData Viz Project\nFlowing Data - Chart type\nDataviz Inspiration\nR graph gallery\n\nWhat questions to ask when creating charts\nDecision trees for a graph type\n\nFinancial Times tree\nData viz catalogue\nDatawrapper guide\nData to viz graph\n\nConcrete recommendations\n\nFor color\nFor text\n\nSpecific do’s and don’ts\n\nStatistics oriented\nA collection of dataviz caveats\nSometimes it’s ok to break the rules\n\n\n\n\n\n\nWhen do we use graphs in econ?\nSpecificities of viz in econ\n\nAvoid overplotting\nVisualize regression output\nVisualize regression output with distributions"
+  },
+  {
+    "objectID": "content/lect_pages/lect_page_data_viz_summer.html#slides",
+    "href": "content/lect_pages/lect_page_data_viz_summer.html#slides",
+    "title": "Detaild Lecture Outline and Additional Resources",
+    "section": "Slides",
+    "text": "Slides\n Open slides in html\n Open slides in PDF"
+  },
+  {
+    "objectID": "content/syllabus.html",
+    "href": "content/syllabus.html",
+    "title": "Syllabus - Data Visualization for Economics Research",
+    "section": "",
+    "text": "Vincent Bagilet:  vincent.bagilet@ens-lyon.fr"
+  },
+  {
+    "objectID": "content/syllabus.html#instructor",
+    "href": "content/syllabus.html#instructor",
+    "title": "Syllabus - Data Visualization for Economics Research",
+    "section": "",
+    "text": "Vincent Bagilet:  vincent.bagilet@ens-lyon.fr"
+  },
+  {
+    "objectID": "content/syllabus.html#course-objectives-and-overview",
+    "href": "content/syllabus.html#course-objectives-and-overview",
+    "title": "Syllabus - Data Visualization for Economics Research",
+    "section": "Course objectives and overview",
+    "text": "Course objectives and overview\nA significant portion of communicating economic research results-whether in presentations or written papers—relies on graphs and visuals. This session aims to help you develop essential skills for effective data visualization. We will cover fundamental visualization principles and general best practices before examining the specific challenges of data visualization for causal inference. While it can be a powerful rhetorical tool for causal inference, data visualizations can also be misleading if not handled carefully."
+  },
+  {
+    "objectID": "content/syllabus.html#class-outline",
+    "href": "content/syllabus.html#class-outline",
+    "title": "Syllabus - Data Visualization for Economics Research",
+    "section": "Class outline",
+    "text": "Class outline\n\nIntroduction\nUsefulness and importance\nKey data viz principles\nBuilding a graph\nData viz for research in economics\nMain take-away points"
+  },
+  {
+    "objectID": "content/syllabus.html#useful-handbooks",
+    "href": "content/syllabus.html#useful-handbooks",
+    "title": "Syllabus - Data Visualization for Economics Research",
+    "section": "Useful handbooks",
+    "text": "Useful handbooks\n\nData Viz\nHere is a short list of useful applied data visualization handbooks:\n\nFundamentals of Data Visualization provides a great code-free introduction to data viz.1\nModern Data Visualization with R and Data Visualization - A practical introduction both discuss key data viz concepts and teaches you how to apply them in R and ggplot.\nR for Data Science provides a nice introduction to ggplot, THE package to build plots in R. To go further you can read this book.\n\n\n\nResources for implementation (in R)\nR is a super useful tools for applied economics analysis (and way beyond that). Thanks to the ggplot package, it is also one of the best tools out there to make graphs in this field. If you do not know R, I would only encourage you to learn and use it. To do so, here is a list of useful resources:\n\nR for Data Science: definitely the best resource to learn R and the tidyverse by yourself.\nR cheatsheets: great summaries of the functions in key tidyverse packages.\nThe tidyverse style guide: a very short book to help you write more legible R code.\nTidy design principles a more advanced book to help you write better R code."
+  },
+  {
+    "objectID": "content/syllabus.html#footnotes",
+    "href": "content/syllabus.html#footnotes",
+    "title": "Syllabus - Data Visualization for Economics Research",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nAlthough R code can be found on the book’s GitHub if needed.↩︎"
+  }
+]
