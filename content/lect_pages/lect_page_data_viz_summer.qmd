@@ -2,7 +2,7 @@
 title: "Detaild Lecture Outline and Additional Resources"
 published-title: "Date"
 description: "Resources associated with each section of the lecture."
-date: "2025-07-01"
+date: "2026-07-01"
 self-contained: true
 engine: knitr
 ---
@@ -13,29 +13,47 @@ Here is the outline of the lecture, along with links to additional resources on 
 
 ### Introduction
 
-### Usefulness and importance
-  
-- Explore and explain
-  - [Why looking at data?](https://socviz.co/lookatdata.html#why-look-at-data)
-  - [Existing tools for exploratory data analysis in R ](https://cosimameyer.com/post/exploratory-data-analysis-in-r/) 
-- Deceptive visualizations
-  - [Defense against dishonest charts](https://flowingdata.com/projects/dishonest-charts/)
-  
-### Key data viz principles
+### Why data viz matters in economics?
 
-- Perception and color
+- What do we use data viz for in economics?
+  - Allows to synthesize large amount of data
+  - Explore, explain and make inference
+    - [Why looking at data?](https://socviz.co/lookatdata.html#why-look-at-data)
+    - [Existing tools for exploratory data analysis in R](https://cosimameyer.com/post/exploratory-data-analysis-in-r/) 
+- Why *good* data viz matters?
+  - Visualizations can be deceptive
+    - [Defense against dishonest charts](https://flowingdata.com/projects/dishonest-charts/)
+  - Aesthetics matters for credibility
+    - [Reasons to make beautiful graphs](https://medium.com/accurat-in-sight/beautiful-reasons-c1c6926ab7d7) on 
+    - [Credibility and typography](https://practicaltypography.com/why-does-typography-matter.html)
+    - [In defense of simple charts](https://www.datawrapper.de/blog/in-defense-of-simple-charts)
+  
+### What are the characteristics of a good data viz?
+
+- Tells a story
+  - [Storytelling and data visualisation](https://data.europa.eu/apps/data-visualisation-guide/storytelling-and-data-visualisation)
+- Cognitive load
+  - [Cognitive Load as a Guide](https://nightingaledvs.com/cognitive-load-as-a-guide-12-spectrums-to-improve-your-data-visualizations/)
+  - More on [cognitive load for data viz](https://data.europa.eu/apps/data-visualisation-guide/cognitive-load-introduction)
+- Data viz theory
   - More on [Gestalt principles](https://medium.muz.li/gestalt-principles-in-ui-design-6b75a41e9965) (plus [a research article](https://www.nature.com/articles/nmeth1110-863))
   - [How to find and create good color palettes](https://www.datawrapper.de/blog/beautifulcolors) on 
-- Data-to-ink ratio
-  - [A critique of the data-to-ink ratio](https://www.frank.computer/blog/2025/04/data-to-ink.html)
-- Aesthetics
-  - [Reasons to make beautiful graphs](https://medium.com/accurat-in-sight/beautiful-reasons-c1c6926ab7d7) on 
-  - [Credibility and typography](https://practicaltypography.com/why-does-typography-matter.html)
-  - [In defense of simple charts](https://www.datawrapper.de/blog/in-defense-of-simple-charts)
-  
-### Building a graph
+  - Data-to-ink ratio
+    - [A critique of the data-to-ink ratio](https://www.frank.computer/blog/2025/04/data-to-ink.html)
 
-- Graph galeries
+### How to make an ok data viz?
+
+- Non-negotiable rules
+- Good practices
+  - Concrete recommendations
+    - [For color](https://www.datawrapper.de/blog/colors)
+    - [For text](https://www.datawrapper.de/blog/text-in-data-visualizations)
+  - Do's and don'ts
+    - [Statistics oriented](https://github.com/cxli233/FriendsDontLetFriends)
+    - [A collection of dataviz caveats](https://www.data-to-viz.com/caveats.html)
+    - [Sometimes it's ok to break the rules](https://medium.economist.com/why-you-sometimes-need-to-break-the-rules-in-data-viz-4d8ece284919)
+- Choose a plot type
+- Know what exists: graph galeries
   - [Data Viz Project](https://datavizproject.com/)
   - [Flowing Data - Chart type](https://flowingdata.com/chart-types/)
   - [Dataviz Inspiration](https://www.dataviz-inspiration.com/)
@@ -46,23 +64,12 @@ Here is the outline of the lecture, along with links to additional resources on 
   - [Data viz catalogue](https://datavizcatalogue.com/search.html)
   - [Datawrapper guide](https://www.datawrapper.de/blog/chart-types-guide)
   - [Data to viz graph](https://www.data-to-viz.com/)
-- Concrete recommendations
-  - [For color](https://www.datawrapper.de/blog/colors)
-  - [For text](https://www.datawrapper.de/blog/text-in-data-visualizations)
-- Specific do's and don'ts
-  - [Statistics oriented](https://github.com/cxli233/FriendsDontLetFriends)
-  - [A collection of dataviz caveats](https://www.data-to-viz.com/caveats.html)
-  - [Sometimes it's ok to break the rules](https://medium.economist.com/why-you-sometimes-need-to-break-the-rules-in-data-viz-4d8ece284919)
   
-### Data viz for research in economics
-
-- When do we use graphs in econ? 
-- Specificities of viz in econ
-  - [Avoid overplotting](https://www.data-to-viz.com/caveat/overplotting.html)
-  - [Visualize regression output](https://modelsummary.com/)
-  - [Visualize regression output with distributions](https://mjskay.github.io/ggdist/articles/freq-uncertainty-vis.html?q=estimate#point-estimates)
-
 ### Main take-away messages
+
+- Overall messages
+- Concrete points
+- Economics specificities
   
 ## Slides
 

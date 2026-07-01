@@ -14,12 +14,9 @@ A significant portion of communicating economic research results-whether in pres
 
 ## Class outline
 
-1. Introduction
-1. Usefulness and importance
-1. Key data viz principles
-1. Building a graph
-1. Data viz for research in economics
-1. Main take-away points
+1. **Why** data viz matters in economics?
+1. **What** are the characteristics of good data viz?
+1. **How** to make an ok data viz?
 
 ## Useful handbooks
 

@@ -17,8 +17,15 @@ $color-default:     #392F29 !default;
 $body-bg:           #FEFEF1 !default;
 $body-color:        #262626 !default;
 $link-color:        $color-default !default;
-$emph-color:        $color-default !default;
+$emph-color:        #A77850 !default;
 $selection-bg:      $color-default !default;
+
+$callout-color-tip:           #89bd9e !default;
+$callout-color-info:          #4984a3 !default;
+$callout-color-note:          #4984a3 !default;
+$callout-color-warning:       #EEE066 !default;
+$callout-color-danger:        #9E6262 !default;
+$callout-color-caution:       #f1bb87 !default;
 
 $presentation-title-slide-text-align: right;
 $presentation-title-slide-text-color: $body-bg !default;
@@ -58,6 +65,6 @@ strong {
   font-size: 1em !important;
 }
 
-.callout-title {
-  font-size: 0.9em !important;
+.callout .callout-title strong {
+  color: $body-color;
 }
