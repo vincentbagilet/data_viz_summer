@@ -4,14 +4,21 @@
     "href": "index.html",
     "title": "Data Visualization for Economics Research",
     "section": "",
-    "text": "This website gathers resources for the lecture Data Visualization for Economics Research of the Lyon Summer School in Empirical Research Methods at ENS de Lyon (July 1 - July 3 2025).\n\n\n\n\n\nA significant portion of communicating economic research results-whether in presentations or written papers—relies on graphs and visuals. This session aims to help you develop essential skills for effective data visualization. We will cover fundamental visualization principles and general best practices before examining the specific challenges of data visualization for causal inference. While it can be a powerful rhetorical tool for causal inference, data visualizations can also be misleading if not handled carefully."
+    "text": "This website gathers resources for the lecture Data Visualization for Economics Research of the Lyon Summer School in Empirical Research Methods at ENS de Lyon (June 30 - July 2 2026).\n\n\n\n\n\nA significant portion of communicating economic research results-whether in presentations or written papers—relies on graphs and visuals. This session aims to help you develop essential skills for effective data visualization and sharpen your interest and awareness of the topic. It discusses the importance of good visualization, describes a conceptual approach that can help us design our graphs and suggests general best practices."
   },
   {
     "objectID": "content/slides/slides_data_viz_summer.html#data-viz-is-not-so-simple",
     "href": "content/slides/slides_data_viz_summer.html#data-viz-is-not-so-simple",
     "title": "Data Visualization for Economics Research",
     "section": "Data viz is not so simple",
-    "text": "Data viz is not so simple\n\n\nGraphs and charts are everywhere in economics\nWe work with data, we routinely (need to) visualize it\nIn economics, graphs are often the result of an analysis\nSeems pretty simple, we all know how to make graphs\nSure BUT handled carelsessly a graph can be misleading and inefficient\nOnce you pay attention to data viz, it is fun, instructive and satisfying!"
+    "text": "Data viz is not so simple\n\n\nGraphs and charts are everywhere in economics\nWe work with data, we routinely (need to) visualize it\nIn economics, graphs are often the result of an analysis\nSeems pretty simple, we all know how to make graphs\nSure BUT handled carelessly a graph can be inefficient and even misleading\nOnce you pay attention to data viz, it is fun, instructive and satisfying!"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#many-graph-types",
+    "href": "content/slides/slides_data_viz_summer.html#many-graph-types",
+    "title": "Data Visualization for Economics Research",
+    "section": "Many graph types",
+    "text": "Many graph types\n\nType 1Type 2Type 3Type 4"
   },
   {
     "objectID": "content/slides/slides_data_viz_summer.html#trying-to-go-beyond-the-obvious",
@@ -193,7 +200,7 @@
     "href": "content/slides/slides_data_viz_summer.html#different-types-of-cognitive-loads",
     "title": "Data Visualization for Economics Research",
     "section": "Different types of cognitive loads",
-    "text": "Different types of cognitive loads\n\n\nIntrinsic load: inherent complexity of the information\n\neg, 3/7 more difficult to compute than 3 + 7\n\nGermane load: how familiar is the audience with the new information\n\neg, box plots, coefficient plots might be difficult to understand without prior experience\n\nExtrinsic load:\n\neg, horizontal text, highlight important data points, annotate, etc"
+    "text": "Different types of cognitive loads\n\n\nIntrinsic load: inherent complexity of the information\n\neg, 3/7 more difficult to compute than 3 + 7\n\nGermane load: how familiar is the audience with the new information\n\neg, box plots, coefficient plots might be difficult to understand without prior experience\n\nExtraneous load: how the new information is presented\n\neg, horizontal text, highlight important data points, annotate, etc"
   },
   {
     "objectID": "content/slides/slides_data_viz_summer.html#importance-of-theory",
@@ -259,11 +266,32 @@
     "text": "Graphs in an oral presentation\n\n\nExplain orally what your graph represents!\n\nWhat is on the x-axis?\nWhat is on the y-axis?\nWhat is the message you want to convey?"
   },
   {
+    "objectID": "content/slides/slides_data_viz_summer.html#avoid-low-contrast",
+    "href": "content/slides/slides_data_viz_summer.html#avoid-low-contrast",
+    "title": "Data Visualization for Economics Research",
+    "section": "Avoid low contrast",
+    "text": "Avoid low contrast"
+  },
+  {
     "objectID": "content/slides/slides_data_viz_summer.html#stylize",
     "href": "content/slides/slides_data_viz_summer.html#stylize",
     "title": "Data Visualization for Economics Research",
     "section": "Stylize",
     "text": "Stylize"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#limited-number-of-guides-break",
+    "href": "content/slides/slides_data_viz_summer.html#limited-number-of-guides-break",
+    "title": "Data Visualization for Economics Research",
+    "section": "Limited number of guides break",
+    "text": "Limited number of guides break"
+  },
+  {
+    "objectID": "content/slides/slides_data_viz_summer.html#export-graphs-in-pdf-vectorized",
+    "href": "content/slides/slides_data_viz_summer.html#export-graphs-in-pdf-vectorized",
+    "title": "Data Visualization for Economics Research",
+    "section": "Export graphs in PDF (vectorized)",
+    "text": "Export graphs in PDF (vectorized)"
   },
   {
     "objectID": "content/slides/slides_data_viz_summer.html#an-informative-title",
@@ -357,11 +385,11 @@
     "text": "Sometimes you may break the rules\n\n\n\n\n\n\n\n\n\n9 colors\n\nBUT\n\n\nLabeled directly\nShade reinforces grouping"
   },
   {
-    "objectID": "content/slides/slides_data_viz_summer.html#pay-attention-to-data-viz",
-    "href": "content/slides/slides_data_viz_summer.html#pay-attention-to-data-viz",
+    "objectID": "content/slides/slides_data_viz_summer.html#pay-attention-to-good-data-viz",
+    "href": "content/slides/slides_data_viz_summer.html#pay-attention-to-good-data-viz",
     "title": "Data Visualization for Economics Research",
-    "section": "Pay attention to data viz",
-    "text": "Pay attention to data viz\n\n\nIf you start paying attention to data viz when you see them, you will see what works, what does not\nIt is a process that takes place in the “background”: you will learn quickly and not realize it\nYou will see nice looking graphs (and hopefully enjoy it)\nYou will build better and more impactful graphs"
+    "section": "Pay attention to good data viz",
+    "text": "Pay attention to good data viz\n\n\nIf you start paying attention to data viz when you see them, you will see what works, what does not\nIt is a process that takes place in the “background”: you will learn quickly and not realize it\nYou will see nice looking graphs (and hopefully enjoy it)\nYou will build better and more impactful graphs"
   },
   {
     "objectID": "content/slides/slides_data_viz_summer.html#know-what-chart-types-exist",
@@ -424,14 +452,14 @@
     "href": "content/lect_pages/lect_page_data_viz_summer.html",
     "title": "Detaild Lecture Outline and Additional Resources",
     "section": "",
-    "text": "Here is the outline of the lecture, along with links to additional resources on each topic.\n\n\n\n\n\n\nWhat do we use data viz for in economics?\n\nAllows to synthesize large amount of data\nExplore, explain and make inference\n\nWhy looking at data?\nExisting tools for exploratory data analysis in R\n\n\nWhy good data viz matters?\n\nVisualizations can be deceptive\n\nDefense against dishonest charts\n\nAesthetics matters for credibility\n\nReasons to make beautiful graphs on\nCredibility and typography\nIn defense of simple charts\n\n\n\n\n\n\n\nTells a story\n\nStorytelling and data visualisation\n\nCognitive load\n\nCognitive Load as a Guide\nMore on cognitive load for data viz\n\nData viz theory\n\nMore on Gestalt principles (plus a research article)\nHow to find and create good color palettes on\nData-to-ink ratio\n\nA critique of the data-to-ink ratio\n\n\n\n\n\n\n\nNon-negotiable rules\nGood practices\n\nConcrete recommendations\n\nFor color\nFor text\n\nDo’s and don’ts\n\nStatistics oriented\nA collection of dataviz caveats\nSometimes it’s ok to break the rules\n\n\nChoose a plot type\nKnow what exists: graph galeries\n\nData Viz Project\nFlowing Data - Chart type\nDataviz Inspiration\nR graph gallery\n\nWhat questions to ask when creating charts\nDecision trees for a graph type\n\nFinancial Times tree\nData viz catalogue\nDatawrapper guide\nData to viz graph\n\n\n\n\n\n\nOverall messages\nConcrete points\nEconomics specificities"
+    "text": "Here is the outline of the lecture, along with links to additional resources on each topic.\n\n\n\n\n\n\nWhat do we use data viz for in economics?\n\nAllows to synthesize large amount of data\nExplore, explain and make inference\n\nWhy looking at data?\nExisting tools for exploratory data analysis in R\n\n\nWhy good data viz matters?\n\nVisualizations can be deceptive\n\nDefense against dishonest charts\n\nCredibility\n\nCredibility and typography\nReasons to make beautiful graphs on credibility and aesthetics\nIn defense of simple charts\n\n\n\n\n\n\n\nTells a story\n\nStorytelling and data visualisation\n\nLimits the cognitive load\n\nCognitive Load as a Guide\nMore on cognitive load for data viz\n\nLeverages principles from data viz and perception theory\n\nMore on Gestalt principles (plus a research article)\nHow to find and create good color palettes on\nData-to-ink ratio\n\nA critique of the data-to-ink ratio\n\n\n\n\n\n\n\nNon-negotiable rules\nGood practices\n\nConcrete recommendations\n\nFor color\nFor text\n\nDo’s and don’ts\n\nStatistics oriented\nA collection of dataviz caveats\nSometimes it’s ok to break the rules\n\n\nChoose a plot type\n\nKnow what exists: graph galeries\n\nData Viz Project\nFlowing Data - Chart type\nDataviz Inspiration\nR graph gallery\n\nWhat questions to ask when creating charts\nDecision trees for a graph type\n\nFinancial Times tree\nData viz catalogue\nDatawrapper guide\nData to viz graph\n\n\n\n\n\n\n\nOverall messages\nConcrete points\nEconomics specificities"
   },
   {
     "objectID": "content/lect_pages/lect_page_data_viz_summer.html#detailed-outline-and-resources",
     "href": "content/lect_pages/lect_page_data_viz_summer.html#detailed-outline-and-resources",
     "title": "Detaild Lecture Outline and Additional Resources",
     "section": "",
-    "text": "Here is the outline of the lecture, along with links to additional resources on each topic.\n\n\n\n\n\n\nWhat do we use data viz for in economics?\n\nAllows to synthesize large amount of data\nExplore, explain and make inference\n\nWhy looking at data?\nExisting tools for exploratory data analysis in R\n\n\nWhy good data viz matters?\n\nVisualizations can be deceptive\n\nDefense against dishonest charts\n\nAesthetics matters for credibility\n\nReasons to make beautiful graphs on\nCredibility and typography\nIn defense of simple charts\n\n\n\n\n\n\n\nTells a story\n\nStorytelling and data visualisation\n\nCognitive load\n\nCognitive Load as a Guide\nMore on cognitive load for data viz\n\nData viz theory\n\nMore on Gestalt principles (plus a research article)\nHow to find and create good color palettes on\nData-to-ink ratio\n\nA critique of the data-to-ink ratio\n\n\n\n\n\n\n\nNon-negotiable rules\nGood practices\n\nConcrete recommendations\n\nFor color\nFor text\n\nDo’s and don’ts\n\nStatistics oriented\nA collection of dataviz caveats\nSometimes it’s ok to break the rules\n\n\nChoose a plot type\nKnow what exists: graph galeries\n\nData Viz Project\nFlowing Data - Chart type\nDataviz Inspiration\nR graph gallery\n\nWhat questions to ask when creating charts\nDecision trees for a graph type\n\nFinancial Times tree\nData viz catalogue\nDatawrapper guide\nData to viz graph\n\n\n\n\n\n\nOverall messages\nConcrete points\nEconomics specificities"
+    "text": "Here is the outline of the lecture, along with links to additional resources on each topic.\n\n\n\n\n\n\nWhat do we use data viz for in economics?\n\nAllows to synthesize large amount of data\nExplore, explain and make inference\n\nWhy looking at data?\nExisting tools for exploratory data analysis in R\n\n\nWhy good data viz matters?\n\nVisualizations can be deceptive\n\nDefense against dishonest charts\n\nCredibility\n\nCredibility and typography\nReasons to make beautiful graphs on credibility and aesthetics\nIn defense of simple charts\n\n\n\n\n\n\n\nTells a story\n\nStorytelling and data visualisation\n\nLimits the cognitive load\n\nCognitive Load as a Guide\nMore on cognitive load for data viz\n\nLeverages principles from data viz and perception theory\n\nMore on Gestalt principles (plus a research article)\nHow to find and create good color palettes on\nData-to-ink ratio\n\nA critique of the data-to-ink ratio\n\n\n\n\n\n\n\nNon-negotiable rules\nGood practices\n\nConcrete recommendations\n\nFor color\nFor text\n\nDo’s and don’ts\n\nStatistics oriented\nA collection of dataviz caveats\nSometimes it’s ok to break the rules\n\n\nChoose a plot type\n\nKnow what exists: graph galeries\n\nData Viz Project\nFlowing Data - Chart type\nDataviz Inspiration\nR graph gallery\n\nWhat questions to ask when creating charts\nDecision trees for a graph type\n\nFinancial Times tree\nData viz catalogue\nDatawrapper guide\nData to viz graph\n\n\n\n\n\n\n\nOverall messages\nConcrete points\nEconomics specificities"
   },
   {
     "objectID": "content/lect_pages/lect_page_data_viz_summer.html#slides",
@@ -459,7 +487,7 @@
     "href": "content/syllabus.html#course-objectives-and-overview",
     "title": "Syllabus - Data Visualization for Economics Research",
     "section": "Course objectives and overview",
-    "text": "Course objectives and overview\nA significant portion of communicating economic research results-whether in presentations or written papers—relies on graphs and visuals. This session aims to help you develop essential skills for effective data visualization. We will cover fundamental visualization principles and general best practices before examining the specific challenges of data visualization for causal inference. While it can be a powerful rhetorical tool for causal inference, data visualizations can also be misleading if not handled carefully."
+    "text": "Course objectives and overview\nA significant portion of communicating economic research results-whether in presentations or written papers—relies on graphs and visuals. This session aims to help you develop essential skills for effective data visualization and sharpen your interest and awareness of the topic. It discusses the importance of good visualization, describes a conceptual approach that can help us design our graphs and suggests general best practices."
   },
   {
     "objectID": "content/syllabus.html#class-outline",

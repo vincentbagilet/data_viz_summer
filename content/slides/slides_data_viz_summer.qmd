@@ -11,6 +11,7 @@ format:
         data-background-color: "#392F29"
         slide-number: false
     embed-resources: true
+    fig-dpi: 300
 ---
 
 ```{r packages}
@@ -150,9 +151,31 @@ scale_color_idid <- function(colors = c("#C25807", "#FBE2C5", "#300D49"),
 
 - **Seems pretty simple**, we all know how to make graphs
 
-- Sure BUT handled carelsessly a graph can be **misleading** and **inefficient**
+- Sure BUT handled carelessly a graph can be **inefficient** and even **misleading**
 
 - Once you pay attention to data viz, it is fun, instructive and satisfying!
+
+:::
+
+## Many graph types
+
+::: {.panel-tabset}
+
+## Type 1
+
+[![](images/animal_fight.png){fig-align="center" width=70% fig-dpi=500}](https://yougov.com/en-gb/articles/35979-which-animals-could-britons-beat-fight)
+
+## Type 2
+
+[![](images/heatmap_death.png){fig-align="center" width=60% fig-dpi=500}](https://www.nytimes.com/2025/01/30/upshot/black-men-overdose-deaths.html)
+
+## Type 3
+
+[![](images/alluvial.png){fig-align="center" width=50% fig-dpi=500}](https://www.economist.com/graphic-detail/2015/05/12/seeking-safety?fsrc=scn%2Ftw%2Fte%2Fbl%2Fed%2Fseeking_safety&%3Ffsrc%3Dscn%2F=tw%2Fdc)
+
+## Type 4
+
+[![](images/radar_plot.png){fig-align="center" width=70% fig-dpi=500}](https://www.bloomberg.com/graphics/america-national-parks-guide/?srnd=phx-graphics-v2)
 
 :::
 
@@ -660,7 +683,7 @@ How easy or difficult it is to parse new information
 
   - *eg*, box plots, coefficient plots might be difficult to understand without prior experience
  
-- **Extrinsic** load:
+- **Extraneous** load: how the new information is presented
 
   - *eg*, horizontal text, highlight important data points, annotate, etc
   
@@ -811,6 +834,7 @@ ex_plot <- ex_data |>
   ggplot(aes(x = year, y = lifeExp, color = country)) +
   geom_line(linewidth = 1.4) + 
   theme_gray() +
+  scale_x_continuous(breaks = seq(1950, 2008, 4)) +
   scale_color_brewer(palette = "Set2")
 
 ex_plot
@@ -857,6 +881,17 @@ ex_plot
   
 :::
 
+## Avoid low contrast
+
+```{r example_contrast}
+#| fig-width: 7
+#| fig-height: 4
+
+ex_plot +
+  # ggplot(aes(x = year, y = lifeExp, color = country)) +
+  scale_color_manual(values = c("#FBF1D1", "lightgrey", "lightblue"))
+```
+
 # Good practice
 
 ## Stylize
@@ -870,6 +905,27 @@ ex_plot <- ex_plot +
   # scale_color_manual(values = base_color_vect)
   scale_mediocre_d(pal = "portal") 
   # theme_mediocre(pal = "portal")
+
+ex_plot
+```
+
+## Limited number of guides break 
+
+```{r example_number_ticks}
+#| fig-height: 6
+#| fig-align: center
+
+ex_plot <- ex_plot +
+  scale_x_continuous(scales::pretty_breaks(n = 5))
+
+ex_plot
+```
+
+## Export graphs in PDF (vectorized)
+
+```{r example_pdf, fig.dpi=30}
+#| fig-height: 6
+#| fig-align: center
 
 ex_plot
 ```
@@ -920,7 +976,6 @@ ex_data |>
   )
 ```
 
-
 ## Avoid using many different colors
 
 <br>
@@ -948,6 +1003,7 @@ If need more than 7 colors or so:
 :::
 
 ::::
+
 
 ## Use intuitive colors
 

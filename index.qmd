@@ -3,8 +3,8 @@ title: "Data Visualization for Economics Research"
 subtitle: "Lyon Summer School in Empirical Research Methods - ENS de Lyon"
 ---
 
-This website gathers resources for the lecture *Data Visualization for Economics Research* of the Lyon Summer School in Empirical Research Methods at ENS de Lyon (July 1 - July 3 2025).
+This website gathers resources for the lecture *Data Visualization for Economics Research* of the Lyon Summer School in Empirical Research Methods at ENS de Lyon (June 30 - July 2 2026).
 
 ![](images/paper_graph.jpg "Photo by Isaac Smith on Unsplash.com"){fig-align="center" width=70%}
 
-A significant portion of communicating economic research results-whether in presentations or written papers—relies on graphs and visuals. This session aims to **help you develop essential skills for effective data visualization**. We will cover fundamental visualization principles and general **best practices** before examining the specific challenges of data visualization for **causal inference**. While it can be a powerful rhetorical tool for causal inference, data visualizations can also be misleading if not handled carefully.
+A significant portion of communicating economic research results-whether in presentations or written papers—relies on graphs and visuals. This session aims to **help you develop essential skills for effective data visualization** and sharpen your interest and awareness of the topic. It discusses the **importance** of good visualization, describes a **conceptual approach** that can help us design our graphs and suggests general **best practices**.
